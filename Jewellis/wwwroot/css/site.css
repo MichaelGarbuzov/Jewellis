@@ -38,11 +38,13 @@ Table of Contents:
     --border-header: 2px solid #000000;
     --color-text: #565656;
     --color-text-title: #181818;
+    --color-background-accent:#151515;
     --color-primary: #151515;
     --color-secondary: #929292;
     --color-separator: #e5e5e5;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
+    --color-primary-invert: #ffffff;
 }
 
 /*#region (1) - General HTML Formatting */
@@ -5320,6 +5322,65 @@ figure {
 /*#endregion */
 
 /*#region (3.3) - Buttons */
+.btn.outline-primary {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    background: transparent;
+}
+
+    .btn.outline-primary:hover {
+        color: var(--color-primary-invert);
+        background: var(--color-primary);
+    }
+
+.btn.outline-accent {
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    background: transparent;
+}
+
+    .btn.outline-accent:hover {
+        color: #ffffff;
+        background: var(--color-accent);
+    }
+
+.btn-long-arrow {
+    display: inline-block;
+    background-color: transparent;
+    font-size: 1.6rem;
+    color: var(--color-text-title);
+    font-weight: 700;
+    font-family: "Montserrat";
+    font-style: normal;
+    text-transform: uppercase;
+    box-shadow: none;
+    position: relative;
+}
+
+    .btn-long-arrow:hover, .btn-long-arrow:focus, .btn-long-arrow:active {
+        color: var(--color-accent);
+        outline: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+
+        .btn-long-arrow:hover:after, .btn-long-arrow:focus:after, .btn-long-arrow:active:after {
+            background-position: right center;
+        }
+
+    .btn-long-arrow .icon {
+        display: inline-block;
+        top: -1px;
+        font-size: 60%;
+        padding: 0 0.5rem 0 1.3rem;
+        -moz-transform: scale(2.5,1);
+        -o-transform: scale(2.5,1);
+        -ms-transform: scale(2.5,1);
+        -webkit-transform: scale(2.5,1);
+        transform: scale(2.5,1);
+        position: relative;
+    }
 
 
 /*#endregion */
@@ -5936,7 +5997,164 @@ figure {
 /*#endregion */
 
 /*#region (5) - Page Styles */
+/*#region Banner Section */
 
+#banner-sec {
+    position: relative;
+}
 
+    #banner-sec:after {
+        background-color: var(--color-background-accent);
+        content: '';
+        position: absolute;
+        height: 100%;
+        left: 0;
+        top: -1px;
+        width: 100%;
+        -webkit-clip-path: polygon(0% 75%, 0% 0%, 100% 0%, 100% 35%);
+        clip-path: polygon(0% 75%, 0% 0%, 100% 0%, 100% 35%);
+        z-index: -1;
+    }
+
+    #banner-sec .sec-container {
+        padding: 4rem 4% 6rem;
+    }
+
+    #banner-sec .carousel {
+        height: 70rem;
+        font-family: "Garamond";
+        background: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 1rem rgb(0,0,0,0.2), 0 0 5rem rgb(0,0,0,0.25);
+        overflow: hidden;
+    }
+
+        #banner-sec .carousel .carousel-indicators li {
+            height: 0.5rem;
+            width: 4rem;
+        }
+
+        #banner-sec .carousel .single-carousel-item {
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            position: relative;
+            z-index: 1;
+        }
+
+            #banner-sec .carousel .single-carousel-item .banner-caption {
+                max-width: 1140px;
+                top: 50%;
+                font-size: 2rem;
+                text-align: center;
+                transform: translateY(-50%);
+                padding: 5%;
+                margin: auto;
+                position: relative;
+                z-index: 10;
+            }
+
+                #banner-sec .carousel .single-carousel-item .banner-caption h4 {
+                    color: var(--color-accent);
+                    font-size: 1em;
+                    font-weight: 700;
+                    line-height: 1.5;
+                    text-transform: uppercase;
+                }
+
+                #banner-sec .carousel .single-carousel-item .banner-caption h2 {
+                    font-size: 3.6em;
+                    line-height: 1.2;
+                    text-transform: capitalize;
+                    margin: 1rem 0 2.5rem;
+                }
+
+                #banner-sec .carousel .single-carousel-item .banner-caption p {
+                    font-family: "Droid Serif";
+                    font-size: 1.15em;
+                    font-style: italic;
+                    color: var(--color-text-title);
+                }
+
+                #banner-sec .carousel .single-carousel-item .banner-caption .btn-long-arrow {
+                    margin-top: 1rem;
+                }
+
+            #banner-sec .carousel .single-carousel-item .banner-video {
+                height: 100%;
+                width: 100%;
+                top: 0;
+                left: 0;
+                overflow: hidden;
+                position: absolute;
+                z-index: 8;
+            }
+
+                #banner-sec .carousel .single-carousel-item .banner-video:after {
+                    background-color: var(--color-light-dimmer);
+                    content: '';
+                    display: block;
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    left: 0;
+                    position: absolute;
+                    z-index: 9;
+                }
+
+                #banner-sec .carousel .single-carousel-item .banner-video video {
+                    opacity: 0.75;
+                    min-height: 101%;
+                    min-width: 101%;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    position: absolute;
+                }
+
+    #banner-sec .carousel-control-prev,
+    #banner-sec .carousel-control-next {
+        font-size: 5rem;
+    }
+
+@media screen and (max-width: 991px) {
+    #banner-sec .carousel {
+        height: 60rem;
+    }
+
+        #banner-sec .carousel .single-carousel-item .banner-caption {
+            font-size: 1.7rem;
+        }
+}
+
+@media screen and (max-width: 768px) {
+    #banner-sec .carousel {
+        height: 50rem;
+    }
+
+    #banner-sec .sec-container {
+        padding: 2rem 4% 4rem;
+    }
+
+    #banner-sec .carousel .single-carousel-item .banner-caption h2 {
+        font-size: 2.8em;
+    }
+
+    #banner-sec .carousel-control-prev,
+    #banner-sec .carousel-control-next {
+        font-size: 4rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #banner-sec .carousel .single-carousel-item .banner-caption h2 {
+        font-size: 2.2em;
+    }
+
+    #banner-sec .carousel .single-carousel-item .banner-caption .btn-long-arrow {
+        margin-top: 0;
+    }
+}
 
 /*#endregion */

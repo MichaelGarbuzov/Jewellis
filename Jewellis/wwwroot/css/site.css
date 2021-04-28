@@ -23,7 +23,8 @@ Table of Contents:
         (4.3) - Main Footer
     (5) - Page Styles
         (5.1) - Home
-
+        (5.2) - About
+        (5.3) - Contact Us
 ==============================================*/
 
 :root {
@@ -5323,6 +5324,7 @@ figure {
 /*#endregion */
 
 /*#region (3.3) - Buttons */
+
 .btn.outline-primary {
     border: 2px solid var(--color-primary);
     color: var(--color-primary);
@@ -5383,10 +5385,61 @@ figure {
         position: relative;
     }
 
-
 /*#endregion */
 
 /*#region (3.4) - Form Controls */
+
+.i-txt {
+    width: 100%;
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    line-height: 1.5;
+    outline: none;
+    box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.1);
+    -moz-transition: box-shadow 0.3s ease-out;
+    -o-transition: box-shadow 0.3s ease-out;
+    -webkit-transition: box-shadow 0.3s ease-out;
+    transition: box-shadow 0.3s ease-out;
+    padding: 1rem 2rem;
+    margin: 1px;
+}
+
+    .i-txt:focus {
+        border-width: 2px;
+        box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
+        margin: 0;
+    }
+
+.i-txt-with-btn-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+    .i-txt-with-btn-wrapper > .i-txt {
+        border-right: none;
+        margin-right: 0;
+    }
+
+        .i-txt-with-btn-wrapper > .i-txt:focus + .btn {
+            box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
+        }
+
+@media screen and (max-width: 480px) {
+    .i-txt-with-btn-wrapper.mob-break {
+        display: inline-block;
+    }
+
+        .i-txt-with-btn-wrapper.mob-break > .i-txt {
+            margin: 0;
+            border: 1px solid var(--color-primary);
+            border-bottom: 0;
+        }
+
+        .i-txt-with-btn-wrapper.mob-break > .btn {
+            width: 100%;
+        }
+}
 
 /*#endregion */
 
@@ -5999,7 +6052,7 @@ figure {
 
 /*#region (5) - Page Styles */
 
-/*#region Home */
+/*#region (5.1) - Home */
 
 /*#region Banner Section */
 
@@ -6162,7 +6215,6 @@ figure {
 }
 
 /*#endregion */
-
 
 /*#region About Section */
 
@@ -6338,3 +6390,43 @@ html[theme="dark"] #about-sec .about-image-wrap a img {
 }
 
 /*#endregion */
+
+
+
+
+/*#region Newsletter Section */
+
+#newsletter-sec {
+    font-family: "Garamond";
+    text-align: center;
+}
+
+    #newsletter-sec form {
+        max-width: 46rem;
+        width: 46rem;
+        margin: 0 auto;
+    }
+
+    #newsletter-sec .i-txt-with-btn-wrapper,
+    #newsletter-sec .i-txt-with-btn-wrapper > .btn {
+        font-size: 2rem;
+    }
+
+/*#endregion */
+
+/*#endregion */
+
+/*#region (5.2) - About */
+
+
+
+/*#endregion */
+
+/*#region (5.3) - Contact Us */
+
+
+
+/*#endregion */
+
+/*#endregion */
+

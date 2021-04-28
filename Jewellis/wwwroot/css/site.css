@@ -39,13 +39,16 @@ Table of Contents:
     --border-header: 2px solid #000000;
     --color-text: #565656;
     --color-text-title: #181818;
-    --color-background-accent:#151515;
+    --color-background-accent: #151515;
     --color-primary: #151515;
     --color-secondary: #929292;
     --color-separator: #e5e5e5;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
     --color-primary-invert: #ffffff;
+    --color-background-invert: #151515;
+    --color-text-title-invert: #ffffff;
+    --color-text-invert: #d2d2d2;
 }
 
 /*#region (1) - General HTML Formatting */
@@ -6336,5 +6339,26 @@ html[theme="dark"] #about-sec .about-image-wrap a img {
         width: 100%;
     }
 }
+
+/*#endregion */
+
+/*#region Testimonial Section */
+
+#testimonial-sec .single-testimonial-item {
+    font-style: italic;
+    font-size: 2.2rem;
+    color: var(--color-text-invert);
+    font-family: "Droid Serif";
+    line-height: 30px;
+}
+
+    #testimonial-sec .single-testimonial-item .client-name {
+        color: var(--color-text-title-invert);
+        font-size: 2rem;
+        line-height: 1.5;
+        text-transform: uppercase;
+        font-style: normal;
+        margin-top: 2.5rem;
+    }
 
 /*#endregion */

@@ -42,7 +42,78 @@
             </div>
         </div>
     </header>
-
+    @* Wishlist Modal *@
+    <div class="modal right fade" id="wishlist-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header px-5 pt-4">
+                    <h2 class="modal-title">Wishlist</h2>
+                    <button type="button" class="p-3 m-0 h2" data-dismiss="modal" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button>
+                </div>
+                <div class="modal-body px-5 py-4">
+                    @*<div class="d-flex justify-content-center align-items-center h-100">
+                            <div class="mini-cart-empty">
+                                <div class="text-center txt-secondary mb-2"><span class="icon icon-heart-broken display-1" aria-hidden="true"></span></div>
+                                <h4 class="text-secondary text-center m-0 py-3">Your wishlist is empty.</h4>
+                            </div>
+                        </div>*@
+                    <div class="mini-wishlist-items">
+                        <div class="single-mini-product">
+                            <figure>
+                                <a href="@Url.Action("View", "Product", new { area = "Shop", id = "1" })">
+                                    <img src="~/images/assets/product-1.jpg" alt="Product 1" />
+                                </a>
+                            </figure>
+                            <div class="product-details">
+                                <h2><a href="@Url.Action("View", "Product", new { area = "Shop", id = "1" })">Sprite Yoga Companion</a></h2>
+                                <div class="quantity-x-price">
+                                    <span>$77.00</span>
+                                </div>
+                                <div class="actions">
+                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-mini-product">
+                            <figure>
+                                <a href="@Url.Action("View", "Product", new { area = "Shop", id = "2" })">
+                                    <img src="~/images/assets/product-2.jpg" alt="Product 2" />
+                                </a>
+                            </figure>
+                            <div class="product-details">
+                                <h2><a href="@Url.Action("View", "Product", new { area = "Shop", id = "2" })">Yoga Companion Kit</a></h2>
+                                <div class="quantity-x-price">
+                                    <span>$58.00</span>
+                                </div>
+                                <div class="actions">
+                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-mini-product">
+                            <figure>
+                                <a href="@Url.Action("View", "Product", new { area = "Shop", id = "3" })">
+                                    <img src="~/images/assets/product-3.jpg" alt="Product 3" />
+                                </a>
+                            </figure>
+                            <div class="product-details">
+                                <h2><a href="@Url.Action("View", "Product", new { area = "Shop", id = "3" })">Sprite Yoga Companion Kit</a></h2>
+                                <div class="quantity-x-price">
+                                    <span>$20.00</span>
+                                </div>
+                                <div class="actions">
+                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer p-5">
+                    <a href="@Url.Action("Wishlist", "Account")" class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                </div>
+            </div>
+        </div>
+    </div>
     @* Content *@
     <main id="main-content" role="main">
         @RenderBody()

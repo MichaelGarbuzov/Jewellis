@@ -8,38 +8,53 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Jewellis</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+    @* Main Header *@
+    <header id="main-header" class="fixed-top">
+        <div class="lay-wrapper">
+            <div class="lay-left">
+                <h1 id="main-logo">
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </h1>
+                <button id="main-menu-toggler" class="text-shadow" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle Menu">
+                    <span class="icon icon-menu3" aria-hidden="true"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+            <div class="lay-middle">
+                <nav id="main-menu">
 
-    <footer class="border-top footer text-muted">
+                </nav>
+            </div>
+            <div class="lay-right">
+                <ul id="main-controls" class="header-list links-text-shadow">
+                    <li>
+                        <a href="#" id="main-search-open" role="button"><span class="icon icon-search2" aria-hidden="true"></span></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user5" aria-hidden="true"></span></a>
+                    </li>
+                    <li>
+                        <a href="#" role="button" data-toggle="modal" data-target="#wishlist-modal"><span class="icon icon-heart6" aria-hidden="true"></span></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-cart5" aria-hidden="true"></span><span class="count">3</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    @* Content *@
+    <main id="main-content" role="main">
+        @RenderBody()
+    </main>
+
+    @* Main Footer *@
+    <footer id="main-footer">
         <div class="container">
             &copy; 2021 - Jewellis - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

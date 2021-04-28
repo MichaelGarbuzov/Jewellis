@@ -1,4 +1,12 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿/*==============================================
+    site.js
+    ---------------------
+    Description: Main script for the site.
+    Version: 1.0.0
+    Last Update: 2021-04-28
+==============================================*/
+/*==============================================
+Table of Contents:
+------------------
+    (1) - 
+==============================================*/

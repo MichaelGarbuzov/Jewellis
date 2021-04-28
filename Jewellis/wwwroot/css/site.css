@@ -22,6 +22,7 @@ Table of Contents:
         (4.2) - Main Content
         (4.3) - Main Footer
     (5) - Page Styles
+        (5.1) - Home
 
 ==============================================*/
 
@@ -5997,6 +5998,9 @@ figure {
 /*#endregion */
 
 /*#region (5) - Page Styles */
+
+/*#region Home */
+
 /*#region Banner Section */
 
 #banner-sec {
@@ -6154,6 +6158,182 @@ figure {
 
     #banner-sec .carousel .single-carousel-item .banner-caption .btn-long-arrow {
         margin-top: 0;
+    }
+}
+
+/*#endregion */
+
+
+/*#region About Section */
+
+#about-sec .about-image-wrap {
+    overflow: hidden;
+    background: var(--color-block);
+}
+
+    #about-sec .about-image-wrap a:hover img {
+        -webkit-transform: scale(1.1);
+        -moz-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+
+    #about-sec .about-image-wrap a img {
+        -webkit-transition: all 0.4s ease-out;
+        -moz-transition: all 0.4s ease-out;
+        -o-transition: all 0.4s ease-out;
+        transition: all 0.4s ease-out;
+    }
+
+#about-sec .about-content-wrap {
+    font-family: "Montserrat";
+}
+
+    #about-sec .about-content-wrap h2, #about-sec .about-content-wrap h3, #about-sec .about-content-wrap h4 {
+        text-transform: uppercase;
+    }
+
+    #about-sec .about-content-wrap h2 {
+        font-size: 1.4rem;
+        line-height: 1.5;
+        color: var(--color-accent);
+        margin: 0;
+    }
+
+    #about-sec .about-content-wrap h3 {
+        font-size: 3rem;
+        line-height: 1.5;
+        margin-bottom: 1.8rem;
+    }
+
+    #about-sec .about-content-wrap .about-text {
+        font-style: italic;
+        padding-left: 65px;
+        font-size: 2.15rem;
+        line-height: 1.5;
+        position: relative;
+    }
+
+        #about-sec .about-content-wrap .about-text .vertical-text {
+            display: block;
+            left: 0;
+            position: absolute;
+            margin-top: -2rem;
+        }
+
+html[theme="dark"] #about-sec .about-image-wrap a img {
+    filter: brightness(0.75);
+}
+
+@media screen and (max-width: 1200px) {
+    #about-sec .about-content-wrap {
+        margin-top: 2rem;
+    }
+
+        #about-sec .about-content-wrap h3 {
+            margin: 0;
+            margin-bottom: 1.8rem;
+        }
+
+        #about-sec .about-content-wrap .about-text .vertical-text {
+            margin-top: 0;
+        }
+}
+
+@media screen and (max-width: 768px) {
+    #about-sec .about-content-wrap .about-text {
+        font-size: 2rem;
+        padding-left: 0;
+    }
+
+        #about-sec .about-content-wrap .about-text .vertical-text {
+            display: none;
+        }
+
+    #about-sec .about-content-wrap h3 {
+        font-size: 2.45rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/*#endregion */
+
+/*#region Categories Section */
+
+.small-size-cat {
+    margin-top: -2rem;
+}
+
+    .small-size-cat .single-cat-item {
+        margin-top: 2rem;
+    }
+
+.single-cat-item figure {
+    position: relative;
+    overflow: hidden;
+}
+
+    .single-cat-item figure img {
+        max-width: 100%;
+        -webkit-transition: all 0.4s ease-out;
+        -moz-transition: all 0.4s ease-out;
+        -o-transition: all 0.4s ease-out;
+        transition: all 0.4s ease-out;
+    }
+
+    .single-cat-item figure figcaption {
+        width: 90%;
+        top: 50%;
+        left: 50%;
+        border: 2px solid var(--color-background);
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        -webkit-transition: all 0.4s ease-out;
+        -moz-transition: all 0.4s ease-out;
+        -o-transition: all 0.4s ease-out;
+        transition: all 0.4s ease-out;
+        padding: 4px;
+        position: absolute;
+    }
+
+        .single-cat-item figure figcaption a {
+            display: block;
+            background-color: var(--color-background);
+            color: var(--color-primary);
+            font-family: "Garamond";
+            font-size: 2rem;
+            line-height: 1.5;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 1.5rem 2rem;
+            margin: 0;
+        }
+
+.single-cat-item:hover figure img {
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.single-cat-item:hover figure figcaption {
+    top: 70%;
+}
+
+
+@media screen and (max-width: 991px) {
+    .large-size-cat .single-cat-item {
+        margin-bottom: 2rem;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .single-cat-item figure img {
+        width: 100%;
     }
 }
 

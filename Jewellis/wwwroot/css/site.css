@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-04-28
+    Last Update: 2021-04-30
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -35,21 +35,27 @@ Table of Contents:
     --txt-lg: 1.85rem;
     --color-accent: #d82e2e;
     --color-black: #000000;
+    --color-invert: #ffffff;
     --color-background: #ffffff;
+    --color-background-accent: #151515;
+    --color-block: #fafafa;
     --color-header: #151515;
     --border-header: 2px solid #000000;
+    --color-header-text: #ffffff;
+    --color-search-header: #ffffff;
     --color-text: #565656;
     --color-text-title: #181818;
-    --color-background-accent: #151515;
+    --color-background-invert: #151515;
+    --color-text-invert: #d2d2d2;
+    --color-text-title-invert: #ffffff;
     --color-primary: #151515;
+    --color-primary-invert: #ffffff;
     --color-secondary: #929292;
+    --color-light-dimmer: rgba(255,255,255,0.5);
+    --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
-    --color-primary-invert: #ffffff;
-    --color-background-invert: #151515;
-    --color-text-title-invert: #ffffff;
-    --color-text-invert: #d2d2d2;
 }
 
 /*#region (1) - General HTML Formatting */
@@ -170,6 +176,54 @@ figure {
         background: var(--color-primary-invert);
         border-color: var(--color-primary);
     }
+
+.tooltip {
+    font-size: 1.5rem;
+}
+
+.dropdown-divider {
+    border-color: var(--color-separator);
+}
+
+.dropdown-menu {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    border: none;
+    color: inherit;
+    transition: opacity 0.15s ease-out;
+}
+
+    .dropdown-menu.show {
+        pointer-events: auto;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+
+.dropdown-header {
+    font-size: 1.7rem;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-separator);
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+    .dropdown-header > a {
+        width: auto !important;
+        margin-right: 1rem;
+    }
+
+        .dropdown-header > a > .icon {
+            margin: 0 !important;
+        }
+
+.modal-content {
+    background: var(--color-background);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--color-separator);
+}
 
 /*#endregion */
 
@@ -5447,6 +5501,7 @@ figure {
 /*#endregion */
 
 /*#region (3.5) - General Modules */
+
 /*#region Mini-Products */
 
 .single-mini-product {
@@ -5619,6 +5674,7 @@ figure {
             .header-list > li.show > a .count {
                 background: #f37f7f !important;
             }
+
 .modal.right .modal-dialog {
     height: 100%;
     width: 45rem;
@@ -5685,20 +5741,11 @@ figure {
     }
 }
 
-@media screen and (max-width: 768px) {
-    .sec-title h2 {
-        font-size: 3.2rem;
-    }
-
-    .sec-container {
-        padding: 4rem 4%;
-    }
-}
-
 @media screen and (max-width: 480px) {
     .sec-title h2 {
         font-size: 2.7rem;
     }
+
     .modal.right .modal-dialog {
         width: 100%;
     }
@@ -5792,6 +5839,19 @@ figure {
     padding: 0 0.5rem;
 }
 
+.mob-icon > .icon {
+    display: none;
+}
+
+@media screen and (max-width: 480px) {
+    .mob-icon > .mob-icon-text {
+        display: none;
+    }
+
+    .mob-icon > .icon {
+        display: inline-block;
+    }
+}
 
 /*#endregion */
 
@@ -5858,6 +5918,189 @@ figure {
             transform: scaleY(-1);
         }
 
+    #main-header .dropdown-nav li a {
+        display: inline-block;
+        width: 100%;
+        font-size: 1.5rem;
+        padding: 1rem 1.5rem;
+        -webkit-transition: all 0.3s ease, visibility 0s;
+        -moz-transition: all 0.3s ease, visibility 0s;
+        -o-transition: all 0.3s ease, visibility 0s;
+        transition: all 0.3s ease, visibility 0s;
+    }
+
+        #main-header .dropdown-nav li a:hover,
+        #main-header .dropdown-nav li.dropdown-sm a:hover,
+        #main-header .dropdown-nav li a:hover > .icon,
+        #main-menu:not(.collapsed) .dropdown-nav li a:hover,
+        #main-menu.collapsed .dropdown-nav li a:hover {
+            color: var(--color-accent);
+        }
+
+        #main-header .dropdown-nav li a > .icon {
+            top: -1px;
+            color: var(--color-secondary);
+            font-size: 2.5rem;
+            vertical-align: middle;
+            margin-right: 2rem;
+            position: relative;
+            -webkit-transition: color 0.3s ease-out;
+            -moz-transition: color 0.3s ease-out;
+            -o-transition: color 0.3s ease-out;
+            transition: color 0.3s ease-out;
+        }
+
+    #main-header .dropdown-nav li.dropdown-sm a {
+        color: #878787;
+        font-size: 1.4rem;
+        padding: 0.5rem 1.5rem;
+    }
+
+        #main-header .dropdown-nav li.dropdown-sm a > .icon {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+        }
+
+/*#region Main Menu */
+
+#main-menu > ul > li > a {
+    display: block;
+    color: var(--color-invert);
+    font-size: 1.5rem;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    padding: 1rem 1.5rem;
+    position: relative;
+}
+
+#main-menu .dropdown-show > a:after {
+    font-family: 'jewellis-icons' !important;
+    content: '\e412';
+    font-size: 90%;
+    margin-left: 0.5rem;
+    opacity: 0.6;
+}
+
+#main-menu .dropdown-nav li a {
+    letter-spacing: 0.1rem;
+    white-space: nowrap;
+}
+
+#main-menu .category-list img {
+    border-radius: 100%;
+    border: 1px solid #eeeeee;
+    text-indent: -99999px;
+    -webkit-transition: all 0.3s ease-out, visibility 0s;
+    -moz-transition: all 0.3s ease-out, visibility 0s;
+    -o-transition: all 0.3s ease-out, visibility 0s;
+    transition: all 0.3s ease-out, visibility 0s;
+    margin-right: 1rem;
+}
+
+#main-menu:not(.collapsed) .dropdown-show:hover > .dropdown-nav {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: visible;
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+}
+
+#main-menu:not(.collapsed) .dropdown-nav {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    top: 100%;
+    left: 0;
+    color: var(--color-header-text);
+    background-color: var(--color-background);
+    border-radius: 3px;
+    box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
+    -webkit-transform: translateY(-5px);
+    -moz-transform: translateY(-5px);
+    -ms-transform: translateY(-5px);
+    transform: translateY(-5px);
+    -webkit-transition: all 0.3s ease-out, visibility 0s;
+    -moz-transition: all 0.3s ease-out, visibility 0s;
+    -o-transition: all 0.3s ease-out, visibility 0s;
+    transition: all 0.3s ease-out, visibility 0s;
+    padding: 2rem;
+    position: absolute;
+    z-index: 1100;
+}
+
+    #main-menu:not(.collapsed) .dropdown-nav li a {
+        color: var(--color-text-title);
+        white-space: nowrap;
+    }
+
+        #main-menu:not(.collapsed) .dropdown-nav li a:hover {
+            -webkit-transform: translateY(-2px);
+            -moz-transform: translateY(-2px);
+            -ms-transform: translateY(-2px);
+            transform: translateY(-2px);
+        }
+
+#main-menu:not(.collapsed) .category-list img {
+    height: 5rem;
+    width: 5rem;
+    box-shadow: 0 4px 2rem rgb(0,0,0,0.2);
+}
+
+#main-menu:not(.collapsed) .category-list a:hover img {
+    box-shadow: 0 3px 1rem rgb(216,46,46,0.2), 0 4px 2rem rgb(0,0,0,0.2);
+}
+
+#main-menu.collapsed {
+    display: block;
+    height: calc(100% - var(--header-height));
+    width: 100%;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    background: var(--color-header);
+    position: fixed;
+}
+
+    #main-menu.collapsed > ul {
+        height: 100%;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+        #main-menu.collapsed > ul > li {
+            padding: 1rem 5%;
+        }
+
+    #main-menu.collapsed .dropdown-nav {
+        display: none;
+        padding: 0 2rem;
+    }
+
+        #main-menu.collapsed .dropdown-nav li a {
+            display: inline-block;
+            color: var(--color-header-text);
+            font-size: 1.5rem;
+            letter-spacing: 0.2rem;
+            padding: 1rem 1.5rem;
+        }
+
+    #main-menu.collapsed .category-list img {
+        height: 4rem;
+        width: 4rem;
+        box-shadow: 0 4px 2rem var(--color-shadow);
+    }
+
+    #main-menu.collapsed .category-list a:hover img {
+        border: 1px solid var(--color-accent);
+    }
+
+/*#endregion */
+
 /*#region Main Controls */
 
 #main-controls {
@@ -5916,6 +6159,59 @@ figure {
         transition: background 0.3s ease-out;
         position: absolute;
     }
+
+/*#region Main Search */
+
+#main-search {
+    display: none;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--color-modal-blocker);
+    position: fixed;
+    z-index: 1010;
+}
+
+    #main-search .search-header {
+        height: var(--header-height);
+        background: var(--color-search-header);
+        box-shadow: 0 1px 1rem rgb(0,0,0,0.5);
+        font-size: 1.5rem;
+        padding: 0 4%;
+    }
+
+        #main-search .search-header .search-box {
+            max-width: 70rem;
+            width: 100%;
+            padding: 0 2rem;
+            margin: 0 auto;
+        }
+
+            #main-search .search-header .search-box .i-txt {
+                font-size: 1.5em;
+                font-family: 'Garamond';
+                font-weight: 700;
+                letter-spacing: 1px;
+                padding: 0.5rem 2rem;
+            }
+
+            #main-search .search-header .search-box .btn {
+                font-size: 1.18em;
+            }
+
+#main-search-close {
+    font-size: 2.4em;
+    padding: 0 1rem;
+}
+
+    #main-search-close > .icon {
+        top: 2px;
+        position: relative;
+    }
+
+/*#endregion */
+
 /*#region Mini Cart */
 
 #mini-cart {
@@ -5980,6 +6276,11 @@ figure {
         font-size: 1.4rem;
         padding: 1rem;
     }
+
+    #main-control li a {
+        font-size: 2rem;
+        padding: 1rem;
+    }
 }
 
 @media screen and (max-width: 991px) {
@@ -5993,7 +6294,8 @@ figure {
 }
 
 @media screen and (max-width: 768px) {
-    #main-header {
+    #main-header,
+    #main-search .search-header {
         height: var(--header-height-mobile);
         padding: 0 2%
     }
@@ -6006,6 +6308,21 @@ figure {
             font-size: 2.5rem;
         }
 
+        #main-header .dropdown-nav li a > .icon {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+        }
+
+        #main-header .dropdown-nav li.dropdown-sm a > .icon {
+            font-size: 1.75rem;
+            margin-right: 1rem;
+        }
+
+    #main-menu.collapsed {
+        height: calc(100% - var(--header-height-mobile));
+        top: var(--header-height-mobile);
+    }
+
     #main-controls > li > a {
         font-size: 1.8rem;
         padding: 0.8rem;
@@ -6016,12 +6333,24 @@ figure {
             width: 1.6rem;
             font-size: 1rem;
         }
+
+    #main-controls .dropdown-nav li a {
+        padding: 1rem 1.25rem;
+    }
+
+    #main-search .search-header {
+        font-size: 1.25rem;
+    }
 }
 
 @media screen and (max-width: 480px) {
     #main-header #main-logo {
         width: 3rem;
         background-image: url("../images/jewellis-logo-square.svg");
+    }
+
+    #main-search .search-header .search-box {
+        padding: 0 4%;
     }
 }
 

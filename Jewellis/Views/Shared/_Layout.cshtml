@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Jewellis</title>
+    <title>@ViewData["Title"] | Jewellis</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -21,13 +21,184 @@
             </div>
             <div class="lay-middle">
                 <nav id="main-menu">
-
+                    <ul class="header-list links-text-shadow">
+                        <li class="dropdown-show">
+                            <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women">Women</a>
+                            <ul class="dropdown-nav category-list">
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Rings">
+                                        <span><img src="~/images/menu-cat-women-rings.jpg" alt="Rings" /></span>
+                                        <span>Rings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Earrings">
+                                        <span><img src="~/images/menu-cat-women-earings.jpg" alt="Earrings" /></span>
+                                        <span>Earrings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Necklaces">
+                                        <span><img src="~/images/menu-cat-women-necklaces.jpg" alt="Necklaces" /></span>
+                                        <span>Necklaces</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Bracelets">
+                                        <span><img src="~/images/menu-cat-women-bracelets.jpg" alt="Bracelets" /></span>
+                                        <span>Bracelets</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Watches">
+                                        <span><img src="~/images/menu-cat-women-watches.jpg" alt="Watches" /></span>
+                                        <span>Watches</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Glasses">
+                                        <span><img src="~/images/menu-cat-women-glasses.jpg" alt="Glasses" /></span>
+                                        <span>Glasses</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Other">
+                                        <span><img src="~/images/menu-cat-women-other.jpg" alt="Other Accessories" /></span>
+                                        <span>Other Accessories</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-show">
+                            <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men">Men</a>
+                            <ul class="dropdown-nav category-list">
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Watches">
+                                        <span><img src="~/images/menu-cat-men-watches.jpg" alt="Watches" /></span>
+                                        <span>Watches</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Glasses">
+                                        <span><img src="~/images/menu-cat-men-glasses.jpg" alt="Glasses" /></span>
+                                        <span>Glasses</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Rings">
+                                        <span><img src="~/images/menu-cat-men-rings.jpg" alt="Rings" /></span>
+                                        <span>Rings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Necklaces">
+                                        <span><img src="~/images/menu-cat-men-necklaces.jpg" alt="Necklaces" /></span>
+                                        <span>Necklaces</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Other">
+                                        <span><img src="~/images/menu-cat-men-other.jpg" alt="Other Accessories" /></span>
+                                        <span>Other Accessories</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-show">
+                            <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids">Kids</a>
+                            <ul class="dropdown-nav category-list">
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Watches">
+                                        <span><img src="~/images/menu-cat-kids-watches.jpg" alt="Watches" /></span>
+                                        <span>Watches</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Glasses">
+                                        <span><img src="~/images/menu-cat-kids-glasses.jpg" alt="Glasses" /></span>
+                                        <span>Glasses</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Rings">
+                                        <span><img src="~/images/menu-cat-kids-rings.jpg" alt="Rings" /></span>
+                                        <span>Rings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Necklaces">
+                                        <span><img src="~/images/menu-cat-kids-necklaces.jpg" alt="Necklaces" /></span>
+                                        <span>Necklaces</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Bracelets">
+                                        <span><img src="~/images/menu-cat-kids-bracelets.jpg" alt="Bracelets" /></span>
+                                        <span>Bracelets</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Kids" asp-route-type="Other">
+                                        <span><img src="~/images/menu-cat-kids-other.jpg" alt="Other Accessories" /></span>
+                                        <span>Other Accessories</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-show">
+                            <a asp-area="" asp-controller="Shop" asp-action="Sale">Sale</a>
+                            <ul class="dropdown-nav category-list">
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Sale" asp-route-category="Women">
+                                        <span><img src="~/images/menu-cat-sale-women.jpg" alt="Women" /></span>
+                                        <span>Women</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Sale" asp-route-category="Men">
+                                        <span><img src="~/images/menu-cat-sale-men.jpg" alt="Men" /></span>
+                                        <span>Men</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Shop" asp-action="Sale" asp-route-category="Kids">
+                                        <span><img src="~/images/menu-cat-sale-kids.jpg" alt="Kids" /></span>
+                                        <span>Kids</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Stores">Stores</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                    </ul>
                 </nav>
             </div>
             <div class="lay-right">
                 <ul id="main-controls" class="header-list links-text-shadow">
                     <li>
                         <a href="#" id="main-search-open" role="button"><span class="icon icon-search2" aria-hidden="true"></span></a>
+                        <div id="main-search">
+                            <div class="search-header">
+                                <div class="lay-wrapper h-100">
+                                    <div class="lay-middle w-100">
+                                        <div class="search-box w-100">
+                                            <form action="#" method="post">
+                                                <div class="i-txt-with-btn-wrapper">
+                                                    <input type="search" id="search-query" class="i-txt" placeholder="Type keywords here..." required />
+                                                    <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2" aria-hidden="true"></span></button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="lay-right">
+                                        <button id="main-search-close" class="primary-link" type="button"><span class="icon icon-close2"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="search-body">
+
+                            </div>
+                        </div>
                     </li>
                     <li class="dropdown">
                         <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user5" aria-hidden="true"></span></a>
@@ -39,8 +210,8 @@
                         <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-cart5" aria-hidden="true"></span><span class="count">3</span></a>
                         <div id="mini-cart" class="dropdown-menu dropdown-menu-right dropdown-nav">
                             @*<div class="mini-cart-empty">
-                <h4 class="text-secondary text-center m-0 py-3">Your cart is empty.</h4>
-            </div>*@
+                                    <h4 class="text-secondary text-center m-0 py-3">Your cart is empty.</h4>
+                                </div>*@
                             <div class="mini-cart-items">
                                 <div class="single-mini-product">
                                     <figure>
@@ -63,7 +234,7 @@
                                 <div class="single-mini-product">
                                     <figure>
                                         <a asp-area="" asp-controller="Product" asp-action="View" asp-route-id="2">
-                                            
+
                                             <img src="~/images/product-2.jpg" alt="Product 2" />
                                         </a>
                                     </figure>
@@ -185,7 +356,7 @@
             </div>
         </div>
     </div>
-    
+
     @* Content *@
     <main id="main-content" role="main">
         @RenderBody()

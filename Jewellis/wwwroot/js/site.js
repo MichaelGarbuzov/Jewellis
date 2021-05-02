@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-04-30
+    Last Update: 2021-05-02
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -45,11 +45,79 @@ var WindowScroll = (function () {
     }
 })();
 
+/**
+ * Gets a cookie value, by the cookie name.
+ * @param {any} cookieName The cookie name to get the value.
+ */
+function getCookie(cookieName) {
+    var name = cookieName + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+/**
+ * Sets a cookie, by the specified name and value.
+ * @param {any} cookieName The name of the cookie to set.
+ * @param {any} cookieValue The value of the cookie to set.
+ * @param {any} daysToExpire The number of days the cookie will be expired.
+ */
+function setCookie(cookieName, cookieValue, daysToExpire) {
+    var date = new Date();
+    date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + date.toUTCString();
+
+    document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/;secure;";
+}
 
 /*----------------------------------------------
  * (2) - General Components
 ----------------------------------------------*/
 $(function () {
+
+    // Attribute for bootstrap's dropdown - marks an inner link to not close the dropdown on click, because the default closes the dropdown.
+    $('[data-dd-close="0"]').on('click.bs.dropdown', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    });
+
+    // [Dropdown Mega] = A dropdown with several menus inside, with cool animation that "replaces" the current menu.
+    // This sets the default menu before the dropdown is shown:
+    $('[data-dd-mega]').parent('.dropdown').on('show.bs.dropdown', function () {
+        var $dropdownMega = $(this).find('[data-dd-mega]');
+        var $defaultMenu = $dropdownMega.find($dropdownMega.attr('data-dd-mega-start'));
+        var $activeMenu = $dropdownMega.find('[data-dd-mega-active]');
+
+        $activeMenu.attr('style', '');
+        $activeMenu.removeAttr('data-dd-mega-active');
+        $defaultMenu.attr('data-dd-mega-active', '');
+    });
+    // This changes the current menu to the clicked one:
+    $('[data-dd-mega-to]').click(function (e) {
+        e.preventDefault();
+        var $dropdownMega = $(this).parents('[data-dd-mega]');
+        var $fromDropdown = $dropdownMega.find('[data-dd-mega-active]');
+        var $toDropdown = $dropdownMega.find($(this).attr('data-dd-mega-to'));
+        var currentWidth = $fromDropdown.innerWidth();
+
+        $fromDropdown.animate(200, function () {
+            $(this).removeAttr('data-dd-mega-active');
+            $(this).attr('style', '');
+        });
+        $toDropdown.css({ 'min-width': currentWidth });
+        $toDropdown.fadeIn(200, function () {
+            $(this).attr('data-dd-mega-active', '');
+        });
+    });
 
 });
 
@@ -153,6 +221,19 @@ $(function () {
         // Removes listener to 'Esc' press:
         $(document).unbind('keydown', mainSearchEscListener);
         return false;
+    });
+
+    // Theme change:
+    // -------------
+    $('[data-theme-set]').click(function () {
+        var $themeMenu = $(this).parents('#main-theme-menu');
+
+        // Updates the html:
+        $('html[theme]').attr('theme', $(this).attr('data-theme-set'));
+        $themeMenu.find('[data-dd-check]').appendTo($(this));
+        $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-variable]').text($(this).attr('data-theme-set-display'));
+        // Updates the cookie:
+        setCookie("theme", $(this).attr('data-theme-set-val'), 365 * 100);
     });
 
 });

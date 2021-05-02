@@ -3,28 +3,30 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-04-30
+    Last Update: 2021-05-02
 ==============================================*/
 /*==============================================
 Table of Contents:
 ------------------
-    (1) - General HTML Formatting
-    (2) - Bootstrap Override
-    (3) - General Classes
-        (3.1) - Colors
-        (3.2) - Custom Font Icons
-        (3.3) - Buttons
-        (3.4) - Form Controls
-        (3.5) - General Modules
-        (3.6) - Layouting
-    (4) - Main Layout
-        (4.1) - Main Header
-        (4.2) - Main Content
-        (4.3) - Main Footer
-    (5) - Page Styles
-        (5.1) - Home
-        (5.2) - About
-        (5.3) - Contact Us
+    (1) - Themes
+    (2) - General HTML Formatting
+    (3) - Bootstrap Override
+    (4) - General Classes
+        (4.1) - Colors
+        (4.2) - Custom Font Icons
+        (4.3) - Buttons
+        (4.4) - Form Controls
+        (4.5) - General Modules
+        (4.6) - Layouting
+    (5) - Main Layout
+        (5.1) - Main Header
+        (5.2) - Main Content
+        (5.3) - Main Footer
+    (6) - Page Styles
+        (6.1) - Home
+        (6.2) - About
+        (6.3) - Contact Us
+        (6.4) - Stores
 ==============================================*/
 
 :root {
@@ -34,6 +36,11 @@ Table of Contents:
     --txt-md: 1.5rem;
     --txt-lg: 1.85rem;
     --color-accent: #d82e2e;
+}
+
+/*#region (1) - Themes */
+
+html[theme="default"] {
     --color-black: #000000;
     --color-invert: #ffffff;
     --color-background: #ffffff;
@@ -58,7 +65,59 @@ Table of Contents:
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
 }
 
-/*#region (1) - General HTML Formatting */
+html[theme="dark"] {
+    --color-black: #eeeeee;
+    --color-invert: #ffffff;
+    --color-background: #151515;
+    --color-background-accent: #1f1f1f;
+    --color-block: #1c1c1c;
+    --color-header: #151515;
+    --border-header: 2px solid #000000;
+    --color-header-text: #ffffff;
+    --color-search-header: #151515;
+    --color-text: #c5c5c5;
+    --color-text-title: #ffffff;
+    --color-background-invert: #222222;
+    --color-text-invert: #c5c5c5;
+    --color-text-title-invert: #ffffff;
+    --color-primary: #eeeeee;
+    --color-primary-invert: #151515;
+    --color-secondary: #929292;
+    --color-light-dimmer: rgba(0,0,0,0.6);
+    --color-modal-blocker: rgba(40,40,40,0.9);
+    --color-separator: #000000;
+    --color-shadow: #000000;
+    --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.5), 0 1rem 6rem rgb(0,0,0,0.5);
+}
+
+html[theme="light"] {
+    --color-black: #000000;
+    --color-invert: #000000;
+    --color-background: #ffffff;
+    --color-background-accent: #f5f5f5;
+    --color-block: #fafafa;
+    --color-header: #f5f5f5;
+    --border-header: 1px solid #cccccc;
+    --color-header-text: #000000;
+    --color-search-header: #ffffff;
+    --color-text: #565656;
+    --color-text-title: #181818;
+    --color-background-invert: #f5f5f5;
+    --color-text-invert: #565656;
+    --color-text-title-invert: #181818;
+    --color-primary: #151515;
+    --color-primary-invert: #ffffff;
+    --color-secondary: #929292;
+    --color-light-dimmer: rgba(255,255,255,0.5);
+    --color-modal-blocker: rgba(255,255,255,0.9);
+    --color-separator: #e5e5e5;
+    --color-shadow: #cccccc;
+    --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
+}
+
+/*#endregion */
+
+/*#region (2) - General HTML Formatting */
 
 * {
     border: 0;
@@ -137,7 +196,7 @@ figure {
 
 /*#endregion */
 
-/*#region (2) - Bootstrap Override */
+/*#region (3) - Bootstrap Override */
 
 .btn {
     font-size: var(--txt-md);
@@ -227,9 +286,9 @@ figure {
 
 /*#endregion */
 
-/*#region (3) - General Classes */
+/*#region (4) - General Classes */
 
-/*#region (3.1) - Colors */
+/*#region (4.1) - Colors */
 
 .txt-primary {
     color: var(--color-primary) !important;
@@ -272,7 +331,7 @@ figure {
 
 /*#endregion */
 
-/*#region (3.2) - Custom Font Icons */
+/*#region (4.2) - Custom Font Icons */
 
 @font-face {
     font-family: 'jewellis-icons';
@@ -5380,7 +5439,7 @@ figure {
 
 /*#endregion */
 
-/*#region (3.3) - Buttons */
+/*#region (4.3) - Buttons */
 
 .btn.outline-primary {
     border: 2px solid var(--color-primary);
@@ -5444,7 +5503,7 @@ figure {
 
 /*#endregion */
 
-/*#region (3.4) - Form Controls */
+/*#region (4.4) - Form Controls */
 
 .i-txt {
     width: 100%;
@@ -5500,7 +5559,15 @@ figure {
 
 /*#endregion */
 
-/*#region (3.5) - General Modules */
+/*#region (4.5) - General Modules */
+
+[data-dd-mega] > * {
+    display: none;
+}
+
+[data-dd-mega] > [data-dd-mega-active] {
+    display: block;
+}
 
 /*#region Mini-Products */
 
@@ -5580,7 +5647,7 @@ figure {
 
 /*#endregion */
 
-/*#region (3.6) - Layouting */
+/*#region (4.6) - Layouting */
 
 .col-centered {
     float: none;
@@ -5855,9 +5922,9 @@ figure {
 
 /*#endregion */
 
-/*#region (4) - Main Layout */
+/*#region (5) - Main Layout */
 
-/*#region (4.1) - Main Header */
+/*#region (5.1) - Main Header */
 
 #main-header {
     height: var(--header-height);
@@ -5960,6 +6027,10 @@ figure {
             font-size: 2rem;
             margin-right: 1.5rem;
         }
+
+html[theme="light"] #main-logo {
+    filter: invert(1);
+}
 
 /*#region Main Menu */
 
@@ -6121,6 +6192,7 @@ figure {
         }
 
     #main-controls .dropdown-menu {
+        min-width: 280px;
         top: 100% !important;
         left: auto !important;
         right: 0;
@@ -6356,7 +6428,7 @@ figure {
 
 /*#endregion */
 
-/*#region (4.2) - Main Content */
+/*#region (5.2) - Main Content */
 
 #main-content {
     margin-top: var(--header-height);
@@ -6370,7 +6442,7 @@ figure {
 
 /*#endregion */
 
-/*#region (4.3) - Main Footer */
+/*#region (5.3) - Main Footer */
 
 #main-footer {
     width: 100%;
@@ -6382,9 +6454,9 @@ figure {
 
 /*#endregion */
 
-/*#region (5) - Page Styles */
+/*#region (6) - Page Styles */
 
-/*#region (5.1) - Home */
+/*#region (6.1) - Home */
 
 /*#region Banner Section */
 
@@ -6708,6 +6780,9 @@ html[theme="dark"] #about-sec .about-image-wrap a img {
     top: 70%;
 }
 
+html[theme="dark"] .single-cat-item figure img {
+    filter: brightness(0.75);
+}
 
 @media screen and (max-width: 991px) {
     .large-size-cat .single-cat-item {
@@ -6766,13 +6841,19 @@ html[theme="dark"] #about-sec .about-image-wrap a img {
 
 /*#endregion */
 
-/*#region (5.2) - About */
+/*#region (6.2) - About */
 
 
 
 /*#endregion */
 
-/*#region (5.3) - Contact Us */
+/*#region (6.3) - Contact Us */
+
+
+
+/*#endregion */
+
+/*#region (6.4) - Stores */
 
 
 

@@ -1,3 +1,4 @@
+using Jewellis.App_Custom.Services.ClientTheme;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +25,19 @@ namespace Jewellis
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
+
+            // Scoped services:
+            services.AddClientTheme(options =>
+            {
+                options.DefaultTheme = "default";
+                options.SupportedThemes = new[]
+                {
+                    new Theme("default", "1", "Default"),
+                    new Theme("dark", "2", "Dark"),
+                    new Theme("light", "3", "Light")
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

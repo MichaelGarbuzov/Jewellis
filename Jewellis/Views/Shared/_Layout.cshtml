@@ -1,5 +1,11 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
+
+@{
+    var currentTheme = ClientTheme.GetCurrent();
+}
+
+<!DOCTYPE html>
+<html lang="en" theme="@currentTheme.ID">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -202,6 +208,36 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user5" aria-hidden="true"></span></a>
+                        <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu">
+                            <ul id="main-profile-menu">
+                                @*<li class="primary-link-all pb-2 px-2"><a asp-area="" asp-controller="Admin" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
+                                <li class="dropdown-divider m-3"></li>*@
+                                <li><a asp-area="" asp-controller="Account" asp-action="Orders"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
+                                <li><a asp-area="" asp-controller="Account" asp-action="Index"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
+                                <li><a asp-area="" asp-controller="Account" asp-action="LogOut"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
+                                @*<li><a asp-area="" asp-controller="Account" asp-action="LogIn"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
+                                <li><a asp-area="" asp-controller="Account" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>*@
+                                <li class="dropdown-divider m-3"></li>
+                                <li class="dropdown-sm"><a href="#" role="button"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold">USD</span></a></li>
+                                <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-close="0" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-variable>@currentTheme.DisplayName</span></a></li>
+                            </ul>
+                            <ul id="main-theme-menu">
+                                <li class="dropdown-header"><a href="#" role="button" data-dd-close="0" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Theme</span></li>
+                                @foreach (var theme in ClientTheme.Options.SupportedThemes)
+                                {
+                                    <li>
+                                        <a href="#" role="button" data-dd-close="0" data-theme-set="@theme.ID" data-theme-set-val="@theme.CookieValue" data-theme-set-display="@theme.DisplayName">
+                                            <span class="icon icon-theme-@theme.ID " aria-hidden="true"></span>
+                                            <span>@string.Format("{0} theme", theme.DisplayName)</span>
+                                            @if (theme == currentTheme)
+                                            {
+                                                <span data-dd-check class="float-right m-0 txt-accent icon icon-checkmark2" aria-hidden="true"></span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <a href="#" role="button" data-toggle="modal" data-target="#wishlist-modal"><span class="icon icon-heart6" aria-hidden="true"></span></a>

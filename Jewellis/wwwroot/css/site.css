@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-02
+    Last Update: 2021-05-08
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -61,6 +61,7 @@ html[theme="default"] {
     --color-light-dimmer: rgba(255,255,255,0.5);
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
+    --color-separator-invert: #333333;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
 }
@@ -86,6 +87,7 @@ html[theme="dark"] {
     --color-light-dimmer: rgba(0,0,0,0.6);
     --color-modal-blocker: rgba(40,40,40,0.9);
     --color-separator: #000000;
+    --color-separator-invert: #333333;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.5), 0 1rem 6rem rgb(0,0,0,0.5);
 }
@@ -111,6 +113,7 @@ html[theme="light"] {
     --color-light-dimmer: rgba(255,255,255,0.5);
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
+    --color-separator-invert: #cccccc;
     --color-shadow: #cccccc;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
 }
@@ -323,6 +326,10 @@ figure {
 .txt-blue-all,
 .txt-blue-all * {
     color: #007bff !important;
+}
+
+.bg-background {
+    background: var(--color-background) !important;
 }
 
 .bg-invert {
@@ -6446,8 +6453,101 @@ html[theme="light"] #main-logo {
 
 #main-footer {
     width: 100%;
-    border-top: 1px solid var(--color-separator);
-    padding: 2rem;
+    background: var(--color-background-invert);
+    border-top: var(--border-header);
+    color: var(--color-text-invert);
+    font-size: 1.5rem;
+    line-height: 3rem;
+    box-shadow: 0 -1px 1rem rgb(0,0,0,0.5);
+    padding: 3rem 2rem 2rem;
+}
+
+    #main-footer a {
+        color: var(--color-text-invert);
+    }
+
+        #main-footer a:hover {
+            color: var(--color-accent);
+        }
+
+    #main-footer .col {
+        width: 25%;
+        float: left;
+        padding-bottom: 37px;
+    }
+
+        #main-footer .col.social {
+            width: 18%;
+        }
+
+        #main-footer .col.newsletter {
+            width: 32%;
+        }
+
+    #main-footer h3 {
+        font-size: 1.6rem;
+        color: var(--color-text-title-invert);
+        text-transform: uppercase;
+        padding: 1.5rem 0;
+    }
+
+    #main-footer .store li:before {
+        content: "- ";
+    }
+
+    #main-footer .social li {
+        padding-bottom: 0.5rem;
+    }
+
+    #main-footer .social .icon,
+    #main-footer .contact .icon {
+        top: 2px;
+        margin-right: 1rem;
+        position: relative;
+    }
+
+    #main-footer .contact,
+    #main-footer .newsletter {
+        line-height: 2.5rem;
+    }
+
+    #main-footer .copyright {
+        font-size: 1.5rem;
+        color: var(--color-secondary);
+        border-top: 1px solid var( --color-separator-invert);
+        clear: both;
+        padding: 2rem 0;
+        margin: 0;
+    }
+
+@media screen and (max-width: 1200px) {
+    #main-footer .col {
+        width: 49% !important;
+        float: none;
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+
+@media screen and (min-width: 480px) and (max-width: 768px) {
+    #main-footer .col:nth-child(1) {
+        width: 49% !important;
+        padding-right: 2rem;
+    }
+
+    #main-footer .col:nth-child(2) {
+        width: 49% !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #main-footer .col {
+        width: 100% !important;
+    }
+
+    #main-footer h3 {
+        padding: 0 0 0.5rem;
+    }
 }
 
 /*#endregion */

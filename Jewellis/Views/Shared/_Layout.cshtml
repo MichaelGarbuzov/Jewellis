@@ -1,4 +1,5 @@
-﻿@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
 
 @{
     var currentTheme = ClientTheme.GetCurrent();
@@ -211,12 +212,12 @@
                         <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu">
                             <ul id="main-profile-menu">
                                 @*<li class="primary-link-all pb-2 px-2"><a asp-area="" asp-controller="Admin" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
-                                <li class="dropdown-divider m-3"></li>*@
+                                    <li class="dropdown-divider m-3"></li>*@
                                 <li><a asp-area="" asp-controller="Account" asp-action="Orders"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
                                 <li><a asp-area="" asp-controller="Account" asp-action="Index"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
                                 <li><a asp-area="" asp-controller="Account" asp-action="LogOut"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
                                 @*<li><a asp-area="" asp-controller="Account" asp-action="LogIn"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
-                                <li><a asp-area="" asp-controller="Account" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>*@
+                                    <li><a asp-area="" asp-controller="Account" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>*@
                                 <li class="dropdown-divider m-3"></li>
                                 <li class="dropdown-sm"><a href="#" role="button"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold">USD</span></a></li>
                                 <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-close="0" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-variable>@currentTheme.DisplayName</span></a></li>
@@ -401,7 +402,44 @@
     @* Main Footer *@
     <footer id="main-footer">
         <div class="container">
-            &copy; 2021 - Jewellis - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="cols">
+                <div class="col store">
+                    <h3>Store</h3>
+                    <ul>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Help">Help</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Terms">Terms &amp; Conditions</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    </ul>
+                </div>
+                <div class="col social">
+                    <h3>Social</h3>
+                    <ul>
+                        <li><a href="@Configuration.GetSection("Metadata").GetSection("SocialLinks")["Instagram"]" target="_blank"><span class="icon icon-instagram" aria-hidden="true"></span>Instagram</a></li>
+                        <li><a href="@Configuration.GetSection("Metadata").GetSection("SocialLinks")["Facebook"]" target="_blank"><span class="icon icon-facebook1" aria-hidden="true"></span>Facebook</a></li>
+                        <li><a href="@Configuration.GetSection("Metadata").GetSection("SocialLinks")["Twitter"]" target="_blank"><span class="icon icon-twitter" aria-hidden="true"></span>Twitter</a></li>
+                        <li><a href="@Configuration.GetSection("Metadata").GetSection("SocialLinks")["YouTube"]" target="_blank"><span class="icon icon-youtube" aria-hidden="true"></span>YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="col contact">
+                    <h3>Contact us</h3>
+                    <p class="line-height-1-5">@Configuration.GetSection("Metadata").GetSection("ContactInfo").GetSection("Address")["Name"]<br>@Configuration.GetSection("Metadata").GetSection("ContactInfo").GetSection("Address")["Street"]<br>@Configuration.GetSection("Metadata").GetSection("ContactInfo").GetSection("Address")["City"]</p>
+                    <p><span class="icon icon-envelope1" aria-hidden="true"></span><a href="mailto:@Configuration.GetSection("Metadata").GetSection("ContactInfo")["Email"]">@Configuration.GetSection("Metadata").GetSection("ContactInfo")["Email"]</a></p>
+                    <p><span class="icon icon-phone1" aria-hidden="true"></span><a href="tel:@Configuration.GetSection("Metadata").GetSection("ContactInfo")["PhoneLink"]">@Configuration.GetSection("Metadata").GetSection("ContactInfo")["PhoneDisplay"]</a></p>
+                </div>
+                <div class="col newsletter">
+                    <h3>Join our newsletter</h3>
+                    <p>Get Updates On Awesome Jewelry!<br>Daily Offers &amp; Discounts!</p>
+                    <form action="" method="post">
+                        <div class="i-txt-with-btn-wrapper rounded mt-4 bg-background">
+                            <input type="email" name="email" id="sub-email" class="i-txt italic border-0 m-0" placeholder="Your email address..." required />
+                            <button type="submit" class="btn txt-secondary"><span class="icon icon-paperplane" aria-hidden="true"></span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <p class="copyright">&copy; @DateTime.Now.Year Jewellis. All rights reserved.</p>
         </div>
     </footer>
 

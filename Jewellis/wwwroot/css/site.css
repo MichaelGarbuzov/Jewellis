@@ -68,6 +68,8 @@ html[theme="default"] {
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
     --color-background-light-1: #eeeeee;
     --color-background-light-2: #dddddd;
+    --color-dark: #151515;
+    --color-background-input-text: #ffffff;
 }
 
 html[theme="dark"] {
@@ -97,6 +99,8 @@ html[theme="dark"] {
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.5), 0 1rem 6rem rgb(0,0,0,0.5);
     --color-background-light-1: #202020;
     --color-background-light-2: #191919;
+    --color-dark: #454545;
+    --color-background-input-text: #383838;
 }
 
 html[theme="light"] {
@@ -126,6 +130,8 @@ html[theme="light"] {
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
     --color-background-light-1: #f2f2f2;
     --color-background-light-2: #ebebeb;
+    --color-dark: #a5a5a5;
+    --color-background-input-text: #ffffff;
 }
 
 /*#endregion */
@@ -146,7 +152,7 @@ html {
 }
 
 body {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     line-height: 1.5;
     font-weight: 400;
     font-family: "Verdana";
@@ -353,6 +359,11 @@ figure {
 .bg-light-2 {
     background: var(--color-background-light-2) !important;
 }
+
+.bg-input-txt {
+    background: var(--color-background-input-text) !important;
+}
+
 
 /*#endregion */
 
@@ -5853,6 +5864,19 @@ figure {
             display: block;
         }
 
+
+.form-container {
+    box-shadow: 0 0.75rem 1rem rgba(0,0,0,0.1);
+    border-radius: 0.5rem;
+    padding: 4rem;
+    margin: 0 auto;
+}
+
+.single-input-item {
+    margin-bottom: 2rem;
+}
+
+
 @media screen and (max-width: 768px) {
     .sec-title h2 {
         font-size: 3.2rem;
@@ -5879,6 +5903,9 @@ figure {
     .modal.right .modal-dialog {
         width: 100%;
     }
+    .form-container {
+        padding: 2rem;
+    }
 }
 
 /*#endregion */
@@ -5886,15 +5913,15 @@ figure {
 /*#region (4.7) - Typography */
 
 .txt-sm {
-    font-size: 1.15rem !important;
+    font-size: var(--txt-sm) !important;
 }
 
 .txt-md {
-    font-size: 1.5rem !important;
+    font-size: var(--txt-md) !important;
 }
 
 .txt-lg {
-    font-size: 1.85rem !important;
+    font-size: var(--txt-lg) !important;
 }
 
 .title-1 {
@@ -6033,6 +6060,23 @@ figure {
 .py-5-desktop {
     padding: 3rem 0 !important;
 }
+
+.circle-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 8rem;
+    width: 8rem;
+    font-size: 3rem;
+    background: var(--color-dark);
+    border-radius: 100%;
+    margin: 0 auto;
+    margin-bottom: 1.5rem;
+}
+
+    .circle-icon .icon {
+        color: #ffffff;
+    }
 
 @media screen and (max-width: 1200px) {
     .py-5-desktop {
@@ -7141,7 +7185,13 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 
 /*#region (6.3) - Contact Us */
 
+#how-to-reach > .sec-container > .container {
+    max-width: 900px;
+}
 
+#contact-us .form-container {
+    max-width: 55rem;
+}
 
 /*#endregion */
 

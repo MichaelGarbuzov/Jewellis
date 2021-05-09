@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-08
+    Last Update: 2021-05-09
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -18,6 +18,7 @@ Table of Contents:
         (4.4) - Form Controls
         (4.5) - General Modules
         (4.6) - Layouting
+        (4.7) - Typography
     (5) - Main Layout
         (5.1) - Main Header
         (5.2) - Main Content
@@ -42,6 +43,7 @@ Table of Contents:
 
 html[theme="default"] {
     --color-black: #000000;
+    --color-white: #ffffff;
     --color-invert: #ffffff;
     --color-background: #ffffff;
     --color-background-accent: #151515;
@@ -64,10 +66,13 @@ html[theme="default"] {
     --color-separator-invert: #333333;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
+    --color-background-light-1: #eeeeee;
+    --color-background-light-2: #dddddd;
 }
 
 html[theme="dark"] {
     --color-black: #eeeeee;
+    --color-white: #444444;
     --color-invert: #ffffff;
     --color-background: #151515;
     --color-background-accent: #1f1f1f;
@@ -90,10 +95,13 @@ html[theme="dark"] {
     --color-separator-invert: #333333;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.5), 0 1rem 6rem rgb(0,0,0,0.5);
+    --color-background-light-1: #202020;
+    --color-background-light-2: #191919;
 }
 
 html[theme="light"] {
     --color-black: #000000;
+    --color-white: #ffffff;
     --color-invert: #000000;
     --color-background: #ffffff;
     --color-background-accent: #f5f5f5;
@@ -116,6 +124,8 @@ html[theme="light"] {
     --color-separator-invert: #cccccc;
     --color-shadow: #cccccc;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
+    --color-background-light-1: #f2f2f2;
+    --color-background-light-2: #ebebeb;
 }
 
 /*#endregion */
@@ -334,6 +344,14 @@ figure {
 
 .bg-invert {
     background: var(--color-background-invert) !important;
+}
+
+.bg-light-1 {
+    background: var(--color-background-light-1) !important;
+}
+
+.bg-light-2 {
+    background: var(--color-background-light-2) !important;
 }
 
 /*#endregion */
@@ -5801,6 +5819,40 @@ figure {
     padding: 0 1rem;
 }
 
+.people-list > .person {
+    display: inline-block;
+    min-width: 22rem;
+    text-align: center;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    -webkit-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+    padding: 2rem;
+}
+
+    .people-list > .person:hover {
+        border-radius: 1rem;
+        background: var(--color-white);
+        box-shadow: 0 3px 0.5rem rgb(0,0,0,0.1);
+        -webkit-transform: translateY(-2px);
+        -moz-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+        transform: translateY(-2px);
+    }
+
+    .people-list > .person h4 {
+        font-size: 1.75rem;
+        margin: 0.75rem 0 1.5rem;
+    }
+
+    .people-list > .person > .person-links {
+        line-height: 3rem;
+    }
+
+        .people-list > .person > .person-links > a {
+            display: block;
+        }
+
 @media screen and (max-width: 768px) {
     .sec-title h2 {
         font-size: 3.2rem;
@@ -5812,6 +5864,10 @@ figure {
 
     .modal.right .modal-header {
         height: var(--header-height-mobile);
+    }
+
+    .people-list {
+        text-align: center;
     }
 }
 
@@ -5827,6 +5883,8 @@ figure {
 
 /*#endregion */
 
+/*#region (4.7) - Typography */
+
 .txt-sm {
     font-size: 1.15rem !important;
 }
@@ -5839,9 +5897,41 @@ figure {
     font-size: 1.85rem !important;
 }
 
-.italic {
-    font-style: italic;
+.title-1 {
+    font-size: 4.5rem;
 }
+
+.paragraph-1 {
+    font-family: 'Garamond';
+    font-size: 2.75rem;
+    line-height: 3.5rem;
+}
+
+.line-height-1-5 {
+    line-height: 1.5;
+}
+
+@media screen and (max-width: 768px) {
+    .title-1 {
+        font-size: 3.5rem;
+    }
+
+    .paragraph-1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .title-1 {
+        font-size: 3rem;
+    }
+
+    .paragraph-1 {
+        font-size: 2.25rem;
+    }
+}
+
+/*#endregion */
 
 .vertical-text {
     display: inline-block;
@@ -5915,6 +6005,39 @@ figure {
 
 .mob-icon > .icon {
     display: none;
+}
+
+.horizontal-line {
+    width: 50%;
+    margin-top: 0.5rem;
+    border-top: 1px solid #495057;
+}
+
+.avatar {
+    display: inline-block;
+    height: auto;
+    width: 3rem;
+    max-width: 100%;
+    text-align: center;
+    border: var(--color-separator);
+    border-radius: 50%;
+    box-shadow: 0 2px 1rem rgb(0,0,0,0.2);
+    line-height: 3rem;
+    position: relative;
+}
+
+    .avatar.avatar-xl {
+        width: 12rem;
+    }
+
+.py-5-desktop {
+    padding: 3rem 0 !important;
+}
+
+@media screen and (max-width: 1200px) {
+    .py-5-desktop {
+        padding: 0 !important;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -6943,7 +7066,76 @@ html[theme="dark"] .single-cat-item figure img {
 
 /*#region (6.2) - About */
 
+.newspaper {
+    padding: 19px;
+    -moz-transform: rotate(-3deg);
+    -o-transform: rotate(-3deg);
+    -ms-transform: rotate(-3deg);
+    -webkit-transform: rotate(-3deg);
+    transform: rotate(-3deg);
+    position: relative;
+}
 
+    .newspaper .paper-cut-top,
+    .newspaper .paper-cut-bottom {
+        height: 19px;
+        width: calc(100% - 38px);
+        background-image: url(../images/paper-cut.png);
+        background-position: center top;
+        background-repeat: repeat-x;
+        background-size: 580px 19px;
+        position: absolute;
+    }
+
+    .newspaper .paper-cut-top {
+        top: 1px;
+    }
+
+    .newspaper .paper-cut-bottom {
+        bottom: 1px;
+        background-size: 745px 19px;
+        -moz-transform: scale(-1);
+        -o-transform: scale(-1);
+        -ms-transform: scale(-1);
+        -webkit-transform: scale(-1);
+        transform: scale(-1);
+        position: absolute;
+    }
+
+    .newspaper .newspaper-content {
+        background: var(--color-white);
+        padding: 4rem;
+    }
+
+html[theme="dark"] .newspaper .paper-cut-top,
+html[theme="dark"] .newspaper .paper-cut-bottom {
+    filter: invert(0.73);
+}
+
+.newspaper .newspaper-content .multi-col {
+    column-count: 3;
+    column-gap: 3rem;
+}
+
+@media screen and (max-width: 768px) {
+    .newspaper .newspaper-content .multi-col {
+        column-count: 2;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .newspaper {
+        -moz-transform: none;
+        -o-transform: none;
+        -ms-transform: none;
+        -webkit-transform: none;
+        transform: none;
+    }
+
+        .newspaper .newspaper-content .multi-col {
+            column-count: 1;
+        }
+}
 
 /*#endregion */
 
@@ -6960,4 +7152,5 @@ html[theme="dark"] .single-cat-item figure img {
 /*#endregion */
 
 /*#endregion */
+
 

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-02
+    Last Update: 2021-05-10
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -83,6 +83,11 @@ function setCookie(cookieName, cookieValue, daysToExpire) {
  * (2) - General Components
 ----------------------------------------------*/
 $(function () {
+
+    // Registers bootstrap's popover elements.
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
 
     // Attribute for bootstrap's dropdown - marks an inner link to not close the dropdown on click, because the default closes the dropdown.
     $('[data-dd-close="0"]').on('click.bs.dropdown', function (e) {

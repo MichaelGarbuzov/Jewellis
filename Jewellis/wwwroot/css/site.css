@@ -181,6 +181,7 @@ p {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     color: var(--color-text-title);
+    line-height: 1.5;
 }
 
 ul {
@@ -5639,6 +5640,7 @@ figure {
 
         .single-mini-product .product-details h2 {
             font-weight: 400;
+            line-height: 1.2;
             margin: 0.5rem 0;
         }
 
@@ -5926,6 +5928,7 @@ figure {
 
 .title-1 {
     font-size: 4.5rem;
+    line-height: 1.2;
 }
 
 .paragraph-1 {
@@ -6036,7 +6039,7 @@ figure {
 
 .horizontal-line {
     width: 50%;
-    margin-top: 0.5rem;
+    margin-top: 1.15rem;
     border-top: 1px solid #495057;
 }
 

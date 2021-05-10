@@ -1,0 +1,44 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Help";
+}
+
+<section class="bg-light-1">
+    <div class="sec-container">
+        <div class="container py-5-desktop">
+            <h1 class="title-1 font-weight-bold mb-5">F.A.Q.s</h1>
+            <p class="paragraph-1 mb-5">Here you can find the most frequent questions that we were asked about, in case you don't find here an answer, you are always welcome to <a asp-area="" asp-controller="Home" asp-action="Contact" class="primary-link font-weight-bold">contact us</a>.</p>
+            <div class="row">
+                <div class="col-md-6 p-5">
+                    <h3>What is Jewellis?</h3>
+                    <p>Jewellis is an e-commerce with orientation to jewelry, the project was developed for Web Application Development course studied in <a href="https://english.colman.ac.il/" target="_blank" class="primary-link"><u>The College of Management</u></a>, as part of undergraduate studies in computer science.</p>
+                </div>
+                <div class="col-md-6 p-5">
+                    <h3>Is Jewellis a real brand?</h3>
+                    <p><strong>No</strong>. Jewellis is fictive, for illustration purposes only. Do not take any action on this site seriously. We do not sell any products, and the name Jewellis is made up and does not hold any brand or company behind it.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 p-5">
+                    <h3>Who developed Jewellis?</h3>
+                    <p>Jewellis was developed by three B.Sc. students: <a href="@Configuration.GetSection("Metadata").GetSection("StudentLinks").GetSection("Daniel")["LinkedIn"]" target="_blank" class="primary-link"><u>Daniel Baranes</u></a>, <a href="@Configuration.GetSection("Metadata").GetSection("StudentLinks").GetSection("Michael")["LinkedIn"]" target="_blank" class="primary-link"><u>Michael Garbuzov</u></a>, and <a href="@Configuration.GetSection("Metadata").GetSection("StudentLinks").GetSection("Ohad")["LinkedIn"]" target="_blank" class="primary-link"><u>Ohad Shai</u></a>. If you want to hire us, feel free to contact each one of us! We'll be happy to hear from you!</p>
+                </div>
+                <div class="col-md-6 p-5">
+                    <h3>I've found a bug, where do I report?</h3>
+                    <p><strong>No chance</strong>. Just kidding, we tried to avoid bugs as much as possible, but no program has no bugs, if by any chance you have encountered one, you can contact anyone of our team through GitHub or LinkedIn.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 p-5">
+                    <h3>Where to find the source code?</h3>
+                    <p>Jewellis is a teamwork, and we used Git to be able to manage our work properly. <a href="@Configuration.GetSection("Metadata")["GitProjectLink"]" target="_blank" class="primary-link"><u>Here is our GitHub repository</u></a> that we worked on this project.</p>
+                </div>
+                <div class="col-md-6 p-5">
+                    <h3>Can I use the project commercially?</h3>
+                    <p>The source code is open to watch and visible to everyone. However, we worked a lot on this project so that it would be part of our portfolio, so we do not allow commercial use of our project.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

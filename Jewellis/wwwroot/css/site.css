@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-10
+    Last Update: 2021-05-11
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -159,7 +159,7 @@ body {
     font-weight: 400;
     font-family: "Verdana";
     color: var(--color-text);
-    background: var(--color-background);
+    background: var(--color-background-invert);
     overflow-x: hidden;
 }
 
@@ -387,7 +387,6 @@ figure {
 .bg-input-txt {
     background: var(--color-background-input-text) !important;
 }
-
 
 /*#endregion */
 
@@ -5757,6 +5756,60 @@ figure {
 
 /*#endregion */
 
+/*#region Triangle Hero */
+
+.triangle-hero-container {
+    padding: 12rem 0;
+    position: relative;
+}
+
+    .triangle-hero-container > .triangle-hero-content {
+        position: relative;
+        z-index: 5;
+    }
+
+.triangle-hero {
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    z-index: 1;
+}
+
+    .triangle-hero:after {
+        content: '';
+        height: 100%;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.2);
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.2) 0%, var(--color-white) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0.2)), color-stop(100%, var(--color-white)));
+        background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.2) 0%, var(--color-white) 100%);
+        background: -o-linear-gradient(top, rgba(255, 255, 255, 0.2) 0%, var(--color-white) 100%);
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, var(--color-white) 100%);
+        position: absolute;
+        z-index: 3;
+    }
+
+    .triangle-hero #hero-canvas {
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+@media screen and (max-width: 480px) {
+    .triangle-hero-container {
+        padding: 6rem 0;
+    }
+}
+
+/*#endregion */
+
 /*#endregion */
 
 /*#region (4.6) - Layouting */
@@ -5940,7 +5993,6 @@ figure {
             display: block;
         }
 
-
 .form-container {
     box-shadow: 0 0.75rem 1rem rgba(0,0,0,0.1);
     border-radius: 0.5rem;
@@ -5951,7 +6003,6 @@ figure {
 .single-input-item {
     margin-bottom: 2rem;
 }
-
 
 @media screen and (max-width: 768px) {
     .sec-title h2 {
@@ -6699,6 +6750,7 @@ html[theme="light"] #main-logo {
 /*#region (5.2) - Main Content */
 
 #main-content {
+    background: var(--color-background);
     margin-top: var(--header-height);
 }
 
@@ -6721,6 +6773,8 @@ html[theme="light"] #main-logo {
     line-height: 3rem;
     box-shadow: 0 -1px 1rem rgb(0,0,0,0.5);
     padding: 3rem 2rem 2rem;
+    position: relative;
+    z-index: 100;
 }
 
     #main-footer a {
@@ -6835,7 +6889,7 @@ html[theme="light"] #main-logo {
         width: 100%;
         -webkit-clip-path: polygon(0% 75%, 0% 0%, 100% 0%, 100% 35%);
         clip-path: polygon(0% 75%, 0% 0%, 100% 0%, 100% 35%);
-        z-index: -1;
+        z-index: 0;
     }
 
     #banner-sec .sec-container {
@@ -6849,6 +6903,7 @@ html[theme="light"] #main-logo {
         border-radius: 0.5rem;
         box-shadow: 0 0 1rem rgb(0,0,0,0.2), 0 0 5rem rgb(0,0,0,0.25);
         overflow: hidden;
+        z-index: 1;
     }
 
         #banner-sec .carousel .carousel-indicators li {
@@ -7292,5 +7347,6 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 /*#endregion */
 
 /*#endregion */
+
 
 

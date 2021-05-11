@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="App_Custom\Filters\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

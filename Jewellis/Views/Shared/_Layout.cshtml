@@ -13,6 +13,7 @@
     <title>@ViewData["Title"] | Jewellis</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
 </head>
 <body>
     @* Main Header *@
@@ -311,8 +312,8 @@
                                 <strong class="text-uppercase">$240.00</strong>
                             </div>
                             <div class="mini-cart-actions">
-                                <a asp-area="" asp-controller="Cart" asp-action="View" class="btn btn-link primary-link shadow-none">View Cart<span class="icon icon-arrow-right4 ml-2" aria-hidden="true"></span></a>
-                                <a asp-area="" asp-controller="Orders" asp-action="Checkout" class="btn outline-primary">Checkout</a>
+                                <a asp-area="" asp-controller="Cart" asp-action="ViewCart" class="btn btn-link primary-link shadow-none">View Cart<span class="icon icon-arrow-right4 ml-2" aria-hidden="true"></span></a>
+                                <a asp-area="" asp-controller="Cart" asp-action="Checkout" class="btn outline-primary">Checkout</a>
                             </div>
                         </div>
                     </li>
@@ -348,7 +349,8 @@
                                 <div class="quantity-x-price">
                                     <span>$77.00</span>
                                 </div>
-                                <div class="actions">
+                                <div class="actions d-flex justify-content-end">
+                                    <button type="button" class="btn btn-mini outline-primary mr-4">Add to Cart</button>
                                     <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
                                 </div>
                             </div>
@@ -364,7 +366,8 @@
                                 <div class="quantity-x-price">
                                     <span>$58.00</span>
                                 </div>
-                                <div class="actions">
+                                <div class="actions d-flex justify-content-end">
+                                    <button type="button" class="btn btn-mini outline-primary mr-4">Add to Cart</button>
                                     <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
                                 </div>
                             </div>
@@ -380,7 +383,8 @@
                                 <div class="quantity-x-price">
                                     <span>$20.00</span>
                                 </div>
-                                <div class="actions">
+                                <div class="actions d-flex justify-content-end">
+                                    <button type="button" class="btn btn-mini outline-primary mr-4">Add to Cart</button>
                                     <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
                                 </div>
                             </div>

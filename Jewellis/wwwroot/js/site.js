@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-10
+    Last Update: 2021-05-13
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -122,6 +122,92 @@ $(function () {
         $toDropdown.fadeIn(200, function () {
             $(this).attr('data-dd-mega-active', '');
         });
+    });
+
+    // Input: Number functionality:
+    // ---------------------------
+    // Occurres when the input text is focused:
+    $('[data-in-num]').focusin(function (e) {
+        e.preventDefault();
+        $(document).keydown(inputNumberKeyListener);
+    });
+    var inputNumberKeyListener = function (e) {
+        var $input = $(e.target);
+        var $container = $input.parent('[data-in-num]');
+
+        // Arrow up:
+        if (e.keyCode === 38) {
+            $container.children('[data-in-num-inc]').click();
+            e.preventDefault();
+        }
+        // Arrow down:
+        else if (e.keyCode === 40) {
+            $container.children('[data-in-num-dec]').click();
+            e.preventDefault();
+        }
+        // Any letter:
+        else if (event.keyCode >= 65 && event.keyCode <= 90) {
+            e.preventDefault();
+        }
+    };
+    $('[data-in-num]').focusout(function (e) {
+        e.preventDefault();
+        var $input = $(this).children('input');
+
+        var minVal = Number.parseInt($(this).attr('data-in-num-min'));
+        var maxVal = Number.parseInt($(this).attr('data-in-num-max'));
+        var currentVal = Number.parseInt($input.val());
+
+        if (!currentVal) {
+            currentVal = 0;
+            $input.val(currentVal);
+        }
+
+        if (maxVal) {
+            if (currentVal > maxVal) {
+                $input.val(maxVal);
+            }
+        }
+        if (minVal) {
+            if (currentVal < minVal) {
+                $input.val(minVal);
+            }
+        }
+        $(document).unbind('keydown', inputNumberKeyListener);
+    });
+    // Occurres when the increase button is clicked:
+    $('[data-in-num-inc]').click(function (e) {
+        e.preventDefault();
+        var $container = $(this).parent('[data-in-num]');
+        var $input = $container.children('input');
+
+        var maxVal = Number.parseInt($container.attr('data-in-num-max'));
+        var currentVal = Number.parseInt($input.val());
+
+        if (maxVal) {
+            if (currentVal + 1 <= maxVal) {
+                $input.val(currentVal + 1);
+            }
+        } else {
+            $input.val(currentVal + 1);
+        }
+    });
+    // Occurres when the decrease button is clicked:
+    $('[data-in-num-dec]').click(function (e) {
+        e.preventDefault();
+        var $container = $(this).parent('[data-in-num]');
+        var $input = $container.children('input');
+
+        var minVal = Number.parseInt($container.attr('data-in-num-min'));
+        var currentVal = Number.parseInt($input.val());
+
+        if (minVal) {
+            if (currentVal - 1 >= minVal) {
+                $input.val(currentVal - 1);
+            }
+        } else {
+            $input.val(currentVal - 1);
+        }
     });
 
 });

@@ -5,36 +5,37 @@ namespace Jewellis.Controllers
     public class HomeController : Controller
     {
 
+        [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("about")]
+        [Route("/about")]
         public IActionResult About()
         {
             return View();
         }
 
-        [Route("contact")]
+        [Route("/contact")]
         public IActionResult Contact()
         {
             return View();
         }
 
-        [Route("terms")]
+        [Route("/terms")]
         public IActionResult Terms()
         {
             return View();
         }
 
-        [Route("privacy")]
+        [Route("/privacy")]
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [Route("help")]
+        [Route("/help")]
         public IActionResult Help()
         {
             return View();

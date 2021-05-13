@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-11
+    Last Update: 2021-05-13
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -66,10 +66,12 @@ html[theme="default"] {
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
     --color-separator-invert: #333333;
+    --color-separator-darker: #d2d2d2;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
-    --color-background-light-1: #eeeeee;
-    --color-background-light-2: #dddddd;
+    --color-background-light-1: #f8f8f8;
+    --color-background-light-2: #eeeeee;
+    --color-background-light-3: #dddddd;
     --color-dark: #151515;
     --color-background-input-text: #ffffff;
 }
@@ -97,10 +99,12 @@ html[theme="dark"] {
     --color-modal-blocker: rgba(40,40,40,0.9);
     --color-separator: #333333;
     --color-separator-invert: #333333;
+    --color-separator-darker: #656565;
     --color-shadow: #000000;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.5), 0 1rem 6rem rgb(0,0,0,0.5);
-    --color-background-light-1: #202020;
-    --color-background-light-2: #191919;
+    --color-background-light-1: #3a3a3a;
+    --color-background-light-2: #202020;
+    --color-background-light-3: #191919;
     --color-dark: #454545;
     --color-background-input-text: #383838;
 }
@@ -128,10 +132,12 @@ html[theme="light"] {
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
     --color-separator-invert: #cccccc;
+    --color-separator-darker: #d2d2d2;
     --color-shadow: #cccccc;
     --color-dropdown-box-shadow: 0 0 1rem rgb(0,0,0,0.1), 0 1rem 6rem rgb(0,0,0,0.2);
-    --color-background-light-1: #f2f2f2;
-    --color-background-light-2: #ebebeb;
+    --color-background-light-1: #f8f8f8;
+    --color-background-light-2: #f2f2f2;
+    --color-background-light-3: #ebebeb;
     --color-dark: #a5a5a5;
     --color-background-input-text: #ffffff;
 }
@@ -253,8 +259,29 @@ figure {
 }
 
     .btn-primary:hover {
-        color: var(--color-primary);
-        background: var(--color-primary-invert);
+        color: var(--color-primary-invert);
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show > .btn-primary.dropdown-toggle {
+        color: var(--color-primary-invert);
+        background: var(--color-primary);
+        border: 2px solid var(--color-primary);
+    }
+
+    .btn-primary.focus, .btn-primary:focus {
+        color: var(--color-white);
+        box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
+    }
+
+    .btn-primary:not(:disabled):not(.disabled).active:focus, .btn-primary:not(:disabled):not(.disabled):active:focus {
+        box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
+    }
+
+    .btn-primary.disabled, .btn-primary:disabled {
+        color: var(--color-primary-invert);
+        background-color: var(--color-primary);
         border-color: var(--color-primary);
     }
 
@@ -368,6 +395,10 @@ figure {
     color: #007bff !important;
 }
 
+.bg-white {
+    background: var(--color-white) !important;
+}
+
 .bg-background {
     background: var(--color-background) !important;
 }
@@ -382,6 +413,10 @@ figure {
 
 .bg-light-2 {
     background: var(--color-background-light-2) !important;
+}
+
+.bg-light-3 {
+    background: var(--color-background-light-3) !important;
 }
 
 .bg-input-txt {
@@ -5754,6 +5789,11 @@ figure {
                 color: var(--color-accent);
             }
 
+    .single-mini-product .btn-mini {
+        font-size: var(--txt-sm);
+        padding: 0.5rem 1.25rem;
+    }
+
 /*#endregion */
 
 /*#region Triangle Hero */
@@ -5907,6 +5947,13 @@ figure {
                 background: #f37f7f !important;
             }
 
+.block-title {
+    font-size: 1.75rem;
+    text-transform: uppercase;
+    padding: 1rem 0;
+    margin-bottom: 0.5rem;
+}
+
 .modal.right .modal-dialog {
     height: 100%;
     width: 45rem;
@@ -6004,6 +6051,40 @@ figure {
     margin-bottom: 2rem;
 }
 
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-separator);
+    padding: 2rem 0;
+}
+
+.table-header {
+    background: var(--color-background-light-1);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    padding: 1.2rem 0;
+}
+
+.table-body .table-row {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-separator);
+}
+
+    .table-body .table-row:last-of-type {
+        border: 0;
+        padding-bottom: 0;
+    }
+
+.table-body .row-image {
+    height: 9rem;
+    width: 9rem;
+}
+
+.table-body .row-title {
+    margin-left: 2rem;
+}
+
 @media screen and (max-width: 768px) {
     .sec-title h2 {
         font-size: 3.2rem;
@@ -6020,6 +6101,14 @@ figure {
     .people-list {
         text-align: center;
     }
+
+    .table-body .table-row {
+        padding: 2.5rem 0;
+    }
+
+        .table-body .table-row:first-of-type {
+            padding-top: 0;
+        }
 }
 
 @media screen and (max-width: 480px) {
@@ -6033,6 +6122,11 @@ figure {
 
     .form-container {
         padding: 2rem;
+    }
+
+    .table-body .row-image {
+        height: 8rem;
+        width: 8rem;
     }
 }
 
@@ -6097,6 +6191,22 @@ figure {
 
 .maxw-md {
     max-width: 55rem;
+}
+
+.maxw-lg {
+    max-width: 85rem;
+}
+
+.maxw-xl {
+    max-width: 120rem;
+}
+
+.maxw-2xl {
+    max-width: 160rem;
+}
+
+.maxw-6 {
+    max-width: 6rem;
 }
 
 .py-5-desktop {
@@ -6225,6 +6335,20 @@ figure {
 
     .circle-icon .icon {
         color: #ffffff;
+    }
+
+.hover-push {
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    -webkit-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+    .hover-push:hover {
+        -webkit-transform: translateY(-2px);
+        -moz-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+        transform: translateY(-2px);
     }
 
 @media screen and (max-width: 480px) {
@@ -7347,6 +7471,5 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 /*#endregion */
 
 /*#endregion */
-
 
 

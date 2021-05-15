@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-14
+    Last Update: 2021-05-16
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -5796,8 +5796,11 @@ figure {
         }
 
     .single-mini-product .actions {
+        font-size: var(--txt-sm);
+        line-height: 1;
         text-align: right;
         padding: 0 0.5rem;
+        margin-top: 0.5rem;
     }
 
         .single-mini-product .actions > .remove-btn {
@@ -6270,6 +6273,10 @@ figure {
 
 .maxw-2xl {
     max-width: 160rem;
+}
+
+.maxw-5 {
+    max-width: 5rem;
 }
 
 .maxw-6 {

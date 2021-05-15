@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-13
+    Last Update: 2021-05-14
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -421,6 +421,26 @@ figure {
 
 .bg-input-txt {
     background: var(--color-background-input-text) !important;
+}
+
+.tag-info {
+    color: #17a2b8;
+    background-color: #e3f4f6;
+}
+
+.tag-warning {
+    color: #dea804;
+    background-color: #fff6e0;
+}
+
+.tag-success {
+    color: #28a745;
+    background-color: #e5f4e9;
+}
+
+.tag-danger {
+    color: #dc3545;
+    background-color: #fbe7e9;
 }
 
 /*#endregion */
@@ -6051,6 +6071,11 @@ figure {
     margin-bottom: 2rem;
 }
 
+    .single-input-item > label {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
 .summary-item {
     display: flex;
     justify-content: space-between;
@@ -6083,6 +6108,48 @@ figure {
 
 .table-body .row-title {
     margin-left: 2rem;
+}
+
+.side-menu {
+    padding: 2rem;
+}
+
+    .side-menu > li {
+        margin-bottom: 0.5rem;
+    }
+
+        .side-menu > li:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .side-menu > li > a {
+            display: block;
+            width: 100%;
+            color: var(--color-text-title);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+            .side-menu > li > a:hover {
+                background: var(--color-background-light-2);
+            }
+
+        .side-menu > li.selected > a {
+            background: var(--color-background-light-2);
+            color: var(--color-accent);
+        }
+
+        .side-menu > li > a > .icon {
+            top: 2px;
+            font-size: 2rem;
+            position: relative;
+            margin-right: 2rem;
+        }
+
+@media screen and (max-width: 1200px) {
+    .side-menu > li {
+        margin-bottom: 0;
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -6350,6 +6417,11 @@ figure {
         -ms-transform: translateY(-2px);
         transform: translateY(-2px);
     }
+
+.tag {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+}
 
 @media screen and (max-width: 480px) {
     .mob-icon > .mob-icon-text {

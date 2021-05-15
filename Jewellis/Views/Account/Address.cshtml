@@ -1,0 +1,45 @@
+﻿@using Jewellis.Controllers
+
+@{
+    ViewData["Title"] = "Account Address";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto py-5-desktop">
+            <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
+                    <partial name="~/Views/Account/_AccountMenuPartial.cshtml" model="nameof(AccountController.Address)" />
+                </div>
+                <div class="col-xl-9 mb-5">
+                    <h3 class="block-title">Address</h3>
+                    <div class="form-container bg-white maxw-md m-0">
+                        <form action="" method="post">
+                            <div class="single-input-item">
+                                <label for="Street">Street</label>
+                                <input type="text" id="Street" name="Street" class="i-txt" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="City">City</label>
+                                <input type="text" id="City" name="City" class="i-txt" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="Country">Country</label>
+                                <input type="text" id="Country" name="Country" class="i-txt" />
+                            </div>
+                            <div class="single-input-item">
+                                <label for="PostalCode">Postal Code</label>
+                                <input type="text" id="PostalCode" name="PostalCode" class="i-txt" />
+                            </div>
+                            <div class="single-input-item text-right mt-2 mb-0">
+                                <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
+                            </div>
+                            <div class="form-messege"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

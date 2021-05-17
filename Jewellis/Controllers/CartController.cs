@@ -6,14 +6,8 @@ namespace Jewellis.Controllers
     public class CartController : Controller
     {
 
-        [Route("view")]
+        [Route("/cart")]
         public IActionResult ViewCart()
-        {
-            return View();
-        }
-
-        [Route("checkout")]
-        public IActionResult Checkout()
         {
             return View();
         }

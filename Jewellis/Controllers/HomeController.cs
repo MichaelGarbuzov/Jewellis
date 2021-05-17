@@ -18,8 +18,9 @@ namespace Jewellis.Controllers
         }
 
         [Route("/contact")]
-        public IActionResult Contact()
+        public IActionResult Contact(string subject)
         {
+            ViewData["Subject"] = subject;
             return View();
         }
 

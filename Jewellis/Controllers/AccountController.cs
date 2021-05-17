@@ -30,6 +30,12 @@ namespace Jewellis.Controllers
             return View();
         }
 
+        [Route("orders/{id}")]
+        public IActionResult Order(int id)
+        {
+            return View();
+        }
+
         [Route("wishlist")]
         public IActionResult Wishlist()
         {

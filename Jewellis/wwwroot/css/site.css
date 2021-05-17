@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-16
+    Last Update: 2021-05-17
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -38,6 +38,7 @@ Table of Contents:
     --txt-sm: 1.15rem;
     --txt-md: 1.5rem;
     --txt-lg: 1.85rem;
+    --txt-xl: 2.15rem;
     --color-accent: #d82e2e;
 }
 
@@ -65,6 +66,7 @@ html[theme="default"] {
     --color-light-dimmer: rgba(255,255,255,0.5);
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
+    --color-separator-bold: #bbbbbb;
     --color-separator-invert: #333333;
     --color-separator-darker: #d2d2d2;
     --color-shadow: #000000;
@@ -74,6 +76,7 @@ html[theme="default"] {
     --color-background-light-3: #dddddd;
     --color-dark: #151515;
     --color-background-input-text: #ffffff;
+    --color-hover-background: #f4f4f4;
 }
 
 html[theme="dark"] {
@@ -98,6 +101,7 @@ html[theme="dark"] {
     --color-light-dimmer: rgba(0,0,0,0.6);
     --color-modal-blocker: rgba(40,40,40,0.9);
     --color-separator: #333333;
+    --color-separator-bold: #222222;
     --color-separator-invert: #333333;
     --color-separator-darker: #656565;
     --color-shadow: #000000;
@@ -107,6 +111,7 @@ html[theme="dark"] {
     --color-background-light-3: #191919;
     --color-dark: #454545;
     --color-background-input-text: #383838;
+    --color-hover-background: #383838;
 }
 
 html[theme="light"] {
@@ -131,6 +136,7 @@ html[theme="light"] {
     --color-light-dimmer: rgba(255,255,255,0.5);
     --color-modal-blocker: rgba(255,255,255,0.9);
     --color-separator: #e5e5e5;
+    --color-separator-bold: #bbbbbb;
     --color-separator-invert: #cccccc;
     --color-separator-darker: #d2d2d2;
     --color-shadow: #cccccc;
@@ -140,6 +146,7 @@ html[theme="light"] {
     --color-background-light-3: #ebebeb;
     --color-dark: #a5a5a5;
     --color-background-input-text: #ffffff;
+    --color-hover-background: #f4f4f4;
 }
 
 /*#endregion */
@@ -229,6 +236,7 @@ figure {
 .btn {
     font-size: var(--txt-md);
     font-weight: 700;
+    color: var(--color-text-title);
     border-radius: 0;
     box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.1);
     -moz-transition: color 0.3s ease-out, background 0.3s ease-out, border 0.3s ease-out, box-shadow 0.3s ease-out;
@@ -239,6 +247,7 @@ figure {
 }
 
     .btn:hover {
+        color: var(--color-text-title);
         box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
     }
 
@@ -297,8 +306,11 @@ figure {
     display: block;
     opacity: 0;
     pointer-events: none;
+    font-size: 1.7rem;
     border: none;
-    color: inherit;
+    color: var(--color-text-title);
+    background: var(--color-white);
+    box-shadow: 0 0.5rem 2rem rgb(0,0,0,0.2);
     transition: opacity 0.15s ease-out;
 }
 
@@ -306,6 +318,16 @@ figure {
         pointer-events: auto;
         opacity: 1;
         transition: opacity 0.3s ease-out;
+    }
+
+.dropdown-item {
+    color: var(--color-text-title);
+    padding: 1.15rem 2.5rem;
+}
+
+    .dropdown-item:hover {
+        color: var(--color-text-title);
+        background: var(--color-hover-background);
     }
 
 .dropdown-header {
@@ -5615,6 +5637,20 @@ figure {
         position: relative;
     }
 
+.btn-circle {
+    height: 5rem;
+    width: 5rem;
+    border-radius: 10rem;
+    box-shadow: none;
+}
+
+    .btn-circle:hover,
+    .btn-circle:focus {
+        background: var(--color-hover-background);
+        color: var(--color-text-title);
+        box-shadow: none;
+    }
+
 /*#endregion */
 
 /*#region (4.4) - Form Controls */
@@ -6086,6 +6122,10 @@ figure {
     padding: 2rem 0;
 }
 
+.summary-item-separator-bold {
+    border-top: 1px solid var(--color-separator-bold);
+}
+
 .table-header {
     background: var(--color-background-light-1);
     font-weight: 700;
@@ -6216,6 +6256,10 @@ figure {
     font-size: var(--txt-lg) !important;
 }
 
+.txt-xl {
+    font-size: var(--txt-xl) !important;
+}
+
 .title-1 {
     font-size: 4.5rem;
     line-height: 1.2;
@@ -6229,6 +6273,10 @@ figure {
 
 .line-height-1-5 {
     line-height: 1.5;
+}
+
+.letter-space-1 {
+    letter-spacing: 1px;
 }
 
 @media screen and (max-width: 768px) {
@@ -6356,6 +6404,14 @@ figure {
         color: var(--color-accent) !important;
     }
 
+.secondary-link {
+    color: var(--color-secondary) !important;
+}
+
+    .secondary-link:hover {
+        color: var(--color-accent) !important;
+    }
+
 .icon-top-adjust {
     top: 1px;
     position: relative;
@@ -6428,6 +6484,10 @@ figure {
 .tag {
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
+}
+
+.border-cut {
+    border: 2px dashed var(--color-separator-darker);
 }
 
 @media screen and (max-width: 480px) {
@@ -7550,5 +7610,6 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 /*#endregion */
 
 /*#endregion */
+
 
 

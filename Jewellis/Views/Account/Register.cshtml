@@ -8,45 +8,10 @@
             <h3 class="txt-accent text-uppercase text-center mb-5">Sign Up</h3>
             <div class="form-container maxw-md bg-light-2">
                 <form action="" method="post">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="single-input-item">
-                                <input type="text" name="FirstName" class="i-txt bg-input-txt" placeholder="First Name" required />
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="single-input-item">
-                                <input type="text" name="LastName" class="i-txt bg-input-txt" placeholder="Last Name" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="single-input-item">
-                                <input type="email" name="Email" class="i-txt bg-input-txt" placeholder="Email Address" required />
-                            </div>
-                            <div class="single-input-item">
-                                <input type="password" name="Password" class="i-txt bg-input-txt" placeholder="Password" autocomplete="off" required />
-                            </div>
-                            <div class="single-input-item">
-                                <input type="password" name="ConfirmPassword" class="i-txt bg-input-txt" placeholder="Confirm Password" autocomplete="off" required />
-                            </div>
-                            <div class="single-input-item txt-md my-5">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" id="NewsletterSubscribe" class="custom-control-input" />
-                                    <label for="NewsletterSubscribe" class="custom-control-label txt-primary">Subscribe our newsletter</label>
-                                </div>
-                            </div>
-                            <div class="form-messege"></div>
-                            <div class="single-input-item text-center">
-                                <button type="submit" class="btn outline-primary w-100">Sign up</button>
-                            </div>
-                            <p class="txt-sm text-center txt-secondary">By signing up, you agree to our <a asp-area="" asp-controller="Home" asp-action="Terms" target="_blank" class="txt-secondary"><u>Terms</u></a> and <a asp-area="" asp-controller="Home" asp-action="Privacy" target="_blank" class="txt-secondary"><u>Privacy Policy</u></a>.</p>
-                            <hr class="sec-separator my-5" />
-                            <p class="text-center m-0">Already have an account? <a asp-area="" asp-controller="Account" asp-action="Login">Login</a></p>
-                        </div>
-                    </div>
+                    <partial name="~/Views/Account/_RegisterFormPartial.cshtml" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", true } }' />
                 </form>
+                <hr class="sec-separator my-5" />
+                <p class="text-center m-0">Already have an account? <a asp-area="" asp-controller="Account" asp-action="Login">Login</a></p>
             </div>
         </div>
     </div>

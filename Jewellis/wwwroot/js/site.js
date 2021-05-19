@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-13
+    Last Update: 2021-05-19
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -207,6 +207,114 @@ $(function () {
             }
         } else {
             $input.val(currentVal - 1);
+        }
+    });
+
+    // Stepper:
+    // --------
+    $('[data-step-target]').click(function () {
+        var $newTab = $(this);
+        var $stepper = $newTab.parents('[data-stepper]');
+        var $stepTabs = $stepper.find('[data-step-target]');
+        var $currentTab = $stepTabs.filter('.current');
+        // Checks if it's already the current step:
+        if ($newTab.is($currentTab)) {
+            return;
+        }
+        var $newPanel = $stepper.find($newTab.attr('data-step-target'));
+        var $currentPanel = $stepper.find($currentTab.attr('data-step-target'));
+
+        // Changes the tabs:
+        $currentTab.removeClass('current');
+        $currentTab.attr('aria-selected', 'false');
+        $newTab.addClass('current');
+        $newTab.attr('aria-selected', 'true');
+        // Changes the panels:
+        $currentPanel.fadeOut(100, function () {
+            $currentPanel.removeClass('active');
+            $newPanel.fadeIn(200, function () {
+                $newPanel.addClass('active');
+            });
+
+            // Checks if the new tab is the last one, in order to display the "finish" action:
+            if ($newTab.is($stepTabs.last())) {
+                $stepper.find('[data-step-next]').css('display', 'none');
+                $stepper.find('[data-step-finish]').css('display', 'block');
+            } else {
+                $stepper.find('[data-step-finish]').css('display', 'none');
+                $stepper.find('[data-step-next]').css('display', 'block');
+            }
+
+            // Checks if the new tab is the first one, in order to hide the "previous" action:
+            if ($newTab.is($stepTabs.first())) {
+                $stepper.find('[data-step-prev]').css('visibility', 'hidden');
+            } else {
+                $stepper.find('[data-step-prev]').css('visibility', 'visible');
+            }
+        });
+    });
+    $('[data-step-prev]').click(function () {
+        var $stepper = $(this).parents('[data-stepper]');
+        var $currentTab = $stepper.find('[data-step-target].current');
+
+        // Gets the previous tab:
+        var $prevTab = $currentTab.parent().prev().children();
+        if ($prevTab) {
+            $prevTab.click();
+        }
+    });
+    $('[data-step-next]').click(function () {
+        var $stepper = $(this).parents('[data-stepper]');
+        var $currentTab = $stepper.find('[data-step-target].current');
+
+        // Gets the next tab:
+        var $nextTab = $currentTab.parent().next().children();
+        if ($nextTab) {
+            $nextTab.click();
+        }
+    });
+    $('[data-step-finish]').click(function () {
+        var $stepper = $(this).parents('[data-stepper]');
+
+    });
+
+    // Tab Switcher:
+    // -------------
+    $('[data-tab-target]').click(function () {
+        var $newTab = $(this);
+        var $container = $newTab.parents('[data-tab-switcher]');
+        var $currentTab = $container.find('[data-tab-target].current');
+        // Checks if it's already the current step:
+        if ($newTab.is($currentTab)) {
+            return;
+        }
+        // Changes the tabs:
+        $currentTab.removeClass('current');
+        $currentTab.attr('aria-selected', 'false');
+        $newTab.addClass('current');
+        $newTab.attr('aria-selected', 'true');
+        // Changes the panels:
+        var $newPanel = $container.find($newTab.attr('data-tab-target'));
+        var $currentPanel = $container.find($currentTab.attr('data-tab-target'));
+        $currentPanel.fadeOut(100, function () {
+            $currentPanel.removeClass('active');
+            $newPanel.fadeIn(200, function () {
+                $newPanel.addClass('active');
+            });
+        });
+    });
+
+    // Checkbox Element Toggler:
+    // -------------------------
+    $('[data-check-toggle-target]').click(function () {
+        var $target = $($(this).attr('data-check-toggle-target'));
+
+        if ($target.attr('data-check-toggle-state') === '0') {
+            $target.fadeIn(200);
+            $target.attr('data-check-toggle-state', '1');
+        } else {
+            $target.fadeOut(100);
+            $target.attr('data-check-toggle-state', '0');
         }
     });
 

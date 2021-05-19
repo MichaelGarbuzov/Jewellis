@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-17
+    Last Update: 2021-05-19
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -127,7 +127,7 @@ html[theme="light"] {
     --color-search-header: #ffffff;
     --color-text: #565656;
     --color-text-title: #181818;
-    --color-background-invert: #f5f5f5;
+    --color-background-invert: #eeeeee;
     --color-text-invert: #565656;
     --color-text-title-invert: #181818;
     --color-primary: #151515;
@@ -246,7 +246,7 @@ figure {
     padding: 1rem 2rem;
 }
 
-    .btn:hover {
+    .btn:hover, .btn:focus {
         color: var(--color-text-title);
         box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
     }
@@ -376,6 +376,11 @@ figure {
     border-color: var(--color-primary);
 }
 
+.card {
+    background: var(--color-white);
+    border: 1px solid var(--color-separator);
+}
+
 /*#endregion */
 
 /*#region (4) - General Classes */
@@ -415,6 +420,10 @@ figure {
 .txt-blue-all,
 .txt-blue-all * {
     color: #007bff !important;
+}
+
+.txt-hover-bg {
+    color: var(--color-hover-background) !important;
 }
 
 .bg-white {
@@ -5577,6 +5586,11 @@ figure {
 
 /*#region (4.3) - Buttons */
 
+.btn.disabled,
+.btn[disabled] {
+    pointer-events: none;
+}
+
 .btn.outline-primary {
     border: 2px solid var(--color-primary);
     color: var(--color-primary);
@@ -5651,6 +5665,10 @@ figure {
         box-shadow: none;
     }
 
+.btn-neutral {
+    box-shadow: none;
+}
+
 /*#endregion */
 
 /*#region (4.4) - Form Controls */
@@ -5711,7 +5729,14 @@ figure {
         top: 0;
         background: var(--color-white);
         border: 1px solid var(--color-primary);
+    }
+
+    .custom-checkbox label:before, .custom-checkbox .custom-control-label:before {
         border-radius: 2px;
+    }
+
+    .custom-radio label:before, .custom-radio .custom-control-label:before {
+        border-radius: 100%;
     }
 
     .custom-checkbox label:after, .custom-checkbox .custom-control-label:after,
@@ -5742,6 +5767,48 @@ figure {
 
 /*#endregion */
 
+/*#region Radio Card */
+
+.radio-card {
+    position: relative;
+}
+
+    .radio-card > label {
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        position: absolute;
+        z-index: 2;
+    }
+
+    .radio-card > input {
+        visibility: hidden;
+        position: absolute;
+    }
+
+    .radio-card > .card {
+        padding: 1px 0;
+        margin: 1px;
+        -webkit-transition: border-color 0.2s ease-out;
+        -moz-transition: border-color 0.2s ease-out;
+        -o-transition: border-color 0.2s ease-out;
+        transition: border-color 0.2s ease-out;
+    }
+
+    .radio-card > input[type="radio"]:checked + .card {
+        border: 2px solid var(--color-primary);
+        padding: 0;
+        margin: 0;
+    }
+
+        .radio-card:hover > .card .btn.outline-primary,
+        .radio-card > input[type="radio"]:checked + .card .btn.outline-primary {
+            color: var(--color-primary-invert);
+            background: var(--color-primary);
+        }
+
+/*#endregion */
+
 @media screen and (max-width: 480px) {
     .i-txt-with-btn-wrapper.mob-break {
         display: inline-block;
@@ -5768,6 +5835,10 @@ figure {
 
 [data-dd-mega] > [data-dd-mega-active] {
     display: block;
+}
+
+[data-check-toggle-state="0"] {
+    display: none;
 }
 
 /*#region Mini-Products */
@@ -5905,6 +5976,130 @@ figure {
     .triangle-hero-container {
         padding: 6rem 0;
     }
+}
+
+/*#endregion */
+
+/*#region Stepper */
+
+.stepper > * {
+    clear: both;
+}
+
+.stepper > .step-tabs {
+    float: left;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+    .stepper > .step-tabs > li {
+        float: left;
+        padding: 1px;
+    }
+
+        .stepper > .step-tabs > li > .step {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background: var(--color-background-invert);
+            color: var(--color-text-invert);
+            box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.1);
+            padding: 1.5rem 1rem;
+            -moz-transition: all 0.2s ease-out, padding 0s;
+            -o-transition: all 0.2s ease-out, padding 0s;
+            -webkit-transition: all 0.2s ease-out, padding 0s;
+            transition: all 0.2s ease-out, padding 0s;
+        }
+
+            .stepper > .step-tabs > li > .step:hover {
+                color: var(--color-accent) !important;
+            }
+
+            .stepper > .step-tabs > li > .step.current {
+                background: var(--color-white);
+                color: var(--color-text-title);
+                box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
+                -webkit-transform: translateY(-2px);
+                -moz-transform: translateY(-2px);
+                -ms-transform: translateY(-2px);
+                transform: translateY(-2px);
+            }
+
+            .stepper > .step-tabs > li > .step.done {
+                background: var(--color-background-light-1);
+                color: var(--color-text-title);
+            }
+
+            .stepper > .step-tabs > li > .step > .step-num-dot {
+                margin-right: 0.5rem;
+            }
+
+.stepper > .step-content {
+    padding: 0 4%;
+}
+
+.stepper .step-panel {
+    display: none;
+}
+
+    .stepper .step-panel.active {
+        display: block;
+    }
+
+.stepper [data-step-finish] {
+    display: none;
+}
+
+.stepper > .step-tabs.count-4 > li {
+    width: 25%;
+}
+
+.stepper > .step-tabs.count-5 > li {
+    width: 20%;
+}
+
+@media screen and (max-width: 768px) {
+    .stepper > .step-tabs {
+        margin-bottom: 2rem;
+    }
+
+        .stepper > .step-tabs > li > .step {
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+            .stepper > .step-tabs > li > .step > .step-num-dot {
+                display: none;
+            }
+
+            .stepper > .step-tabs > li > .step > .step-label {
+                display: block;
+                font-size: var(--txt-md);
+            }
+}
+
+@media screen and (max-width: 480px) {
+    .stepper > .step-tabs > li > .step {
+        padding: 0.75rem 0;
+    }
+
+        .stepper > .step-tabs > li > .step > .step-label {
+            font-size: var(--txt-sm);
+        }
+}
+
+/*#endregion */
+
+/*#region Tab Switcher */
+
+[data-tab-panels] > * {
+    display: none;
+}
+
+[data-tab-panels] > .active {
+    display: block;
 }
 
 /*#endregion */
@@ -6331,6 +6526,11 @@ figure {
     max-width: 6rem;
 }
 
+.px-6 {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
+}
+
 .py-5-desktop {
     padding: 3rem 0 !important;
 }
@@ -6490,6 +6690,16 @@ figure {
     border: 2px dashed var(--color-separator-darker);
 }
 
+.icon-land {
+    font-size: 20rem;
+}
+
+@media screen and (max-width: 991px) {
+    .icon-land {
+        font-size: 15rem;
+    }
+}
+
 @media screen and (max-width: 480px) {
     .mob-icon > .mob-icon-text {
         display: none;
@@ -6497,6 +6707,10 @@ figure {
 
     .mob-icon > .icon {
         display: inline-block;
+    }
+
+    .icon-land {
+        font-size: 10rem;
     }
 }
 

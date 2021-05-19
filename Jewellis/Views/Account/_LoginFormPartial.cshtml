@@ -1,0 +1,25 @@
+﻿@{
+    bool includeSubmitAction = (bool)ViewData["IncludeSubmitAction"];
+}
+
+<div class="single-input-item">
+    <input type="email" name="Email" class="i-txt bg-input-txt" placeholder="Email Address" required />
+</div>
+<div class="single-input-item">
+    <input type="password" name="Password" class="i-txt bg-input-txt" placeholder="Password" autocomplete="off" required />
+</div>
+<div class="single-input-item txt-md my-5">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" id="RememberMe" class="custom-control-input" checked />
+            <label for="RememberMe" class="custom-control-label txt-primary">Remember Me</label>
+        </div>
+        <button type="button" class="primary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="Sorry, we currently do not support this feature. Next time try to remember your password :-)">Forget Password?</button>
+    </div>
+</div>
+@if (includeSubmitAction)
+{
+    <div class="single-input-item text-center">
+        <button type="submit" class="btn outline-primary w-100">Login</button>
+    </div>
+}

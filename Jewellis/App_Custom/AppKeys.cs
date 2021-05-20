@@ -12,6 +12,7 @@
         public static class Cookies
         {
             public const string ClientTheme = "theme";
+            public const string ClientCurrency = "currency";
         }
 
     }

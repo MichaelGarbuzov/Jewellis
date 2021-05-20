@@ -1,3 +1,4 @@
+﻿using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientTheme;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,16 @@ namespace Jewellis
                     new Theme("default", "1", "Default"),
                     new Theme("dark", "2", "Dark"),
                     new Theme("light", "3", "Light")
+                };
+            });
+            services.AddClientCurrency(options =>
+            {
+                options.DefaultCurrency = "USD";
+                options.SupportedCurrencies = new[]
+                {
+                    new Currency("USD", '$'),
+                    new Currency("EUR", '€'),
+                    new Currency("ILS", '₪'),
                 };
             });
         }

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-19
+    Last Update: 2021-05-20
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6468,6 +6468,10 @@ figure {
 
 .line-height-1-5 {
     line-height: 1.5;
+}
+
+.line-height-2 {
+    line-height: 2;
 }
 
 .letter-space-1 {

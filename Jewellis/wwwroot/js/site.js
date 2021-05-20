@@ -3,18 +3,30 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-19
+    Last Update: 2021-05-20
 ==============================================*/
 /*==============================================
 Table of Contents:
 ------------------
-    (1) - General Methods
-    (2) - General Components
-    (3) - Main Layout Functionality
+    (1) - General Declarations
+    (2) - General Methods
+    (3) - General Components
+    (4) - Main Layout Functionality
 ==============================================*/
 
 /*----------------------------------------------
- * (1) - General Methods
+ * (1) - General Declarations
+----------------------------------------------*/
+var AppKeys = {
+    Cookies: {
+        ClientTheme: "theme",
+        ClientCurrency: "currency"
+    }
+};
+
+
+/*----------------------------------------------
+ * (2) - General Methods
 ----------------------------------------------*/
 /**
  * Disables/Enables window scrolling temporarily.
@@ -79,8 +91,9 @@ function setCookie(cookieName, cookieValue, daysToExpire) {
     document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/;secure;";
 }
 
+
 /*----------------------------------------------
- * (2) - General Components
+ * (3) - General Components
 ----------------------------------------------*/
 $(function () {
 
@@ -320,8 +333,9 @@ $(function () {
 
 });
 
+
 /*----------------------------------------------
- * (3) - Main Layout Functionality
+ * (4) - Main Layout Functionality
 ----------------------------------------------*/
 $(function () {
 
@@ -430,9 +444,23 @@ $(function () {
         // Updates the html:
         $('html[theme]').attr('theme', $(this).attr('data-theme-set'));
         $themeMenu.find('[data-dd-check]').appendTo($(this));
-        $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-variable]').text($(this).attr('data-theme-set-display'));
+        $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-updatable]').text($(this).attr('data-theme-set-display'));
         // Updates the cookie:
-        setCookie("theme", $(this).attr('data-theme-set-val'), 365 * 100);
+        setCookie(AppKeys.Cookies.ClientTheme, $(this).attr('data-theme-set-val'), 365 * 100);
+    });
+
+    // Currency change:
+    // ----------------
+    $('[data-currency-set]').click(function () {
+        var $currencyMenu = $(this).parents('#main-currency-menu');
+
+        // Updates the html:
+        $currencyMenu.find('[data-dd-check]').appendTo($(this));
+        $currencyMenu.parent('[data-dd-mega]').find('#main-currency-btn').find('[data-updatable]').text($(this).attr('data-currency-set'));
+        // Updates the cookie:
+        setCookie(AppKeys.Cookies.ClientCurrency, $(this).attr('data-currency-set'), 365 * 100);
+        // Updates each currency element in the page:
+        // TODO
     });
 
 });

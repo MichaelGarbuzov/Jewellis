@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-20
+    Last Update: 2021-05-21
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -5597,7 +5597,8 @@ figure {
     background: transparent;
 }
 
-    .btn.outline-primary:hover {
+    .btn.outline-primary:hover,
+    .btn.outline-primary.active {
         color: var(--color-primary-invert);
         background: var(--color-primary);
     }
@@ -6604,15 +6605,17 @@ figure {
     color: var(--color-primary) !important;
 }
 
-    .primary-link:hover {
-        color: var(--color-accent) !important;
-    }
-
 .secondary-link {
     color: var(--color-secondary) !important;
 }
 
-    .secondary-link:hover {
+.text-link {
+    color: var(--color-text) !important;
+}
+
+    .primary-link:hover,
+    .secondary-link:hover,
+    .text-link:hover {
         color: var(--color-accent) !important;
     }
 
@@ -7823,7 +7826,32 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 
 /*#region (6.4) - Stores */
 
+#stores-list .table-row {
+    padding: 2.5rem 1.5rem;
+}
 
+#stores-map {
+    height: 100%;
+    max-height: calc(100vh - var(--header-height) - 10rem);
+    top: calc(var(--header-height) + 5rem);
+    position: -webkit-sticky;
+    position: sticky;
+}
+
+#map-container {
+    height: 100%;
+    width: 100%;
+}
+
+@media screen and (max-width: 1200px) {
+    #stores-list {
+        max-height: 100%;
+    }
+
+    #stores-map {
+        height: 100vh;
+    }
+}
 
 /*#endregion */
 

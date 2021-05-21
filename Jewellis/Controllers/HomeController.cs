@@ -42,5 +42,11 @@ namespace Jewellis.Controllers
             return View();
         }
 
+        [Route("/stores")]
+        public IActionResult Stores()
+        {
+            return View();
+        }
+
     }
 }

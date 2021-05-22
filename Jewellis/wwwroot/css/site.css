@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-21
+    Last Update: 2021-05-22
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -30,6 +30,7 @@ Table of Contents:
         (6.2) - About
         (6.3) - Contact Us
         (6.4) - Stores
+        (6.5) - Product
 ==============================================*/
 
 :root {
@@ -381,6 +382,17 @@ figure {
     border: 1px solid var(--color-separator);
 }
 
+.breadcrumb {
+    background: inherit;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "—";
+    float: left;
+    color: #868e96;
+    padding-right: 0.5rem;
+}
+
 /*#endregion */
 
 /*#region (4) - General Classes */
@@ -397,6 +409,10 @@ figure {
 
 .txt-secondary {
     color: var(--color-secondary) !important;
+}
+
+.txt-title {
+    color: var(--color-text-title) !important;
 }
 
 .txt-title-invert {
@@ -7851,6 +7867,78 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
     #stores-map {
         height: 100vh;
     }
+}
+
+/*#endregion */
+
+/*#region (6.5) - Product */
+
+.product-view {
+    font-size: 1.8rem;
+}
+
+    .product-view .product-img {
+        width: 100%;
+    }
+
+        .product-view .product-img > img {
+            height: 100%;
+            width: 100%;
+        }
+
+    .product-view .product-title {
+        font-size: 1.65em;
+        line-height: 1.2;
+        margin-bottom: 3rem;
+    }
+
+    .product-view .product-price {
+        font-size: 1.2em;
+        color: var(--color-text-title);
+        margin-bottom: 3rem;
+    }
+
+        .product-view .product-price > .regular-price {
+            font-size: 0.8em;
+        }
+
+        .product-view .product-price.discount > .actual-price {
+            color: var(--color-accent);
+            margin-right: 0.5rem;
+        }
+
+    .product-view .product-desc {
+        font-size: 1em;
+        line-height: 1.7;
+        margin-bottom: 3rem;
+    }
+
+    .product-view .product-actions {
+        margin-bottom: 6rem;
+    }
+
+@media screen and (max-width: 991px) {
+    .product-view {
+        font-size: 1.65rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .product-breadcrumb {
+        font-size: var(--txt-md);
+    }
+
+    .product-view {
+        font-size: 1.5rem;
+    }
+
+        .product-view .product-title {
+            font-size: 1.4em;
+        }
+
+        .product-view .product-actions {
+            margin-bottom: 3rem;
+        }
 }
 
 /*#endregion */

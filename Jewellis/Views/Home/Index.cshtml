@@ -17,7 +17,7 @@
                             <h4>New In Stores</h4>
                             <h2>Platinum Hazel Ring</h2>
                             <p>This elegant wedding ring achieves a chic and distinctive look with knife-edge detailing.</p>
-                            <a href="#" class="btn btn-lg btn-long-arrow">Shop Now<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
+                            <a asp-area="" asp-controller="Product" asp-action="Read" asp-route-id="1" class="btn btn-lg btn-long-arrow">Shop Now<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
                         </div>
                         <div class="banner-video">
                             <video autoplay loop muted>
@@ -31,9 +31,8 @@
                         <div class="banner-caption">
                             <h4>New Collection</h4>
                             <h2>Beautiful Watches</h2>
-                            <p></p>
-                            <a href="#" class="btn btn-lg btn-long-arrow mr-3">For Women<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
-                            <a href="#" class="btn btn-lg btn-long-arrow">For Men<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
+                            <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Women" asp-route-type="Watches" class="btn btn-lg btn-long-arrow mr-3">For Women<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
+                            <a asp-area="" asp-controller="Shop" asp-action="Index" asp-route-category="Men" asp-route-type="Watches" class="btn btn-lg btn-long-arrow">For Men<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
                         </div>
                         <div class="banner-video">
                             <video autoplay loop muted>
@@ -48,7 +47,7 @@
                             <h4>On Sale</h4>
                             <h2>Round Sapphire Ring</h2>
                             <p>7mm Super Premium Blue Round Sapphire</p>
-                            <a href="#" class="btn btn-lg btn-long-arrow">Shop Now<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
+                            <a asp-area="" asp-controller="Product" asp-action="Read" asp-route-id="2" class="btn btn-lg btn-long-arrow">Shop Now<span class="icon icon-arrow-right3" aria-hidden="true"></span></a>
                         </div>
                         <div class="banner-video">
                             <video autoplay loop muted>

@@ -7222,6 +7222,8 @@ html[theme="light"] #main-logo {
         box-shadow: 0 1px 1rem rgb(0,0,0,0.5);
         font-size: 1.5rem;
         padding: 0 4%;
+        position: relative;
+        z-index: 1000;
     }
 
         #main-search .search-header .search-box {
@@ -7242,6 +7244,62 @@ html[theme="light"] #main-logo {
             #main-search .search-header .search-box .btn {
                 font-size: 1.18em;
             }
+
+    #main-search .search-results {
+        max-height: calc(100vh - var(--header-height));
+        overflow: auto;
+        background: var(--color-search-header);
+        box-shadow: 0 1rem 6rem var(--color-card-shadow), 0 1.5rem 2rem var(--color-card-shadow);
+        padding: 4rem;
+    }
+
+.single-search-product {
+    background: var(--color-white);
+    border: 2px solid var(--color-white);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 0.5rem var(--color-card-shadow);
+    overflow: hidden;
+    -moz-transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    -o-transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    -webkit-transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    margin-bottom: 3rem;
+}
+
+    .single-search-product:hover {
+        box-shadow: 0 5px 1rem var(--color-card-hover-shadow);
+        -webkit-transform: translateY(-3px);
+        -moz-transform: translateY(-3px);
+        -ms-transform: translateY(-3px);
+        transform: translateY(-3px);
+    }
+
+    .single-search-product .search-product-img {
+        min-width: 12rem;
+        max-width: 12rem;
+        background: var(--color-background-light-1);
+        position: relative;
+    }
+
+        .single-search-product .search-product-img img {
+            width: 100%;
+            position: relative;
+        }
+
+    .single-search-product .search-product-details {
+        width: calc(100% - 12rem);
+        padding: 0 3rem;
+    }
+
+    .single-search-product .search-product-title {
+        font-size: 1.55rem;
+        font-weight: 700;
+        max-width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
 
 #main-search-close {
     font-size: 2.4em;
@@ -7384,6 +7442,10 @@ html[theme="light"] #main-logo {
     #main-search .search-header {
         font-size: 1.25rem;
     }
+
+    #main-search .search-results {
+        max-height: calc(100vh - var(--header-height-mobile));
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -7395,6 +7457,19 @@ html[theme="light"] #main-logo {
     #main-search .search-header .search-box {
         padding: 0 4%;
     }
+
+    #main-search .search-results {
+        padding: 2rem;
+    }
+
+    .single-search-product {
+        margin-bottom: 1.5rem;
+    }
+
+        .single-search-product .search-product-img {
+            min-width: 9rem;
+            max-width: 9rem;
+        }
 }
 
 /*#endregion */

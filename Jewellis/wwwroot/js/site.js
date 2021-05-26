@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-20
+    Last Update: 2021-05-25
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -97,10 +97,11 @@ function setCookie(cookieName, cookieValue, daysToExpire) {
 ----------------------------------------------*/
 $(function () {
 
-    // Registers bootstrap's popover elements.
-    $(function () {
-        $('[data-toggle="popover"]').popover();
-    });
+    // Registers Bootstrap's tooltip elements:
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Registers Bootstrap's popover elements:
+    $('[data-toggle="popover"]').popover();
 
     // Attribute for bootstrap's dropdown - marks an inner link to not close the dropdown on click, because the default closes the dropdown.
     $('[data-dd-close="0"]').on('click.bs.dropdown', function (e) {
@@ -329,6 +330,74 @@ $(function () {
             $target.fadeOut(100);
             $target.attr('data-check-toggle-state', '0');
         }
+    });
+
+    // Slider:
+    // -------
+    $('[data-slider]').each(function () {
+        $(this).append('<div class="selected-range-fill"></div>');
+        updateSelectedRangeFill($(this));
+    });
+    function updateSelectedRangeFill($slider) {
+        var $fill = $slider.find('.selected-range-fill');
+        var $minElm = $slider.find('[data-slider-min]');
+        var $maxElm = $slider.find('[data-slider-max]');
+
+        var sliderStep = parseFloat($minElm.attr('step'));
+        var minVal = parseFloat($minElm.attr('min'));
+        var maxVal = parseFloat($minElm.attr('max'));
+        var currentMin = parseFloat($minElm.val());
+        var currentMax = parseFloat($maxElm.val());
+
+        var totalWidth = $slider.outerWidth();
+        var stepWeightInPX = (totalWidth / ((maxVal - minVal) / sliderStep));
+
+        var stepsFromMin = (currentMin - minVal);
+        var stepsFromMax = (maxVal - currentMax);
+        var totalMinStepsWeightInPX = (stepsFromMin * stepWeightInPX);
+        var totalMaxStepsWeightInPX = (stepsFromMax * stepWeightInPX);
+
+        $fill.css("left", totalMinStepsWeightInPX);
+        $fill.css("width", (totalWidth - totalMinStepsWeightInPX - totalMaxStepsWeightInPX));
+    };
+    $('[data-slider-min]').on('input', function () {
+        // Checks the min slider did not pass the max slider:
+        var $slider = $(this).parent('[data-slider]');
+        var $max = $slider.find('[data-slider-max]');
+
+        if (parseFloat($(this).val()) > parseFloat($max.val())) {
+            $(this).val($max.val());
+        } else {
+            // Updates the associated label:
+            var $target = $($(this).attr('data-slider-label-target'));
+            if ($target) {
+                $target.text($(this).val());
+            }
+            // Updates the selected range fill:
+            updateSelectedRangeFill($slider);
+        }
+    });
+    $('[data-slider-max]').on('input', function () {
+        // Checks the max slider did not pass the min slider:
+        var $slider = $(this).parent('[data-slider]');
+        var $min = $slider.find('[data-slider-min]');
+
+        if (parseFloat($(this).val()) < parseFloat($min.val())) {
+            $(this).val($min.val());
+        } else {
+            // Updates the associated label:
+            var $target = $($(this).attr('data-slider-label-target'));
+            if ($target) {
+                $target.text($(this).val());
+            }
+            // Updates the selected range fill:
+            updateSelectedRangeFill($slider);
+        }
+    });
+    $(window).resize(function () {
+        $('[data-slider]').each(function () {
+            updateSelectedRangeFill($(this));
+        });
     });
 
 });

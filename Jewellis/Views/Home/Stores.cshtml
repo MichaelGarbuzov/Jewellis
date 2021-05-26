@@ -118,6 +118,11 @@
                 <div class="col-xl-4 pl-xl-5 mb-0 mb-xl-5">
                     <div class="form-container bg-white p-0" id="stores-map">
                         <div id="map-container"></div>
+                        <div id="map-loader" class="overlap-container d-flex-center">
+                            <div class="spinner-border spinner-lg" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,6 +170,9 @@
             _markers[2].addListener("click", () => {
                 showInfoWindow(_markers[2]);
             });
+
+            // Hides the loader:
+            document.getElementById('map-loader').style.display = "none";
         }
 
         function showInfoWindow(marker) {
@@ -199,5 +207,5 @@
             });
         });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("WebServicesCredentials")["MapsJavascriptAPI"]&callback=initStoresMap&language=en" async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@Configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials")["MapsJavascriptAPI"]&callback=initStoresMap&language=en" async></script>
 }

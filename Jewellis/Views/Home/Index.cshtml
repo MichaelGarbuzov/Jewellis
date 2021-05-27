@@ -75,8 +75,8 @@
     <div class="sec-container">
         <div class="row">
             <div class="col-lg-6">
-                <div class="about-image-wrap">
-                    <a asp-area="" asp-controller="Home" asp-action="About"><img src="..." alt="About Us" class="img-fluid" /></a>
+                <div class="text-center">
+                    <a asp-area="" asp-controller="Home" asp-action="About" class="about-image-wrap mb-3 mb-lg-0"><img src="~/images/about-team-photo.png" alt="Team Photo" /></a>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -229,9 +229,9 @@
             </div>
         </div>
         <div class="row">
-            <form action="" method="post" id="subscribe-form">
+            <form action="" method="post">
                 <div class="i-txt-with-btn-wrapper mob-break px-5">
-                    <input type="email" name="email" id="sub-email" class="i-txt bg-input-txt font-italic" placeholder="Enter your email here..." required />
+                    <input type="email" name="email" class="i-txt bg-input-txt font-italic" placeholder="Enter your email here..." required />
                     <button type="submit" class="btn outline-primary">Subscribe</button>
                 </div>
                 <div id="sub-result"></div>

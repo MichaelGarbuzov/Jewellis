@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-25
+    Last Update: 2021-05-27
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6630,6 +6630,10 @@ figure {
     letter-spacing: 1px;
 }
 
+.pre-line {
+    white-space: pre-line;
+}
+
 @media screen and (max-width: 768px) {
     .title-1 {
         font-size: 3.5rem;
@@ -7766,22 +7770,25 @@ html[theme="light"] #main-logo {
 /*#region About Section */
 
 #about-sec .about-image-wrap {
+    display: inline-block;
+    height: 100%;
     overflow: hidden;
     background: var(--color-block);
 }
 
-    #about-sec .about-image-wrap a:hover img {
-        -webkit-transform: scale(1.1);
-        -moz-transform: scale(1.1);
-        -ms-transform: scale(1.1);
-        transform: scale(1.1);
-    }
-
-    #about-sec .about-image-wrap a img {
+    #about-sec .about-image-wrap img {
+        width: 100%;
         -webkit-transition: all 0.4s ease-out;
         -moz-transition: all 0.4s ease-out;
         -o-transition: all 0.4s ease-out;
         transition: all 0.4s ease-out;
+    }
+
+    #about-sec .about-image-wrap:hover img {
+        -webkit-transform: scale(1.1);
+        -moz-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+        transform: scale(1.1);
     }
 
 #about-sec .about-content-wrap {
@@ -7819,10 +7826,6 @@ html[theme="light"] #main-logo {
             position: absolute;
             margin-top: -2rem;
         }
-
-html[theme="dark"] #about-sec .about-image-wrap a img {
-    filter: brightness(0.75);
-}
 
 @media screen and (max-width: 1200px) {
     #about-sec .about-content-wrap {
@@ -7985,6 +7988,13 @@ html[theme="dark"] .single-cat-item figure img {
 /*#endregion */
 
 /*#region (6.2) - About */
+
+.about-team-photo {
+    max-width: 100%;
+    background: var(--color-block);
+    border-radius: 4rem;
+    box-shadow: 0 0.5rem 0.5rem var(--color-card-shadow);
+}
 
 .newspaper {
     padding: 19px;

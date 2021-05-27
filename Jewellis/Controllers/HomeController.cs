@@ -56,7 +56,7 @@ namespace Jewellis.Controllers
                 Adrress = "Dizengoff St. 50, Tel Aviv-Yafo",
                 PhoneNumber = "03-1234567",
                 OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationAltitude = 32.0748402,
+                LocationLatitude = 32.0748402,
                 LocationLongitude = 34.7751358,
                 DateLastModified = DateTime.Now
             });
@@ -67,7 +67,7 @@ namespace Jewellis.Controllers
                 Adrress = "Shenkin St. 12, Tel Aviv-Yafo",
                 PhoneNumber = "03-1234567",
                 OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationAltitude = 32.0687168,
+                LocationLatitude = 32.0687168,
                 LocationLongitude = 34.7780078,
                 DateLastModified = DateTime.Now
             });
@@ -78,7 +78,7 @@ namespace Jewellis.Controllers
                 Adrress = "Herzl 21, Rishon Lezion",
                 PhoneNumber = "03-1234567",
                 OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationAltitude = 31.9913925,
+                LocationLatitude = 31.9913925,
                 LocationLongitude = 34.7764307,
                 DateLastModified = DateTime.Now
             });

@@ -4,48 +4,43 @@ using System.ComponentModel.DataAnnotations;
 namespace Jewellis.Models
 {
     /// <summary>
-    /// Represents a branch information.
+    /// Represents a sale.
     /// </summary>
-    public class Branch
+    public class Sale
     {
 
         /// <summary>
-        /// The id of the branch.
+        /// The id of the sale.
         /// </summary>
         /// <remarks>[Primary Key], [Identity]</remarks>
         [Key]
         public int Id { get; set; }
 
         /// <summary>
-        /// The name of the branch.
+        /// The name of the sale.
         /// </summary>
         /// <remarks>[Unique]</remarks>
         public string Name { get; set; }
 
         /// <summary>
-        /// The address of the branch.
+        /// The discount rate (value between 0 to 1) of the sale.
         /// </summary>
-        public string Adrress { get; set; }
+        public double DiscountRate { get; set; }
 
         /// <summary>
-        /// The phone number of the branch.
+        /// Date and time the sale starts.
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public DateTime DateStart { get; set; }
 
         /// <summary>
-        /// The opening hours of the branch.
+        /// Date and time the sale ends.
         /// </summary>
-        public string OpeningHours { get; set; }
+        public DateTime? DateEnd { get; set; }
 
         /// <summary>
-        /// The latitude of the branch location.
+        /// Date and time the sale created.
         /// </summary>
-        public double LocationLatitude { get; set; }
-
-        /// <summary>
-        /// The longitude of the branch location.
-        /// </summary>
-        public double LocationLongitude { get; set; }
+        public DateTime DateCreated { get; set; }
 
         /// <summary>
         /// Date and time of the last modify on the record.

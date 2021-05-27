@@ -61,7 +61,7 @@
 
 @section Scripts {
     <script>
-        var _branchesData = @Html.Raw(Json.Serialize(Model.Select(b => new { name = b.Name, latitude = b.LocationAltitude, longitude = b.LocationLongitude })));
+        var _branchesData = @Html.Raw(Json.Serialize(Model.Select(b => new { name = b.Name, latitude = b.LocationLatitude, longitude = b.LocationLongitude })));
         var _map;
         var _infoWindow;
         var _markers;

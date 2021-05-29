@@ -19,21 +19,30 @@ namespace Jewellis.Models
         /// <summary>
         /// The street of the address.
         /// </summary>
+        [Required]
+        [StringLength(50)]
         public string Street { get; set; }
 
         /// <summary>
         /// The postal code of the address.
         /// </summary>
+        [Required]
+        [DataType(DataType.PostalCode)]
+        [StringLength(30)]
         public string PostalCode { get; set; }
 
         /// <summary>
         /// The city of the address.
         /// </summary>
+        [Required]
+        [StringLength(30)]
         public string City { get; set; }
 
         /// <summary>
         /// The country of the address.
         /// </summary>
+        [Required]
+        [StringLength(30)]
         public string Country { get; set; }
 
         /// <summary>

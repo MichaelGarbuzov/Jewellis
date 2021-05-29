@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="bg-light-3">
+    <div class="sec-container">
+        <div class="container py-5-desktop">
+            <h3 class="txt-accent text-uppercase text-center mb-5">Login</h3>
+            <div class="form-container maxw-sm bg-light-2">
+                <form action="" method="post">
+                    <partial name="~/Areas/Account/Views/Authenticate/_LoginFormPartial.cshtml" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", true } }' />
+                </form>
+                <hr class="sec-separator my-5" />
+                <p class="text-center m-0">Don't have an account? <a asp-area="Account" asp-controller="Authenticate" asp-action="Register">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+</section>

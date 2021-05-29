@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Jewellis.Models
@@ -6,6 +7,7 @@ namespace Jewellis.Models
     /// <summary>
     /// Represents a product type.
     /// </summary>
+    [Index(nameof(Name), IsUnique = true)]
     public class ProductType
     {
 
@@ -20,6 +22,8 @@ namespace Jewellis.Models
         /// The name of the product type.
         /// </summary>
         /// <remarks>[Unique]</remarks>
+        [Required]
+        [StringLength(50)]
         public string Name { get; set; }
 
         /// <summary>

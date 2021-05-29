@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Jewellis.Models
@@ -6,6 +7,7 @@ namespace Jewellis.Models
     /// <summary>
     /// Represents a sale.
     /// </summary>
+    [Index(nameof(Name), IsUnique = true)]
     public class Sale
     {
 
@@ -20,21 +22,27 @@ namespace Jewellis.Models
         /// The name of the sale.
         /// </summary>
         /// <remarks>[Unique]</remarks>
+        [Required]
+        [StringLength(50)]
         public string Name { get; set; }
 
         /// <summary>
         /// The discount rate (value between 0 to 1) of the sale.
         /// </summary>
+        [Range(0, 1)]
         public double DiscountRate { get; set; }
 
         /// <summary>
         /// Date and time the sale starts.
         /// </summary>
+        [Required]
+        [DataType(DataType.DateTime)]
         public DateTime DateStart { get; set; }
 
         /// <summary>
         /// Date and time the sale ends.
         /// </summary>
+        [DataType(DataType.DateTime)]
         public DateTime? DateEnd { get; set; }
 
         /// <summary>

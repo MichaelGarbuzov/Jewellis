@@ -1,0 +1,93 @@
+﻿@using Jewellis.Areas.Account.Controllers
+
+@{
+    ViewData["Title"] = "Account Profile";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto py-5-desktop">
+            <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
+                    <partial name="~/Areas/Account/Views/Home/_MenuPartial.cshtml" model="nameof(HomeController.Profile)" />
+                </div>
+                <div class="col-xl-9 mb-5">
+                    <h3 class="block-title">Profile</h3>
+                    <div class="form-container bg-white">
+                        <form action="" method="post">
+                            <div class="row">
+                                <div class="col-sm-6 single-input-item">
+                                    <label for="FirstName">First Name *</label>
+                                    <input type="text" id="FirstName" name="FirstName" class="i-txt" required />
+                                </div>
+                                <div class="col-sm-6 single-input-item">
+                                    <label for="LastName">Last Name *</label>
+                                    <input type="text" id="LastName" name="LastName" class="i-txt" required />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 single-input-item">
+                                    <label for="EmailAddress">Email Address *</label>
+                                    <input type="email" id="EmailAddress" name="EmailAddress" class="i-txt" required />
+                                </div>
+                                <div class="col-sm-6 single-input-item">
+                                    <label for="PhoneNumber">Phone Number</label>
+                                    <input type="text" id="PhoneNumber" name="PhoneNumber" class="i-txt" />
+                                </div>
+                            </div>
+                            <div class="single-input-item text-right mt-2 mb-0">
+                                <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
+                            </div>
+                            <div class="form-messege"></div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="block-title mt-5">Security</h3>
+                            <div class="form-container bg-white">
+                                <form action="" method="post">
+                                    <div class="single-input-item">
+                                        <label for="CurrentPassword">Current Password</label>
+                                        <input type="password" id="CurrentPassword" name="CurrentPassword" class="i-txt" required />
+                                    </div>
+                                    <div class="single-input-item">
+                                        <label for="NewPassword">New Password</label>
+                                        <input type="password" id="NewPassword" name="NewPassword" class="i-txt" required />
+                                    </div>
+                                    <div class="single-input-item">
+                                        <label for="NewPasswordConfirm">Confirm Password</label>
+                                        <input type="password" id="NewPasswordConfirm" name="NewPasswordConfirm" class="i-txt" required />
+                                    </div>
+                                    <div class="single-input-item text-right mt-2 mb-0">
+                                        <button type="submit" name="submit" class="btn btn-primary px-5">Change Password</button>
+                                    </div>
+                                    <div class="form-messege"></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6 px-4 pl-md-5">
+                            <h3 class="block-title mt-5">Preferences</h3>
+                            <div class="form-container bg-white">
+                                <form action="" method="post">
+                                    <div class="single-input-item">
+                                        <label for="Currency">Currency</label>
+                                        <input type="text" id="Currency" name="Currency" class="i-txt" required />
+                                    </div>
+                                    <div class="single-input-item">
+                                        <label for="Theme">Theme</label>
+                                        <input type="text" id="Theme" name="Theme" class="i-txt" required />
+                                    </div>
+                                    <div class="single-input-item text-right mt-2 mb-0">
+                                        <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
+                                    </div>
+                                    <div class="form-messege"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

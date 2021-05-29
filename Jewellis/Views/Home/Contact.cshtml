@@ -1,5 +1,7 @@
 ﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
+@model Jewellis.ViewModels.Home.ContactVM
+
 @{
     ViewData["Title"] = "Contact Us";
 }
@@ -34,34 +36,39 @@
         <div class="container maxw-md py-5-desktop">
             <h3 class="txt-accent text-uppercase text-center mb-5">Contact Us</h3>
             <div class="form-container bg-light-2">
-                <form id="contact-form" action="" method="post">
+                <form method="post" asp-area="" asp-controller="Home" asp-action="Contact">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="single-input-item">
-                                <input type="text" name="FirstName" class="i-txt bg-input-txt" placeholder="First Name *" required />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                <input asp-for="FirstName" class="i-txt bg-input-txt" />
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="single-input-item">
-                                <input type="text" name="LastName" class="i-txt bg-input-txt" placeholder="Last Name *" required />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                <input asp-for="LastName" class="i-txt bg-input-txt" />
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="single-input-item">
-                                <input type="email" name="Email" class="i-txt bg-input-txt" placeholder="Email Address *" required />
+                                <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                                <input asp-for="EmailAddress" class="i-txt bg-input-txt" />
                             </div>
                             <div class="single-input-item">
-                                <input type="text" name="Subject" class="i-txt bg-input-txt" placeholder="Subject *" value="@ViewData["Subject"]" autocomplete="off" required />
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                                <input asp-for="Subject" class="i-txt bg-input-txt" value="@(Model != null ? Model.Subject : ViewData["Subject"] != null ? ViewData["Subject"] : string.Empty)" autocomplete="off" />
                             </div>
                             <div class="single-input-item">
-                                <textarea name="Body" id="Body" class="i-txt bg-input-txt" cols="30" rows="6" placeholder="Message"></textarea>
+                                <span asp-validation-for="Body" class="text-danger"></span>
+                                <textarea asp-for="Body" class="i-txt bg-input-txt" cols="30" rows="6"></textarea>
                             </div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="single-input-item text-center">
-                                <button type="submit" name="submit" class="btn outline-primary w-100">Send Meassage</button>
+                                <button type="submit" class="btn outline-primary w-100" data-submit-loader>Send Meassage</button>
                             </div>
-                            <div class="form-messege"></div>
                         </div>
                     </div>
                 </form>
@@ -69,3 +76,35 @@
         </div>
     </div>
 </section>
+
+@if (TempData["Success"] != null && (bool)TempData["Success"] == true)
+{
+    <div id="success-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-shadow">
+                <div class="modal-header">
+                    <h2 class="modal-title"><span class="icon icon-checkmark2 icon-top-adjust mr-3" aria-hidden="true"></span>Contact Received</h2>
+                </div>
+                <div class="modal-body">
+                    <p class="p-2 m-0">We have received your message successfully.<br />We will reply to you soon, thank you.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary px-5" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @if (TempData["Success"] != null && (bool)TempData["Success"] == true)
+    {
+        <script>
+            $(function () {
+                $('#success-modal').modal('show');
+            });
+        </script>
+    }
+}

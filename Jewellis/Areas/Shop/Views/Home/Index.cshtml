@@ -1,0 +1,158 @@
+﻿@{
+    ViewData["Title"] = "Shop";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <form action="" method="get">
+            <div class="row flex-column-reverse flex-lg-row">
+                <div class="col-xl-3 col-lg-4">
+                    <aside class="form-container bg-white" id="shop-menu">
+                        <div class="shop-menu-sec">
+                            <h3>Category</h3>
+                            <ul class="shop-menu-links">
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-type="" asp-route-keywords="">Women</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-type="" asp-route-keywords="">Men</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-type="" asp-route-keywords="">Kids</a></li>
+                            </ul>
+                        </div>
+                        <div class="shop-menu-sec">
+                            <h3>Type</h3>
+                            <ul class="shop-menu-links">
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Rings" asp-route-keywords="">Rings</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Earrings" asp-route-keywords="">Earrings</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Necklaces" asp-route-keywords="">Necklaces</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Bracelets" asp-route-keywords="">Bracelets</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Watches" asp-route-keywords="">Watches</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Glasses" asp-route-keywords="">Glasses</a></li>
+                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Other" asp-route-keywords="">Other</a></li>
+                            </ul>
+                        </div>
+                        <div class="shop-menu-sec">
+                            <h3>Price</h3>
+                            <div data-slider id="Price" class="mb-3">
+                                <input type="range" min="22" max="105" step="1" value="22" name="PriceMin" data-slider-min data-slider-label-target="#price-label-min">
+                                <input type="range" min="22" max="105" step="1" value="105" name="PriceMax" data-slider-max data-slider-label-target="#price-label-max">
+                            </div>
+                            <div class="d-flex justify-content-between txt-md">
+                                <span>From $<span id="price-label-min">22</span></span>
+                                <span>To $<span id="price-label-max">105</span></span>
+                            </div>
+                        </div>
+                        <div class="shop-menu-sec">
+                            <h3>Keywords</h3>
+                            <div class="i-txt-with-btn-wrapper txt-md">
+                                <input type="text" name="Keywords" class="i-txt bg-input-txt" placeholder="Type keywords here..." />
+                                <button type="submit" class="btn outline-primary"><span class="icon icon-search2 icon-top-adjust"></span></button>
+                            </div>
+                        </div>
+                        <div class="shop-menu-sec">
+                            <h3>Special Offers</h3>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" id="OnSale" name="OnSale" class="custom-control-input" />
+                                <label for="OnSale" class="custom-control-label txt-primary">On Sale</label>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                <div class="col-xl-9 col-lg-8">
+                    <div class="form-container bg-white mb-5">
+                        <ul class="breadcrumb shop-breadcrumb p-0 mb-5">
+                            <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" class="primary-link"><u>Home</u></a></li>
+                            <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" class="primary-link"><u>Shop</u></a></li>
+                            <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" class="primary-link"><u>Women</u></a></li>
+                            <li class="breadcrumb-item">Rings</li>
+                        </ul>
+                        <header class="shop-header bg-light-1">
+                            <div class="d-block d-lg-none w-100">
+                                <button id="shop-menu-btn" type="button" class="btn btn-sm txt-md outline-primary"><span class="icon icon-menu5 icon-top-adjust mr-3"></span>Shop Menu</button>
+                            </div>
+                            <div class="mr-5">Showing <strong>1-12</strong> of <strong>150</strong> products</div>
+                            <div class="mr-5">
+                                <span>Show:</span>
+                                <select class="form-select txt-title bg-input-txt rounded" aria-label="Select number of products to show in a page.">
+                                    <option value="12" selected>12</option>
+                                    <option value="24">24</option>
+                                    <option value="0">All</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span>Sort By:</span>
+                                <select class="form-select txt-title bg-input-txt rounded" aria-label="Select how to sort the products.">
+                                    <option value="1" selected>Time: Newset First</option>
+                                    <option value="2">Price: Low to High</option>
+                                    <option value="3">Price: High to Low</option>
+                                    <option value="4">Name: A to Z</option>
+                                    <option value="5">Name: Z to A</option>
+                                </select>
+                            </div>
+                        </header>
+                        <section class="py-5">
+                            <div class="row">
+                                @for (int i = 0; i < 12; i++)
+                                {
+                                    <div class="col-xl-3 col-sm-4 col-6">
+                                        <div class="shop-product">
+                                            <div class="shop-product-img">
+                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
+                                                    <img src="~/images/product-lg-1.jpg" alt="Product 1" />
+                                                </a>
+                                                <div class="overlap-container pe-none">
+                                                    <div class="d-flex @(i<2 ? "justify-content-between" : "justify-content-end") align-items-start">
+                                                        @if (i < 2)
+                                                        {
+                                                            <span class="tag tag-danger txt-md text-uppercase px-4 m-3">Sale</span>
+                                                        }
+                                                        <div class="shop-product-actions">
+                                                            <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Cart"><span class="icon icon-cart-add icon-top-adjust"></span></button>
+                                                            <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Wishlist"><span class="icon icon-heart6 icon-top-adjust"></span></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="shop-product-details">
+                                                <div class="shop-product-title"><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="">Product Title @(i+1)</a></div>
+                                                <div>$45.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </section>
+                        <nav class="d-flex justify-content-center mb-3" aria-label="Page Navigation">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-arrow" href="#" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5 </a></li>
+                                <li class="page-item">
+                                    <a class="page-arrow" href="#" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            // Shop Menu click (shown in mobile screens):
+            $('#shop-menu-btn').click(function () {
+                var $menu = $('#shop-menu');
+                $('html, body').stop().animate({
+                    'scrollTop': ($menu.offset().top - $('#main-header').outerHeight() - (3 * 10))
+                }, 500, 'swing');
+            });
+
+        });
+    </script>
+}

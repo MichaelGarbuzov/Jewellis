@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-27
+    Last Update: 2021-05-29
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -82,6 +82,8 @@ html[theme="default"] {
     --color-hover-background: #f4f4f4;
     --color-card-shadow: rgba(0,0,0,0.1);
     --color-card-hover-shadow: rgba(0,0,0,0.15);
+    --color-error-background: #fff7f7;
+    --color-error-border: #ff7777;
 }
 
 html[theme="dark"] {
@@ -119,6 +121,8 @@ html[theme="dark"] {
     --color-hover-background: #383838;
     --color-card-shadow: rgba(0,0,0,0.3);
     --color-card-hover-shadow: rgba(0,0,0,0.35);
+    --color-error-background: #463535;
+    --color-error-border: #ffbdbd;
 }
 
 html[theme="light"] {
@@ -156,6 +160,8 @@ html[theme="light"] {
     --color-hover-background: #f4f4f4;
     --color-card-shadow: rgba(0,0,0,0.1);
     --color-card-hover-shadow: rgba(0,0,0,0.15);
+    --color-error-background: #fff7f7;
+    --color-error-border: #ff7777;
 }
 
 /*#endregion */
@@ -361,8 +367,23 @@ figure {
     background: var(--color-background);
 }
 
+.modal-header {
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 1.7rem 1.5rem;
+}
+
 .modal-header, .modal-footer {
     border-color: var(--color-separator);
+}
+
+.modal-footer {
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem 1.7rem;
 }
 
 .popover {
@@ -5945,6 +5966,21 @@ figure {
 
 /*#endregion */
 
+/*#region Validation */
+
+.input-validation-error {
+    background: var(--color-error-background) !important;
+    border-color: var(--color-error-border) !important;
+}
+
+.field-validation-error {
+    display: block;
+    font-size: var(--txt-md);
+    margin: 0.5rem 0;
+}
+
+/*#endregion */
+
 @media screen and (max-width: 480px) {
     .i-txt-with-btn-wrapper.mob-break {
         display: inline-block;
@@ -6360,6 +6396,10 @@ figure {
     margin-bottom: 0.5rem;
 }
 
+.modal-shadow {
+    box-shadow: 0 1.5rem 3rem rgb(0,0,0,0.5);
+}
+
 .modal.right .modal-dialog {
     height: 100%;
     width: 45rem;
@@ -6390,9 +6430,7 @@ figure {
 
 .modal.right .modal-header {
     height: var(--header-height);
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
+    padding: 1rem;
 }
 
 .modal.right .modal-body {
@@ -6695,8 +6733,13 @@ figure {
     padding: 3rem 0 !important;
 }
 
+.py-6-desktop {
+    padding: 6rem 0 !important;
+}
+
 @media screen and (max-width: 1200px) {
-    .py-5-desktop {
+    .py-5-desktop,
+    .py-6-desktop {
         padding: 0 !important;
     }
 }
@@ -6711,6 +6754,11 @@ figure {
 
 .pe-auto {
     pointer-events: auto;
+}
+
+.cursor-wait,
+.cursor-wait * {
+    cursor: wait !important;
 }
 
 /*#endregion */

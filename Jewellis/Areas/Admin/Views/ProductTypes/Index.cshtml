@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Jewellis.Models.ProductType>
+
+@{
+    ViewData["Title"] = "Product Types";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item">Product Types</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Product Types</h1>
+            <div class="form-container bg-white mb-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="flex-fill maxw-sm mb-5 mr-sm-5">
+                        <form asp-area="Admin" asp-controller="ProductTypes" asp-action="Index" method="get">
+                            <div class="i-txt-with-btn-wrapper">
+                                <input type="text" name="query" value="@ViewData["SearchQuery"]" class="i-txt bg-input-txt" placeholder="Enter keywords here..." autocomplete="off" />
+                                <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Create" class="btn btn-primary mb-5">Create New<span class="icon icon-plus icon-top-adjust ml-3" aria-hidden="true"></span></a>
+                </div>
+                <div class="border">
+
+                    <div class="table-header text-center">
+                        <div class="d-flex">
+                            <div class="flex-fill">Type</div>
+                            <div class="table-actions d-none d-md-block">Actions</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        @foreach (ProductType type in Model)
+                        {
+                            <div class="table-row hover-bg px-4 py-5">
+                                <div class="d-flex flex-column flex-md-row justify-content-end align-items-center">
+                                    <div class="flex-fill w-100 w-md-auto text-center text-md-left px-4 mb-4 mb-md-0">
+                                        <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Details" asp-route-id="@type.Id" class="primary-link text-ellipsis d-inline-block">@type.Name</a>
+                                    </div>
+                                    <div class="table-actions w-100 w-md-auto text-center text-md-right px-3">
+                                        <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Details" asp-route-id="@type.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
+                                        <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Edit" asp-route-id="@type.Id" class="btn btn-sm txt-md outline-warning m-1">Edit</a>
+                                        <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Delete" asp-route-id="@type.Id" class="btn btn-sm txt-md outline-danger m-1">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Count() < 1)
+                        {
+                            <p class="text-center txt-secondary p-5">No Results.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

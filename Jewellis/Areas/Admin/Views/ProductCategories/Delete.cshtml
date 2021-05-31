@@ -1,7 +1,7 @@
-﻿@model Jewellis.Models.DeliveryMethod
+﻿@model Jewellis.Models.ProductCategory
 
 @{
-    ViewData["Title"] = $"Delete Delivery Method #{Model.Id}";
+    ViewData["Title"] = $"Delete Category #{Model.Id}";
 }
 
 <section class="bg-light-2">
@@ -9,10 +9,10 @@
         <div class="maxw-2xl m-auto">
             <ul class="breadcrumb p-0 mb-5">
                 <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
-                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="DeliveryMethods" asp-action="Index" class="primary-link"><u>Delivery Methods</u></a></li>
-                <li class="breadcrumb-item">Delete Delivery Method #@Model.Id</li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="ProductCategories" asp-action="Index" class="primary-link"><u>Product Categories</u></a></li>
+                <li class="breadcrumb-item">Delete Category #@Model.Id</li>
             </ul>
-            <h1 class="title-1 font-weight-bold mb-5">Delete Delivery Method #@Model.Id</h1>
+            <h1 class="title-1 font-weight-bold mb-5">Delete Category #@Model.Id</h1>
             <div class="form-container bg-white mb-5">
                 <h2 class="tag tag-danger px-5 py-4 mb-4">Are you sure you want to delete this?</h2>
                 <div class="row">
@@ -20,30 +20,22 @@
                         <div class="single-form-item">
                             <label asp-for="Name"></label>
                             <p>@Html.DisplayFor(m => m.Name)</p>
-                        </div>
-                        <div class="single-form-item">
-                            <label asp-for="Description"></label>
-                            <p>@Html.DisplayFor(m => m.Description)</p>
-                        </div>
-                        <div class="single-form-item">
-                            <label asp-for="Price"></label>
-                            <p>@Html.DisplayFor(m => m.Price)</p>
-                        </div>
+                        </div>                   
                         <div class="single-form-item">
                             <label asp-for="DateLastModified"></label>
                             <p>@Html.DisplayFor(m => m.DateLastModified)</p>
                         </div>
-                        <form asp-area="Admin" asp-controller="DeliveryMethods" asp-action="Delete" method="post">
+                        <form asp-area="Admin" asp-controller="ProductCategories" asp-action="Delete" method="post">
                             <input type="hidden" asp-for="Id" />
                             <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-5">
-                                <a asp-area="Admin" asp-controller="DeliveryMethods" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                                <a asp-area="Admin" asp-controller="ProductCategories" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
                                 <button type="submit" class="btn btn-danger align-self-stretch px-5 m-2" data-submit-loader>Delete</button>
                             </div>
                         </form>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block">
                         <div class="d-flex justify-content-center align-items-center h-100">
-                            <span class="icon icon-truck icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                            <span class="icon icon-tag4 icon-land-lg txt-hover-bg" aria-hidden="true"></span>
                         </div>
                     </div>
                 </div>

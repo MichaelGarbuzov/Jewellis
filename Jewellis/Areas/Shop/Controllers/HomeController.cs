@@ -2,7 +2,7 @@
 
 namespace Jewellis.Areas.Shop.Controllers
 {
-    [Area("shop")]
+    [Area("Shop")]
     public class HomeController : Controller
     {
 

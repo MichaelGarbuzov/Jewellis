@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-29
+    Last Update: 2021-05-31
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -33,6 +33,7 @@ Table of Contents:
         (6.4) - Stores
         (6.5) - Product
         (6.6) - Shop
+        (6.7) - Admin
 ==============================================*/
 
 :root {
@@ -192,6 +193,7 @@ body {
 }
 
 a, button {
+    cursor: pointer;
     -webkit-transition: color 0.3s ease-out, background 0.3s ease-out, border 0.3s ease-out;
     -moz-transition: color 0.3s ease-out, background 0.3s ease-out, border 0.3s ease-out;
     -o-transition: color 0.3s ease-out, background 0.3s ease-out, border 0.3s ease-out;
@@ -308,6 +310,15 @@ figure {
         background-color: var(--color-primary);
         border-color: var(--color-primary);
     }
+
+.btn-danger,
+.btn-danger:hover {
+    color: #ffffff;
+}
+
+.border {
+    border: 1px solid var(--color-separator) !important;
+}
 
 .tooltip-inner {
     font-size: 1.5rem;
@@ -5697,6 +5708,42 @@ figure {
         background: var(--color-accent);
     }
 
+.btn.outline-info {
+    border: 2px solid var(--info);
+    color: var(--info);
+    background: transparent;
+}
+
+    .btn.outline-info:hover,
+    .btn.outline-info.active {
+        color: var(--color-white);
+        background: var(--info);
+    }
+
+.btn.outline-warning {
+    border: 2px solid var(--warning);
+    color: var(--warning);
+    background: transparent;
+}
+
+    .btn.outline-warning:hover,
+    .btn.outline-warning.active {
+        color: var(--color-dark);
+        background: var(--warning);
+    }
+
+.btn.outline-danger {
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    background: transparent;
+}
+
+    .btn.outline-danger:hover,
+    .btn.outline-danger.active {
+        color: var(--color-white);
+        background: var(--danger);
+    }
+
 .btn-long-arrow {
     display: inline-block;
     background-color: transparent;
@@ -6491,11 +6538,11 @@ figure {
     margin: 0 auto;
 }
 
-.single-input-item {
+.single-form-item {
     margin-bottom: 2rem;
 }
 
-    .single-input-item > label {
+    .single-form-item > label {
         font-weight: 700;
         margin-bottom: 0.75rem;
     }
@@ -6656,6 +6703,10 @@ figure {
     line-height: 3.5rem;
 }
 
+.title-1-btn {
+    font-size: 1.85rem;
+}
+
 .line-height-1-5 {
     line-height: 1.5;
 }
@@ -6680,6 +6731,10 @@ figure {
     .paragraph-1 {
         font-size: 2.5rem;
     }
+
+    .title-1-btn {
+        font-size: 1.7rem;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -6689,6 +6744,10 @@ figure {
 
     .paragraph-1 {
         font-size: 2.25rem;
+    }
+
+    .title-1-btn {
+        font-size: 1.5rem;
     }
 }
 
@@ -6760,6 +6819,31 @@ figure {
 .cursor-wait * {
     cursor: wait !important;
 }
+
+.hover-push {
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    -webkit-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+    .hover-push:hover {
+        -webkit-transform: translateY(-2px);
+        -moz-transform: translateY(-2px);
+        -ms-transform: translateY(-2px);
+        transform: translateY(-2px);
+    }
+
+.hover-bg {
+    -moz-transition: background 0.1s ease-out;
+    -o-transition: background 0.1s ease-out;
+    -webkit-transition: background 0.1s ease-out;
+    transition: background 0.1s ease-out;
+}
+
+    .hover-bg:hover {
+        background: var(--color-hover-background);
+    }
 
 /*#endregion */
 
@@ -6889,20 +6973,6 @@ figure {
         color: #ffffff;
     }
 
-.hover-push {
-    -moz-transition: all 0.2s ease-out;
-    -o-transition: all 0.2s ease-out;
-    -webkit-transition: all 0.2s ease-out;
-    transition: all 0.2s ease-out;
-}
-
-    .hover-push:hover {
-        -webkit-transform: translateY(-2px);
-        -moz-transform: translateY(-2px);
-        -ms-transform: translateY(-2px);
-        transform: translateY(-2px);
-    }
-
 .tag {
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
@@ -6916,6 +6986,10 @@ figure {
     font-size: 20rem;
 }
 
+.icon-land-lg {
+    font-size: 30rem;
+}
+
 .spinner-border.spinner-lg {
     height: 6rem;
     width: 6rem;
@@ -6924,6 +6998,10 @@ figure {
 @media screen and (max-width: 991px) {
     .icon-land {
         font-size: 15rem;
+    }
+
+    .icon-land-lg {
+        font-size: 25rem;
     }
 }
 
@@ -6938,6 +7016,10 @@ figure {
 
     .icon-land {
         font-size: 10rem;
+    }
+
+    .icon-land-lg {
+        font-size: 20rem;
     }
 }
 
@@ -7213,6 +7295,15 @@ html[theme="light"] #main-logo {
             line-height: 1;
             padding: 1rem 1.2rem;
         }
+
+        #main-controls > li > .header-btn {
+            font-size: var(--txt-md);
+            border: 2px solid var(--color-secondary);
+        }
+
+            #main-controls > li > .header-btn:hover {
+                border-color: var(--color-accent) !important;
+            }
 
     #main-controls .dropdown-menu {
         min-width: 280px;
@@ -7522,6 +7613,11 @@ html[theme="light"] #main-logo {
             min-width: 9rem;
             max-width: 9rem;
         }
+
+    #main-controls > li > .header-btn {
+        font-size: inherit;
+        border: 0;
+    }
 }
 
 /*#endregion */
@@ -8367,6 +8463,51 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
 @media screen and (max-width: 480px) {
     .shop-breadcrumb, .shop-header {
         font-size: var(--txt-md);
+    }
+}
+
+/*#endregion */
+
+/*#region (6.7) - Admin */
+
+#main-admin-logo {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+    margin-right: 2rem;
+}
+
+    #main-admin-logo a {
+        display: flex;
+        align-items: center;
+        font-family: 'Garamond';
+        letter-spacing: 1px;
+        color: var(--color-text-title-invert);
+    }
+
+        #main-admin-logo a > .logo {
+            display: inline-block;
+            height: 3rem;
+            width: 3rem;
+            background-image: url("../images/jewellis-logo-square.svg");
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 1rem;
+        }
+
+html[theme="light"] #main-admin-logo .logo {
+    filter: invert(1);
+}
+
+@media screen and (max-width: 1200px) {
+    #main-admin-logo {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #main-admin-logo a > .logo {
+        margin-right: 0;
     }
 }
 

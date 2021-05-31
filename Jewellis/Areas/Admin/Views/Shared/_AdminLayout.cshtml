@@ -1,0 +1,129 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@{
+    var currentTheme = ClientTheme.GetCurrent();
+    var currentCurrency = ClientCurrency.GetCurrent();
+}
+
+<!DOCTYPE html>
+<html lang="en" theme="@currentTheme.ID">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] | Admin | Jewellis</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+</head>
+<body>
+    @* Main Header *@
+    <header id="main-header" class="fixed-top">
+        <div class="lay-wrapper">
+            <div class="lay-left">
+                <h1 id="main-admin-logo">
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Index">
+                        <span class="logo"></span>
+                        <span>| Admin</span>
+                    </a>
+                </h1>
+                <button id="main-menu-toggler" class="text-shadow" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle Menu">
+                    <span class="icon icon-menu3" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="lay-middle">
+                <nav id="main-menu">
+                    <ul class="header-list links-text-shadow">
+                        <li><a asp-area="Admin" asp-controller="Orders" asp-action="Index">Orders</a></li>
+                        <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+                        <li><a asp-area="Admin" asp-controller="Contacts" asp-action="Index">Contacts</a></li>
+                        <li class="dropdown-show">
+                            <a>Shop</a>
+                            <ul class="dropdown-nav category-list">
+                                <li><a asp-area="Admin" asp-controller="Products" asp-action="Index">Products</a></li>
+                                <li><a asp-area="Admin" asp-controller="Sales" asp-action="Index">Sales</a></li>
+                                <li><a asp-area="Admin" asp-controller="ProductCategories" asp-action="Index">Product Categories</a></li>
+                                <li><a asp-area="Admin" asp-controller="ProductTypes" asp-action="Index">Product Types</a></li>
+                                <li><a asp-area="Admin" asp-controller="DeliveryMethods" asp-action="Index">Delivery Methods</a></li>
+                            </ul>
+                        </li>
+                        <li><a asp-area="Admin" asp-controller="Stores" asp-action="Index">Stores</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="lay-right">
+                <ul id="main-controls" class="header-list links-text-shadow">
+                    <li class="d-flex align-items-center mr-3">
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="btn header-btn">
+                            <span class="mob-icon"><span class="icon icon-exit2 icon-top-adjust" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Go to Site"></span><span class="mob-icon-text txt-md">Go to Site</span></span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user5" aria-hidden="true"></span></a>
+                        <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu">
+                            <ul id="main-profile-menu">
+                                <li class="primary-link-all pb-2 px-2"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
+                                <li class="dropdown-divider m-3"></li>
+                                <li><a asp-area="Account" asp-controller="Home" asp-action="Profile"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
+                                <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Logout"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
+                                <li class="dropdown-divider m-3"></li>
+                                <li class="dropdown-sm"><a href="#" role="button" id="main-currency-btn" data-dd-close="0" data-dd-mega-to="#main-currency-menu"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold" data-updatable>@currentCurrency.Code</span></a></li>
+                                <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-close="0" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-updatable>@currentTheme.DisplayName</span></a></li>
+                            </ul>
+                            <ul id="main-currency-menu">
+                                <li class="dropdown-header"><a href="#" role="button" data-dd-close="0" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Currency</span></li>
+                                @foreach (var currency in ClientCurrency.Options.SupportedCurrencies)
+                                {
+                                    <li>
+                                        <a href="#" role="button" data-dd-close="0" data-currency-set="@currency.Code" data-currency-set-symbol="@currency.Symbol" class="d-flex justify-content-between align-items-center">
+                                            <span class="line-height-2">@currency.ToString()</span>
+                                            @if (currency == currentCurrency)
+                                            {
+                                                <span data-dd-check class="float-right m-0 txt-accent icon icon-checkmark2" aria-hidden="true"></span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                            <ul id="main-theme-menu">
+                                <li class="dropdown-header"><a href="#" role="button" data-dd-close="0" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Theme</span></li>
+                                @foreach (var theme in ClientTheme.Options.SupportedThemes)
+                                {
+                                    <li>
+                                        <a href="#" role="button" data-dd-close="0" data-theme-set="@theme.ID" data-theme-set-val="@theme.CookieValue" data-theme-set-display="@theme.DisplayName">
+                                            <span class="icon icon-theme-@theme.ID " aria-hidden="true"></span>
+                                            <span>@string.Format("{0} theme", theme.DisplayName)</span>
+                                            @if (theme == currentTheme)
+                                            {
+                                                <span data-dd-check class="float-right m-0 txt-accent icon icon-checkmark2" aria-hidden="true"></span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    @* Content *@
+    <main id="main-content" role="main">
+        @RenderBody()
+    </main>
+
+    @* Main Footer *@
+    <footer id="main-footer" class="p-2">
+        <div class="container">
+            <p class="copyright border-0">&copy; @DateTime.Now.Year Jewellis. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Jewellis.Models.Branch>
+
+@{
+    ViewData["Title"] = "Stores";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item">Stores</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Stores</h1>
+            <div class="form-container bg-white mb-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="flex-fill maxw-sm mb-5 mr-sm-5">
+                        <form asp-area="Admin" asp-controller="Stores" asp-action="Index" method="get">
+                            <div class="i-txt-with-btn-wrapper">
+                                <input type="text" name="query" value="@ViewData["SearchQuery"]" class="i-txt bg-input-txt" placeholder="Enter keywords here..." autocomplete="off" />
+                                <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                            </div>
+                        </form>
+                    </div>
+                    <a asp-area="Admin" asp-controller="Stores" asp-action="Create" class="btn btn-primary mb-5">Create New<span class="icon icon-plus icon-top-adjust ml-3" aria-hidden="true"></span></a>
+                </div>
+                <div class="border">
+                    <div class="table-header text-center">
+                        <div class="row px-4">
+                            <div class="col-md-7">Store</div>
+                            <div class="col-md-5 d-none d-md-block">Actions</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        @foreach (Branch branch in Model)
+                        {
+                            <div class="table-row hover-bg px-4 py-5">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-md-7 text-center text-md-left">
+                                        <a asp-area="Admin" asp-controller="Stores" asp-action="Details" asp-route-id="@branch.Id" class="primary-link ml-md-5">@branch.Name</a>
+                                    </div>
+                                    <div class="col-md-5 text-center mt-4 mt-md-0">
+                                        <a asp-area="Admin" asp-controller="Stores" asp-action="Details" asp-route-id="@branch.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
+                                        <a asp-area="Admin" asp-controller="Stores" asp-action="Edit" asp-route-id="@branch.Id" class="btn btn-sm txt-md outline-warning m-1">Edit</a>
+                                        <a asp-area="Admin" asp-controller="Stores" asp-action="Delete" asp-route-id="@branch.Id" class="btn btn-sm txt-md outline-danger m-1">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

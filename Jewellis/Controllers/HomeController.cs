@@ -3,7 +3,8 @@ using Jewellis.Models;
 using Jewellis.Models.Helpers;
 using Jewellis.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -79,43 +80,9 @@ namespace Jewellis.Controllers
         }
 
         [Route("/stores")]
-        public IActionResult Stores()
+        public async Task<IActionResult> Stores()
         {
-            // TODO: From DB
-            List<Branch> branches = new List<Branch>();
-            branches.Add(new Branch()
-            {
-                Id = 1,
-                Name = "Tel Aviv - Dizengoff Center",
-                Adrress = "Dizengoff St. 50, Tel Aviv-Yafo",
-                PhoneNumber = "03-1234567",
-                OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationLatitude = 32.0748402,
-                LocationLongitude = 34.7751358,
-                DateLastModified = DateTime.Now
-            });
-            branches.Add(new Branch()
-            {
-                Id = 2,
-                Name = "Tel Aviv - Shenkin Street",
-                Adrress = "Shenkin St. 12, Tel Aviv-Yafo",
-                PhoneNumber = "03-1234567",
-                OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationLatitude = 32.0687168,
-                LocationLongitude = 34.7780078,
-                DateLastModified = DateTime.Now
-            });
-            branches.Add(new Branch()
-            {
-                Id = 3,
-                Name = "Rishon Lezion - HaZahav Mall",
-                Adrress = "Herzl 21, Rishon Lezion",
-                PhoneNumber = "03-1234567",
-                OpeningHours = "Sunday-Thursday: 10:00-20:00\r\nFriday and Holidays: 10:00-14:00\r\nSaturday: Closed",
-                LocationLatitude = 31.9913925,
-                LocationLongitude = 34.7764307,
-                DateLastModified = DateTime.Now
-            });
+            List<Branch> branches = await _dbContext.Branches.OrderBy(b => b.Name).ToListAsync();
             return View(branches);
         }
 

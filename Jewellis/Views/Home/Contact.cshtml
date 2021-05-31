@@ -39,13 +39,13 @@
                 <form method="post" asp-area="" asp-controller="Home" asp-action="Contact">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="single-input-item">
+                            <div class="single-form-item">
                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                                 <input asp-for="FirstName" class="i-txt bg-input-txt" />
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <div class="single-input-item">
+                            <div class="single-form-item">
                                 <span asp-validation-for="LastName" class="text-danger"></span>
                                 <input asp-for="LastName" class="i-txt bg-input-txt" />
                             </div>
@@ -53,20 +53,20 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="single-input-item">
+                            <div class="single-form-item">
                                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
                                 <input asp-for="EmailAddress" class="i-txt bg-input-txt" />
                             </div>
-                            <div class="single-input-item">
+                            <div class="single-form-item">
                                 <span asp-validation-for="Subject" class="text-danger"></span>
                                 <input asp-for="Subject" class="i-txt bg-input-txt" value="@(Model != null ? Model.Subject : ViewData["Subject"] != null ? ViewData["Subject"] : string.Empty)" autocomplete="off" />
                             </div>
-                            <div class="single-input-item">
+                            <div class="single-form-item">
                                 <span asp-validation-for="Body" class="text-danger"></span>
                                 <textarea asp-for="Body" class="i-txt bg-input-txt" cols="30" rows="6"></textarea>
                             </div>
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="single-input-item text-center">
+                            <div class="single-form-item text-center">
                                 <button type="submit" class="btn outline-primary w-100" data-submit-loader>Send Meassage</button>
                             </div>
                         </div>

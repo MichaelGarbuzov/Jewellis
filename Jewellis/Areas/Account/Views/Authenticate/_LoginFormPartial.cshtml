@@ -2,13 +2,13 @@
     bool includeSubmitAction = (bool)ViewData["IncludeSubmitAction"];
 }
 
-<div class="single-input-item">
+<div class="single-form-item">
     <input type="email" name="Email" class="i-txt bg-input-txt" placeholder="Email Address" required />
 </div>
-<div class="single-input-item">
+<div class="single-form-item">
     <input type="password" name="Password" class="i-txt bg-input-txt" placeholder="Password" autocomplete="off" required />
 </div>
-<div class="single-input-item txt-md my-5">
+<div class="single-form-item txt-md my-5">
     <div class="d-flex align-items-center justify-content-between">
         <div class="custom-control custom-checkbox">
             <input type="checkbox" id="RememberMe" class="custom-control-input" checked />
@@ -19,7 +19,7 @@
 </div>
 @if (includeSubmitAction)
 {
-    <div class="single-input-item text-center">
+    <div class="single-form-item text-center">
         <button type="submit" class="btn outline-primary w-100">Login</button>
     </div>
 }

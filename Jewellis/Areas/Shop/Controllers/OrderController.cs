@@ -2,8 +2,7 @@
 
 namespace Jewellis.Areas.Shop.Controllers
 {
-    [Area("shop")]
-    [Route("order")]
+    [Area("Shop")]
     public class OrderController : Controller
     {
 

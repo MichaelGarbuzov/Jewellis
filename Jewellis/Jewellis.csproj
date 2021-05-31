@@ -6,17 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="App_Custom\Filters\**" />
-    <Content Remove="App_Custom\Filters\**" />
-    <EmbeddedResource Remove="App_Custom\Filters\**" />
-    <None Remove="App_Custom\Filters\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Account\ViewModels\" />
-    <Folder Include="Areas\Admin\Controllers\" />
-    <Folder Include="Areas\Admin\ViewModels\" />
-    <Folder Include="Areas\Shop\ViewModels\" />
+    <Compile Remove="Areas\Account\ViewModels\**" />
+    <Compile Remove="Areas\Shop\ViewModels\**" />
+    <Content Remove="Areas\Account\ViewModels\**" />
+    <Content Remove="Areas\Shop\ViewModels\**" />
+    <EmbeddedResource Remove="Areas\Account\ViewModels\**" />
+    <EmbeddedResource Remove="Areas\Shop\ViewModels\**" />
+    <None Remove="Areas\Account\ViewModels\**" />
+    <None Remove="Areas\Shop\ViewModels\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,8 +2,7 @@
 
 namespace Jewellis.Areas.Account.Controllers
 {
-    [Area("account")]
-    [Route("auth")]
+    [Area("Account")]
     public class AuthenticateController : Controller
     {
 

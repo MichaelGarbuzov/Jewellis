@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Jewellis.Areas.Shop.Controllers
+namespace Jewellis.Areas.Admin.Controllers
 {
-    [Area("Shop")]
-    public class CartController : Controller
+    [Area("Admin")]
+    public class HomeController : Controller
     {
 
-        [Route("/cart")]
         public IActionResult Index()
         {
             return View();

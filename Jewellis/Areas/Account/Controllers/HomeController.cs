@@ -2,8 +2,7 @@
 
 namespace Jewellis.Areas.Account.Controllers
 {
-    [Area("account")]
-    [Route("home")]
+    [Area("Account")]
     public class HomeController : Controller
     {
 

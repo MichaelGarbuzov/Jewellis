@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-29
+    Last Update: 2021-05-31
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -404,10 +404,12 @@ $(function () {
     // ---------------------
     $('[data-submit-loader]').each(function () {
         $(this).parents('form').submit(function () {
-            if ($(this).valid() === true) {
+            if (!$.isFunction($.fn.valid) || $(this).valid() === true) {
                 var $submitBtn = $(this).find('[data-submit-loader]');
                 $submitBtn.attr('disabled', '');
-                $submitBtn.prepend('<span class="spinner-border icon-top-adjust mr-3" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
+                if (!$submitBtn.find('.spinner-border').length) {
+                    $submitBtn.prepend('<span class="spinner-border icon-top-adjust mr-3" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
+                }
             }
         });
     });

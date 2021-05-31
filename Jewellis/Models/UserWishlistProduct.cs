@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Jewellis.Models
 {
@@ -11,6 +12,7 @@ namespace Jewellis.Models
         /// <summary>
         /// Date and time the product was added to the wishlist.
         /// </summary>
+        [Display(Name = "Date Added")]
         public DateTime DateAdded { get; set; }
 
         #region Relationships

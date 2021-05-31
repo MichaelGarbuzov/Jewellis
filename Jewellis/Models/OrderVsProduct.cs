@@ -11,6 +11,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The price per unit of the product in the order.
         /// </summary>
+        [Display(Name = "Unit Price")]
         [Required]
         [Range(0, 100000)]
         [DataType(DataType.Currency)]
@@ -19,6 +20,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The quantity of the product in the order.
         /// </summary>
+        [Display(Name = "Quantity")]
         [Required]
         [Range(1, 100)]
         public int Quantity { get; set; }
@@ -26,6 +28,8 @@ namespace Jewellis.Models
         /// <summary>
         /// The discount rate (value between 0 to 1) of the product in the order.
         /// </summary>
+        [Display(Name = "Discount Rate")]
+        [DisplayFormat(DataFormatString = "{0:P2}")]
         [Range(0, 1)]
         public double? DiscountRate { get; set; }
 

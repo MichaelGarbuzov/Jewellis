@@ -19,6 +19,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The street of the address.
         /// </summary>
+        [Display(Name = "Street")]
         [Required]
         [StringLength(50)]
         public string Street { get; set; }
@@ -26,6 +27,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The postal code of the address.
         /// </summary>
+        [Display(Name = "Postal Code")]
         [Required]
         [DataType(DataType.PostalCode)]
         [StringLength(30)]
@@ -34,6 +36,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The city of the address.
         /// </summary>
+        [Display(Name = "City")]
         [Required]
         [StringLength(30)]
         public string City { get; set; }
@@ -41,6 +44,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The country of the address.
         /// </summary>
+        [Display(Name = "Country")]
         [Required]
         [StringLength(30)]
         public string Country { get; set; }
@@ -48,6 +52,7 @@ namespace Jewellis.Models
         /// <summary>
         /// Date and time of the last modify on the record.
         /// </summary>
+        [Display(Name = "Date Last Modified")]
         public DateTime DateLastModified { get; set; }
 
     }

@@ -24,6 +24,7 @@ namespace Jewellis.Models
         /// The name of the product.
         /// </summary>
         /// <remarks>[Unique]</remarks>
+        [Display(Name = "Name")]
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -31,6 +32,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The description of the product.
         /// </summary>
+        [Display(Name = "Description")]
         [Required]
         [StringLength(500)]
         [DataType(DataType.MultilineText)]
@@ -39,6 +41,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The path to the image of the product.
         /// </summary>
+        [Display(Name = "Image Path")]
         [Required]
         [StringLength(400)]
         [DataType(DataType.ImageUrl)]
@@ -47,6 +50,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The price for unit of the product.
         /// </summary>
+        [Display(Name = "Price")]
         [Required]
         [Range(0, 100000)]
         [DataType(DataType.Currency)]
@@ -55,16 +59,19 @@ namespace Jewellis.Models
         /// <summary>
         /// Indicator if the product is available or not.
         /// </summary>
+        [Display(Name = "Is Available")]
         public bool IsAvailable { get; set; }
 
         /// <summary>
         /// Date and time the product was added.
         /// </summary>
+        [Display(Name = "Date Added")]
         public DateTime DateAdded { get; set; }
 
         /// <summary>
         /// Date and time of the last modify on the record.
         /// </summary>
+        [Display(Name = "Date Last Modified")]
         public DateTime DateLastModified { get; set; }
 
         #region Relationships

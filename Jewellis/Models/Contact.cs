@@ -20,6 +20,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The name of the contact opener.
         /// </summary>
+        [Display(Name = "Name")]
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -27,6 +28,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The email address of the contact opener.
         /// </summary>
+        [Display(Name = "Email Address")]
         [Required]
         [StringLength(50)]
         [DataType(DataType.EmailAddress)]
@@ -35,6 +37,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The subject of the contact.
         /// </summary>
+        [Display(Name = "Subject")]
         [Required]
         [StringLength(50)]
         public string Subject { get; set; }
@@ -42,6 +45,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The body text of the contact.
         /// </summary>
+        [Display(Name = "Body")]
         [StringLength(500)]
         [DataType(DataType.MultilineText)]
         public string Body { get; set; }
@@ -49,16 +53,19 @@ namespace Jewellis.Models
         /// <summary>
         /// The current status of the contact.
         /// </summary>
+        [Display(Name = "Status")]
         public ContactStatus Status { get; set; }
 
         /// <summary>
         /// Date and time the contact was created.
         /// </summary>
+        [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
 
         /// <summary>
         /// Date and time of the last modify on the record.
         /// </summary>
+        [Display(Name = "Date Last Modified")]
         public DateTime DateLastModified { get; set; }
 
     }

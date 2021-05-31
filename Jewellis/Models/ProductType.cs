@@ -22,6 +22,7 @@ namespace Jewellis.Models
         /// The name of the product type.
         /// </summary>
         /// <remarks>[Unique]</remarks>
+        [Display(Name = "Name")]
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -29,6 +30,7 @@ namespace Jewellis.Models
         /// <summary>
         /// Date and time of the last modify on the record.
         /// </summary>
+        [Display(Name = "Date Last Modified")]
         public DateTime DateLastModified { get; set; }
 
     }

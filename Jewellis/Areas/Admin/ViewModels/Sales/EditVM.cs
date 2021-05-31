@@ -1,14 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Jewellis.Models
+namespace Jewellis.Areas.Admin.ViewModels.Sales
 {
-    /// <summary>
-    /// Represents a sale.
-    /// </summary>
-    [Index(nameof(Name), IsUnique = true)]
-    public class Sale
+    public class EditVM
     {
 
         /// <summary>
@@ -16,15 +12,20 @@ namespace Jewellis.Models
         /// </summary>
         /// <remarks>[Primary Key], [Identity]</remarks>
         [Key]
+        [HiddenInput]
         public int Id { get; set; }
+
+        [HiddenInput]
+        public string CurrentName { get; set; }
 
         /// <summary>
         /// The name of the sale.
         /// </summary>
         /// <remarks>[Unique]</remarks>
         [Display(Name = "Name")]
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(50, ErrorMessage = "Maximum length allowed is 50 characters.")]
+        [Remote("CheckNameEditAvailability", "Sales", "Admin", AdditionalFields = nameof(CurrentName), ErrorMessage = "Name already taken.")]
         public string Name { get; set; }
 
         /// <summary>
@@ -32,35 +33,24 @@ namespace Jewellis.Models
         /// </summary>
         [Display(Name = "Discount Rate")]
         [DisplayFormat(DataFormatString = "{0:P0}")]
-        [Range(0, 1)]
+        [Required(ErrorMessage = "Discount rate is required.")]
+        [Range(0, 1, ErrorMessage = "Must be between 0 to 1.")]
         public double DiscountRate { get; set; }
 
         /// <summary>
         /// Date and time the sale starts.
         /// </summary>
         [Display(Name = "Start Date")]
-        [Required]
-        [DataType(DataType.DateTime)]
+        [Required(ErrorMessage = "Start date is required.")]
+        [DataType(DataType.DateTime, ErrorMessage = "Invalid date and time.")]
         public DateTime DateStart { get; set; }
 
         /// <summary>
         /// Date and time the sale ends.
         /// </summary>
         [Display(Name = "End Date")]
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.DateTime, ErrorMessage = "Invalid date and time.")]
         public DateTime? DateEnd { get; set; }
-
-        /// <summary>
-        /// Date and time the sale created.
-        /// </summary>
-        [Display(Name = "Date Created")]
-        public DateTime DateCreated { get; set; }
-
-        /// <summary>
-        /// Date and time of the last modify on the record.
-        /// </summary>
-        [Display(Name = "Date Last Modified")]
-        public DateTime DateLastModified { get; set; }
 
     }
 }

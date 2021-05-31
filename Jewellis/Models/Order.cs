@@ -24,6 +24,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The billing name of the order.
         /// </summary>
+        [Display(Name = "Billing Name")]
         [Required]
         [StringLength(50)]
         public string BillingName { get; set; }
@@ -31,6 +32,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The billing phone of the order.
         /// </summary>
+        [Display(Name = "Billing Phone")]
         [Required]
         [StringLength(20)]
         public string BillingPhone { get; set; }
@@ -38,29 +40,34 @@ namespace Jewellis.Models
         /// <summary>
         /// The shipping name of the order.
         /// </summary>
+        [Display(Name = "Shipping Name")]
         [StringLength(50)]
         public string ShippingName { get; set; }
 
         /// <summary>
         /// The shipping phone of the order.
         /// </summary>
+        [Display(Name = "Shipping Phone")]
         [StringLength(20)]
         public string ShippingPhone { get; set; }
 
         /// <summary>
         /// The customer note for the order.
         /// </summary>
+        [Display(Name = "Note")]
         [StringLength(100)]
         public string Note { get; set; }
 
         /// <summary>
         /// The current status of the order.
         /// </summary>
+        [Display(Name = "Status")]
         public OrderStatus Status { get; set; }
 
         /// <summary>
         /// Date and time the order was created.
         /// </summary>
+        [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
 
         #region Relationships

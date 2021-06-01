@@ -10,7 +10,7 @@ namespace Jewellis.Areas.Admin.ViewModels.DeliveryMethods
         /// The name of the delivery method.
         /// </summary>
         /// <remarks>[Unique]</remarks>
-        [Display(Name = "Name")]
+        [Display(Name = "Name *")]
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(50, ErrorMessage = "Maximum length allowed is 50 characters.")]
         [Remote("CheckNameAvailability", "DeliveryMethods", "Admin", ErrorMessage = "Name already taken.")]
@@ -19,7 +19,7 @@ namespace Jewellis.Areas.Admin.ViewModels.DeliveryMethods
         /// <summary>
         /// The description of the delivery method.
         /// </summary>
-        [Display(Name = "Description")]
+        [Display(Name = "Description *")]
         [Required(ErrorMessage = "Description is required.")]
         [StringLength(50, ErrorMessage = "Maximum length allowed is 50 characters.")]
         [DataType(DataType.MultilineText)]
@@ -28,7 +28,7 @@ namespace Jewellis.Areas.Admin.ViewModels.DeliveryMethods
         /// <summary>
         /// The price of the delivery method.
         /// </summary>
-        [Display(Name = "Price ($)")]
+        [Display(Name = "Price ($) *")]
         [Required(ErrorMessage = "Price is required.")]
         [Range(0, 100000, ErrorMessage = "Price must be between 0 to 100000.")]
         [DataType(DataType.Currency, ErrorMessage = "Invalid price value.")]

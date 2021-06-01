@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Jewellis.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace Jewellis
 {
@@ -52,7 +53,15 @@ namespace Jewellis
                 };
             });
 
-            services.AddDbContext<JewellisDbContext>(options => options.UseSqlServer(Configuration.GetSection("UserSecrets").GetSection("ConnectionStrings")["JewellisDbContext"]));
+            services.AddDbContext<JewellisDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetSection("UserSecrets").GetSection("ConnectionStrings")["JewellisDbContext"]);
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,8 +73,8 @@ namespace Jewellis
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Error/ExceptionHandler");
+                app.UseStatusCodePagesWithReExecute("/Error/StatusCodeHandler");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-05-31
+    Last Update: 2021-06-01
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6028,6 +6028,19 @@ figure {
 
 /*#endregion */
 
+.during-dates {
+    padding-right: 3rem;
+}
+
+    .during-dates > .during-dates-date {
+        width: calc(50% - 2.5rem);
+    }
+
+    .during-dates > .during-dates-to {
+        width: 4.7rem;
+        padding: 0 1.5rem;
+    }
+
 @media screen and (max-width: 480px) {
     .i-txt-with-btn-wrapper.mob-break {
         display: inline-block;
@@ -6808,7 +6821,9 @@ figure {
     .py-6-desktop {
         padding: 0 !important;
     }
+}
 
+@media screen and (min-width: 1200px) {
     .w-xl-auto {
         width: auto !important;
     }

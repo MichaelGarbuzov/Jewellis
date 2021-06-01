@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,11 +23,16 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Sales
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            List<Sale> sales = await _dbContext.Sales.Where(s => (query == null) || s.Name.Contains(query)).OrderByDescending(s => s.DateLastModified).ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(sales);
+            List<Sale> sales = await _dbContext.Sales
+                .Where(s => ((model.Query == null) || s.Name.Contains(model.Query)) &&
+                            ((model.DuringStart == null) || (s.DateEnd.HasValue ? (model.DuringStart >= s.DateStart && model.DuringStart <= s.DateEnd) : (model.DuringStart >= s.DateStart))) &&
+                            ((model.DuringStart == null) || (s.DateEnd == null) || model.DuringEnd <= s.DateEnd))
+                .OrderByDescending(s => s.DateLastModified)
+                .ToListAsync();
+            ViewData["SalesModel"] = sales;
+            return View(model);
         }
 
         // GET: /Admin/Sales/Details/{id}

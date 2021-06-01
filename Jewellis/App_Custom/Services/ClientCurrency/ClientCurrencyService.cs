@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Jewellis.WebServices.IpApi;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Jewellis.App_Custom.Services.ClientCurrency
 {
@@ -47,32 +50,103 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         #region Public API
 
         /// <summary>
-        /// Gets the current client's currency, either from the database (if user is registered) or the cookie.
+        /// Gets the current client's currency, either from the database (if user is registered), the cookie, or a web service to detect currency by IP address.
         /// </summary>
         /// <returns>Returns the <see cref="Currency"/> of the current client.</returns>
         public Currency GetCurrent()
         {
+            // The following (4) steps are looking for a supported currency in various methods:
+            Currency userCurrency = null;
+
             // TODO: check if user is registered:
+            //// (1) - Checks if the user is authenticated - then gets the currency from the DB:
+            // if (user.isAuth())
+            // userCurrency = this.GetUserCurrencyFromDatabase()
 
+            // (2) - User is not authenticated - so gets the currency from the cookie:
+            if (userCurrency == null)
+                userCurrency = this.GetUserCurrencyByCookie();
 
-            // User is not registered - so gets the currency from the cookie:
-            string cookieValue = _httpContextAccessor.HttpContext.Request.Cookies[CURRENCY_COOKIE];
+            // (3) - Cookie value does not exist - so detects it by IP address:
+            if (userCurrency == null)
+                userCurrency = this.DetectUserCurrencyByWebService();
 
-            foreach (Currency currency in this.Options.SupportedCurrencies)
-            {
-                if (currency.Code.Equals(cookieValue, StringComparison.InvariantCultureIgnoreCase))
-                    return currency;
-            }
+            // (4) - If supported currency was not found on all methods - then sets the default:
+            if (userCurrency == null)
+                userCurrency = this.Options.SupportedCurrencies.FirstOrDefault(c => c.Code.Equals(this.Options.DefaultCurrency));
 
-            // If supported currency was not found - then sets the default:
-            Currency defaultCurrency = this.Options.SupportedCurrencies.FirstOrDefault(c => c.Code.Equals(this.Options.DefaultCurrency));
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(CURRENCY_COOKIE, defaultCurrency.Code, new CookieOptions()
+            // Finally, assigns the currency to the cookie:
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(CURRENCY_COOKIE, userCurrency.Code, new CookieOptions()
             {
                 HttpOnly = false,
                 Secure = true,
                 Expires = DateTimeOffset.Now.AddYears(100)
             });
-            return defaultCurrency;
+            return userCurrency;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Returns the supported currency for the specified currency code, or null if not supported.
+        /// </summary>
+        /// <param name="currencyCode">The currency code to get.</param>
+        /// <returns>Returns the supported currency for the specified currency code, or null if not supported.</returns>
+        private Currency GetSupportedCurrencyOrNull(string currencyCode)
+        {
+            if (string.IsNullOrEmpty(currencyCode))
+                return null;
+
+            foreach (Currency currency in this.Options.SupportedCurrencies)
+            {
+                if (currency.Code.Equals(currencyCode, StringComparison.InvariantCultureIgnoreCase))
+                    return currency;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the currency of the user by the database (for an authenticated user).
+        /// </summary>
+        /// <returns>Returns the currency of the user by the database if found and supported, otherwise null.</returns>
+        private Currency GetUserCurrencyByDatabase()
+        {
+            // TODO
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the currency of the user by the cookie.
+        /// </summary>
+        /// <returns>Returns the currency of the user by the cookie if found and supported, otherwise null.</returns>
+        private Currency GetUserCurrencyByCookie()
+        {
+            string cookieValue = _httpContextAccessor.HttpContext.Request.Cookies[CURRENCY_COOKIE];
+            return this.GetSupportedCurrencyOrNull(cookieValue);
+        }
+
+        /// <summary>
+        /// Detects the currency of the user by a web service that identifies the locale for a given IP address.
+        /// </summary>
+        /// <returns>Returns the currency of the user by the web service if found and supported, otherwise null.</returns>
+        private Currency DetectUserCurrencyByWebService()
+        {
+            IPAddress userIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+            if (userIpAddress == null)
+                return null;
+
+            try
+            {
+                IpApiWebService ipApiService = new IpApiWebService();
+                string ipCurrency = Task.Run(() => ipApiService.GetCurrencyCodeAsync(userIpAddress.ToString())).Result;
+                return this.GetSupportedCurrencyOrNull(ipCurrency);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         #endregion

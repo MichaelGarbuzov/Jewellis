@@ -21,7 +21,7 @@ namespace Jewellis.Areas.Admin.Controllers
             _dbContext = dbContext;
         }
 
-        // GET: /admin/stores
+        // GET: /Admin/Stores
         public async Task<IActionResult> Index(string query)
         {
             List<Branch> branches = await _dbContext.Branches.Where(b => (query == null) || b.Name.Contains(query)).OrderBy(b => b.Name).ToListAsync();
@@ -29,7 +29,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return View(branches);
         }
 
-        // GET: /admin/stores/details/{id}
+        // GET: /Admin/Stores/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
             Branch branch = await _dbContext.Branches.FirstOrDefaultAsync(b => b.Id == id);
@@ -39,13 +39,13 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(branch);
         }
 
-        // GET: /admin/stores/create
+        // GET: /Admin/Stores/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /admin/stores/create
+        // POST: /Admin/Stores/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVM model)
@@ -67,7 +67,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /admin/stores/edit/{id}
+        // GET: /Admin/Stores/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
             Branch branch = await _dbContext.Branches.FindAsync(id);
@@ -87,7 +87,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 });
         }
 
-        // POST: /admin/stores/edit/{id}
+        // POST: /Admin/Stores/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditVM model)
@@ -116,7 +116,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /admin/stores/delete/{id}
+        // GET: /Admin/Stores/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             Branch branch = await _dbContext.Branches.FirstOrDefaultAsync(b => b.Id == id);
@@ -126,7 +126,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(branch);
         }
 
-        // POST: /admin/stores/delete/5
+        // POST: /Admin/Stores/Delete/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Delete")]

@@ -1,7 +1,9 @@
-﻿@model IEnumerable<Jewellis.Models.Sale>
+﻿@model Jewellis.Areas.Admin.ViewModels.Sales.IndexVM
 
 @{
     ViewData["Title"] = "Sales";
+
+    List<Sale> sales = (ViewData["SalesModel"] as List<Sale>);
 }
 
 <section class="bg-light-2">
@@ -13,12 +15,31 @@
             </ul>
             <h1 class="title-1 font-weight-bold mb-5">Sales</h1>
             <div class="form-container bg-white mb-5">
-                <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="flex-fill maxw-sm mb-5 mr-sm-5">
+                <div class="d-flex flex-column flex-xl-row flex-wrap align-items-end">
+                    <div class="flex-fill w-100 w-xl-auto mb-5 mr-xl-5">
                         <form asp-area="Admin" asp-controller="Sales" asp-action="Index" method="get">
-                            <div class="i-txt-with-btn-wrapper">
-                                <input type="text" name="query" value="@ViewData["SearchQuery"]" class="i-txt bg-input-txt" placeholder="Enter keywords here..." autocomplete="off" />
-                                <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                            <div class="d-flex flex-column flex-lg-row align-items-end">
+                                <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0 mb-4 mb-lg-0">
+                                    <div class="col-md-8 p-0 mb-4 mb-md-0">
+                                        <label asp-for="DuringStart" class="font-weight-bold">Sales Running On Specific Times:</label>
+                                        <div class="d-flex align-items-center during-dates p-0 pr-md-5">
+                                            <div class="during-dates-date">
+                                                <input asp-for="DuringStart" class="i-txt bg-input-txt" />
+                                                <span asp-validation-for="DuringStart" class="text-danger"></span>
+                                            </div>
+                                            <label asp-for="DuringEnd" class="during-dates-to">to</label>
+                                            <div class="during-dates-date">
+                                                <input asp-for="DuringEnd" class="i-txt bg-input-txt" />
+                                                <span asp-validation-for="DuringEnd" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 p-0 pr-lg-5">
+                                        <input asp-for="Query" class="i-txt bg-input-txt" autocomplete="off" />
+                                        <span asp-validation-for="Query" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
                             </div>
                         </form>
                     </div>
@@ -35,7 +56,7 @@
                         </div>
                     </div>
                     <div class="table-body">
-                        @foreach (Sale sale in Model)
+                        @foreach (Sale sale in sales)
                         {
                             <div class="table-row hover-bg px-4 py-5">
                                 <div class="d-flex flex-column flex-lg-row justify-content-end align-items-center">
@@ -72,7 +93,7 @@
                                 </div>
                             </div>
                         }
-                        @if (Model.Count() < 1)
+                        @if (sales.Count < 1)
                         {
                             <p class="text-center txt-secondary p-5">No Results.</p>
                         }
@@ -82,3 +103,7 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

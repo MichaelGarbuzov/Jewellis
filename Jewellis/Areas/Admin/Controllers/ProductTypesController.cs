@@ -29,7 +29,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return View(types);
         }
 
-        // GET: /Admin/ProductTypes/details/{id}
+        // GET: /Admin/ProductTypes/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
             ProductType types = await _dbContext.ProductTypes.FirstOrDefaultAsync(t => t.Id == id);
@@ -39,13 +39,13 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(types);
         }
 
-        // GET: /Admin/ProductTypes/create
+        // GET: /Admin/ProductTypes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Admin/ProductTypes/create
+        // POST: /Admin/ProductTypes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVM model)
@@ -62,7 +62,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/ProductTypes/edit/{id}
+        // GET: /Admin/ProductTypes/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
             ProductType type = await _dbContext.ProductTypes.FindAsync(id);
@@ -77,7 +77,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 });
         }
 
-        // POST: /Admin/ProductTypes/{id}
+        // POST: /Admin/ProductTypes/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditVM model)
@@ -101,7 +101,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/ProductTypes/delete/{id}
+        // GET: /Admin/ProductTypes/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             ProductType type = await _dbContext.ProductTypes.FirstOrDefaultAsync(c => c.Id == id);
@@ -111,7 +111,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(type);
         }
 
-        // POST: /Admin/ProductTypes/delete/5
+        // POST: /Admin/ProductTypes/Delete/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Delete")]

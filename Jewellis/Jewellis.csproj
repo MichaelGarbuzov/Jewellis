@@ -6,23 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Areas\Account\ViewModels\**" />
-    <Compile Remove="Areas\Shop\ViewModels\**" />
-    <Content Remove="Areas\Account\ViewModels\**" />
-    <Content Remove="Areas\Shop\ViewModels\**" />
-    <EmbeddedResource Remove="Areas\Account\ViewModels\**" />
-    <EmbeddedResource Remove="Areas\Shop\ViewModels\**" />
-    <None Remove="Areas\Account\ViewModels\**" />
-    <None Remove="Areas\Shop\ViewModels\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WebServices\CurrencyConvertorAPI\" />
   </ItemGroup>
 
 </Project>

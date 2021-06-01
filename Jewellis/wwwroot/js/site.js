@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-05-31
+    Last Update: 2021-06-01
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -403,14 +403,26 @@ $(function () {
     // Submit Button Loader:
     // ---------------------
     $('[data-submit-loader]').each(function () {
-        $(this).parents('form').submit(function () {
+        var $form = $(this).parents('form');
+
+        $form.submit(function () {
+            var $submitBtn = $(this).find('[data-submit-loader]');
             if (!$.isFunction($.fn.valid) || $(this).valid() === true) {
-                var $submitBtn = $(this).find('[data-submit-loader]');
                 $submitBtn.attr('disabled', '');
                 if (!$submitBtn.find('.spinner-border').length) {
                     $submitBtn.prepend('<span class="spinner-border icon-top-adjust mr-3" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
                 }
+            } else {
+                $submitBtn.removeAttr('disabled');
+                $submitBtn.find('.spinner-border').remove();
             }
+        });
+
+        // Binds to the invalid event, mostly for remote validation:
+        $form.bind("invalid-form.validate", function () {
+            var $submitBtn = $(this).find('[data-submit-loader]');
+            $submitBtn.removeAttr('disabled');
+            $submitBtn.find('.spinner-border').remove();
         });
     });
 

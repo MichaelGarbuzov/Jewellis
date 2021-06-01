@@ -29,7 +29,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return View(categories);
         }
 
-        // GET: /Admin/ProductCategories/details/{id}
+        // GET: /Admin/ProductCategories/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
             ProductCategory category = await _dbContext.ProductCategories.FirstOrDefaultAsync(c => c.Id == id);
@@ -39,13 +39,13 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(category);
         }
 
-        // GET: /Admin/ProductCategories/create
+        // GET: /Admin/ProductCategories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: /Admin/ProductCategories/create
+        // POST: /Admin/ProductCategories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVM model)
@@ -55,14 +55,14 @@ namespace Jewellis.Areas.Admin.Controllers
 
             ProductCategory category = new ProductCategory()
             {
-                Name = model.Name                
+                Name = model.Name
             };
             _dbContext.ProductCategories.Add(category);
             await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/ProductCategories/edit/{id}
+        // GET: /Admin/ProductCategories/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
             ProductCategory category = await _dbContext.ProductCategories.FindAsync(id);
@@ -77,7 +77,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 });
         }
 
-        // POST: /Admin/ProductCategories/edit/{id}
+        // POST: /Admin/ProductCategories/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditVM model)
@@ -93,7 +93,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 return NotFound();
 
             // Binds the view model:
-            category.Name = model.Name;        
+            category.Name = model.Name;
             category.DateLastModified = DateTime.Now;
 
             _dbContext.ProductCategories.Update(category);
@@ -101,7 +101,7 @@ namespace Jewellis.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: /Admin/ProductCategories/delete/{id}
+        // GET: /Admin/ProductCategories/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
             ProductCategory category = await _dbContext.ProductCategories.FirstOrDefaultAsync(c => c.Id == id);
@@ -111,7 +111,7 @@ namespace Jewellis.Areas.Admin.Controllers
                 return View(category);
         }
 
-        // POST: /Admin/ProductCategories/delete/5
+        // POST: /Admin/ProductCategories/Delete/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Delete")]

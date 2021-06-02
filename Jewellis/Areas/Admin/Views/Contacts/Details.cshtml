@@ -1,0 +1,78 @@
+﻿@using Jewellis.Models.Helpers
+
+@model Jewellis.Models.Contact
+
+@{
+    ViewData["Title"] = $"Contact #{Model.Id} Details";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Contacts" asp-action="Index" class="primary-link"><u>Contacts</u></a></li>
+                <li class="breadcrumb-item">Contact #@Model.Id</li>
+            </ul>
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <h1 class="title-1 font-weight-bold mb-5">Contact #@Model.Id</h1>
+                <div class="mb-4">
+                    <div class="dropdown d-inline-block">
+                        <button type="button" id="ChangeStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Change Status<span class="icon icon-arrow-down icon-top-adjust ml-3" aria-hidden="true"></span></button>
+                        <div class="dropdown-menu" aria-labelledby="ChangeStatus">
+                            <form asp-area="Admin" asp-controller="Contacts" asp-action="UpdateStatus" method="post">
+                                <input type="hidden" asp-for="Id" />
+                                <input type="submit" name="status" value="@ContactStatus.Pending" class="dropdown-item" />
+                                <input type="submit" name="status" value="@ContactStatus.Handling" class="dropdown-item" />
+                                <input type="submit" name="status" value="@ContactStatus.Closed" class="dropdown-item" />
+                            </form>
+                        </div>
+                    </div>
+                    <a asp-area="Admin" asp-controller="Contacts" asp-action="Delete" asp-route-id="@Model.Id" class="btn title-1-btn outline-danger px-sm-5 mb-4 ml-3">Delete</a>
+                </div>
+            </div>
+            <div class="form-container bg-white mb-5">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="single-form-item">
+                            <label asp-for="Name"></label>
+                            <p>@Html.DisplayFor(m => m.Name)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="EmailAddress"></label>
+                            <p>@Html.DisplayFor(m => m.EmailAddress)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Subject"></label>
+                            <p>@Html.DisplayFor(m => m.Subject)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Body"></label>
+                            <p class="pre-line">@Html.DisplayFor(m => m.Body)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Status"></label>
+                            <p>@Html.DisplayFor(m => m.Status)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateCreated"></label>
+                            <p>@Html.DisplayFor(m => m.DateCreated)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateLastModified"></label>
+                            <p>@Html.DisplayFor(m => m.DateLastModified)</p>
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-5">
+                            <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span class="icon icon-mail3 icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

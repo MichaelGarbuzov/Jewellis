@@ -1,0 +1,65 @@
+﻿@model Jewellis.Models.Contact
+
+@{
+    ViewData["Title"] = $"Delete Contact #{Model.Id}";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Contacts" asp-action="Index" class="primary-link"><u>Contacts</u></a></li>
+                <li class="breadcrumb-item">Delete Contact #@Model.Id</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Delete Contact #@Model.Id</h1>
+            <div class="form-container bg-white mb-5">
+                <h2 class="tag tag-danger px-5 py-4 mb-4">Are you sure you want to delete this?</h2>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="single-form-item">
+                            <label asp-for="Name"></label>
+                            <p>@Html.DisplayFor(m => m.Name)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="EmailAddress"></label>
+                            <p>@Html.DisplayFor(m => m.EmailAddress)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Subject"></label>
+                            <p>@Html.DisplayFor(m => m.Subject)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Body"></label>
+                            <p class="pre-line">@Html.DisplayFor(m => m.Body)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Status"></label>
+                            <p>@Html.DisplayFor(m => m.Status)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateCreated"></label>
+                            <p>@Html.DisplayFor(m => m.DateCreated)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateLastModified"></label>
+                            <p>@Html.DisplayFor(m => m.DateLastModified)</p>
+                        </div>
+                        <form asp-area="Admin" asp-controller="Contacts" asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-5">
+                                <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                                <button type="submit" class="btn btn-danger align-self-stretch px-5 m-2" data-submit-loader>Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span class="icon icon-mail3 icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

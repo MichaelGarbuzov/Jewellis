@@ -1,5 +1,7 @@
-﻿using Jewellis.WebServices.IpApi;
+﻿using Jewellis.WebServices.CurrencyConverterApi;
+using Jewellis.WebServices.IpApi;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -13,11 +15,28 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
     /// </summary>
     public class ClientCurrencyService
     {
-        #region Private Members
+        #region Constants
 
         private const string CURRENCY_COOKIE = AppKeys.Cookies.ClientCurrency;
 
+        #endregion
+
+        #region Private Members
+
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Holds the client's currency in the scope.
+        /// Can be null, initialized only after the first call of <see cref="GetCurrent()"/>.
+        /// </summary>
+        private Currency _clientCurrency;
+
+        /// <summary>
+        /// Holds the client's currency conversion rate in the scope.
+        /// Can be null, initialized only after the first call of <see cref="GetConversionRateToCurrent()"/>.
+        /// </summary>
+        private double? _clientCurrencyConversionRate;
 
         #endregion
 
@@ -34,7 +53,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// Represents a service (scoped) for managing the client's preferred currency.
         /// </summary>
         /// <param name="options">The options to configure the <see cref="ClientCurrencyService"/>.</param>
-        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor)
+        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             if (string.IsNullOrEmpty(options.Value.DefaultCurrency))
                 throw new ArgumentNullException("{options.DefaultCurrency} cannot be null or empty.");
@@ -45,6 +64,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
 
             this.Options = options.Value;
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
         }
 
         #region Public API
@@ -55,6 +75,11 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// <returns>Returns the <see cref="Currency"/> of the current client.</returns>
         public Currency GetCurrent()
         {
+            // Since this is a scoped service, checks if currnecy already found in scope:
+            if (_clientCurrency != null)
+                return _clientCurrency;
+
+            // Otherwise, this is the first call in the scope:
             // The following (4) steps are looking for a supported currency in various methods:
             Currency userCurrency = null;
 
@@ -82,7 +107,54 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
                 Secure = true,
                 Expires = DateTimeOffset.Now.AddYears(100)
             });
+            // Assigns the currency found to the current scope:
+            _clientCurrency = userCurrency;
             return userCurrency;
+        }
+
+        /// <summary>
+        /// Returns the conversion rate from dollars (USD) to the current currency of the client.
+        /// Using a web service to get the conversion rate.
+        /// </summary>
+        /// <returns>Returns the conversion rate from dollars (USD) to the current currency of the client.</returns>
+        public double GetConversionRateToCurrent()
+        {
+            // Checks if conversion rate already calculated in this scope:
+            if (_clientCurrencyConversionRate != null)
+                return _clientCurrencyConversionRate.Value;
+
+            // Otherwise it's the first call in this scope:
+            Currency currency = this.GetCurrent();
+
+            if (string.Equals(currency.Code, "USD", StringComparison.OrdinalIgnoreCase))
+                return 1;
+
+            string ccApiKey = _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials")["CurrencyConverterApi"];
+            CurrencyConverterApiService ccApiService = new CurrencyConverterApiService(ccApiKey);
+            double conversionRate = Task.Run(() => ccApiService.ConvertAsync("USD", currency.Code)).Result;
+            _clientCurrencyConversionRate = conversionRate;
+            return conversionRate;
+        }
+
+        /// <summary>
+        /// Gets the price value in the client's currency, after conversion from USD to client's current currency.
+        /// </summary>
+        /// <param name="price">The price in dollars (USD).</param>
+        /// <returns>Returns the price value in the client's currency, after conversion from USD to client's current currency.</returns>
+        public double GetPrice(double price)
+        {
+            return (price * this.GetConversionRateToCurrent());
+        }
+
+        /// <summary>
+        /// Gets the price value in the client's currency, after conversion from USD to client's current currency.
+        /// </summary>
+        /// <param name="price">The price in dollars (USD).</param>
+        /// <returns>Returns the price value in the client's currency, after conversion from USD to client's current currency.</returns>
+        public string DisplayPrice(double price)
+        {
+            double convertedPrice = this.GetPrice(price);
+            return string.Format("{0}{1:0.00}", this.GetCurrent().Symbol, convertedPrice);
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using Jewellis.App_Custom.ActionFilters;
-using Jewellis.Data;
+﻿using Jewellis.Data;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +21,15 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Contacts
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(string query, ContactStatus? status)
         {
             List<Contact> contacts = await _dbContext.Contacts
-                .Where(c => (query == null) || c.Name.Contains(query) || c.EmailAddress.Contains(query) || c.Subject.Contains(query) || c.Body.Contains(query))
+                .Where(c => ((query == null) || c.Name.Contains(query) || c.EmailAddress.Contains(query) || c.Subject.Contains(query) || c.Body.Contains(query)) &&
+                            ((status == null) || c.Status == status.Value))
                 .OrderByDescending(c => c.DateCreated)
                 .ToListAsync();
             ViewData["SearchQuery"] = query;
+            ViewData["SearchStatus"] = status;
             return View(contacts);
         }
 

@@ -11,18 +11,17 @@ namespace Jewellis.WebServices.IpApi
     /// </summary>
     public class IpApiWebService
     {
-
         #region Constants
 
         /// <summary>
         /// Holds a constant of the base URL for interacting with the service.
         /// </summary>
-        public const string BASE_URL = @"http://ip-api.com/json";
+        private const string BASE_URL = @"http://ip-api.com/json";
 
         /// <summary>
         /// Holds a constant for the property name: "currency".
         /// </summary>
-        public const string PARAM_CURRENCY_CODE = "currency";
+        private const string PARAM_CURRENCY_CODE = "currency";
 
         #endregion
 

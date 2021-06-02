@@ -18,7 +18,7 @@
                 <h1 class="title-1 font-weight-bold mb-5">Contact #@Model.Id</h1>
                 <div class="mb-4">
                     <div class="dropdown d-inline-block">
-                        <button type="button" id="ChangeStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Change Status<span class="icon icon-arrow-down icon-top-adjust ml-3" aria-hidden="true"></span></button>
+                        <button type="button" id="ChangeStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Change Status</button>
                         <div class="dropdown-menu" aria-labelledby="ChangeStatus">
                             <form asp-area="Admin" asp-controller="Contacts" asp-action="UpdateStatus" method="post">
                                 <input type="hidden" asp-for="Id" />
@@ -52,7 +52,7 @@
                         </div>
                         <div class="single-form-item">
                             <label asp-for="Status"></label>
-                            <p>@Html.DisplayFor(m => m.Status)</p>
+                            <p><span class="tag @(Model.Status == ContactStatus.Pending ? "tag-warning" : Model.Status == ContactStatus.Handling ? "tag-info" : "tag-success")">@Html.DisplayFor(m => m.Status)</span></p>
                         </div>
                         <div class="single-form-item">
                             <label asp-for="DateCreated"></label>

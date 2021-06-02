@@ -1,4 +1,6 @@
-﻿@model Jewellis.Models.Contact
+﻿@using Jewellis.Models.Helpers
+
+@model Jewellis.Models.Contact
 
 @{
     ViewData["Title"] = $"Delete Contact #{Model.Id}";
@@ -35,7 +37,7 @@
                         </div>
                         <div class="single-form-item">
                             <label asp-for="Status"></label>
-                            <p>@Html.DisplayFor(m => m.Status)</p>
+                            <p><span class="tag @(Model.Status == ContactStatus.Pending ? "tag-warning" : Model.Status == ContactStatus.Handling ? "tag-info" : "tag-success")">@Html.DisplayFor(m => m.Status)</span></p>
                         </div>
                         <div class="single-form-item">
                             <label asp-for="DateCreated"></label>

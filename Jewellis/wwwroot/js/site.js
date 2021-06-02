@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-01
+    Last Update: 2021-06-02
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -542,6 +542,7 @@ $(function () {
         $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-updatable]').text($(this).attr('data-theme-set-display'));
         // Updates the cookie:
         setCookie(AppKeys.Cookies.ClientTheme, $(this).attr('data-theme-set-val'), 365 * 100);
+        // TODO: Send AJAX request if user authenticated
     });
 
     // Currency change:
@@ -554,8 +555,11 @@ $(function () {
         $currencyMenu.parent('[data-dd-mega]').find('#main-currency-btn').find('[data-updatable]').text($(this).attr('data-currency-set'));
         // Updates the cookie:
         setCookie(AppKeys.Cookies.ClientCurrency, $(this).attr('data-currency-set'), 365 * 100);
-        // Updates each currency element in the page:
-        // TODO
+        // TODO: Send AJAX request if user authenticated
+
+        // Reloads the page:
+        location.reload();
+        return false;
     });
 
 });

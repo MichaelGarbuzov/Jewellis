@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-02
+    Last Update: 2021-06-03
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -423,6 +423,73 @@ $(function () {
             var $submitBtn = $(this).find('[data-submit-loader]');
             $submitBtn.removeAttr('disabled');
             $submitBtn.find('.spinner-border').remove();
+        });
+    });
+
+    // AJAX Unobtrusive Submition:
+    // ---------------------------
+    $('[data-ajax="true"]').submit(function (e) {
+        e.preventDefault();
+        var $form = $(this);
+
+        // Checks the form is valid:
+        if (!$form.valid()) {
+            return;
+        }
+
+        // Builds the view model:
+        var SubscribeVM = {};
+        $form.find('[name]').each(function () {
+            SubscribeVM[$(this).attr('name')] = $(this).val();
+        });
+
+        // Sends the AJAX request:
+        $.ajax({
+            type: $form.attr('data-ajax-method'),
+            url: $form.attr('action'),
+            data: JSON.stringify(SubscribeVM),
+            headers: { 'RequestVerificationToken': SubscribeVM["__RequestVerificationToken"] },
+            contentType: 'application/json',
+            dataType: 'json',
+            complete: function () {
+                // Removes the submit loader if exists:
+                var $submitLoader = $form.find('[data-submit-loader]');
+                if ($submitLoader) {
+                    $submitLoader.removeAttr('disabled');
+                    $submitLoader.find('.spinner-border').remove();
+                }
+
+                // Triggers the complete callback:
+                if ($form.attr('data-ajax-complete')) {
+                    eval($form.attr('data-ajax-complete') + '();');
+                }
+            },
+            success: function (response) {
+                if ($form.attr('data-ajax-update')) {
+                    var $msgElement = $($form.attr('data-ajax-update'));
+                    $msgElement.text(response.message);
+                }
+
+                if ($form.attr('data-ajax-success-clear')) {
+                    $form.find('input:not([type="hidden"])').val('');
+                }
+
+                // Triggers the success callback:
+                if ($form.attr('data-ajax-success')) {
+                    eval($form.attr('data-ajax-success') + '(response);');
+                }
+            },
+            error: function (response) {
+                if ($form.attr('data-ajax-update')) {
+                    var $msgElement = $($form.attr('data-ajax-update'));
+                    $msgElement.text(response.message);
+                }
+
+                // Triggers the failure callback:
+                if ($form.attr('data-ajax-failure')) {
+                    eval($form.attr('data-ajax-failure') + '(response);');
+                }
+            }
         });
     });
 

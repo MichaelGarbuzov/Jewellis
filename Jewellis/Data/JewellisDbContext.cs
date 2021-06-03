@@ -12,6 +12,7 @@ namespace Jewellis.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserCartProduct> UserCartProducts { get; set; }
         public DbSet<UserWishlistProduct> UserWishlistProducts { get; set; }
+        public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
@@ -59,6 +60,15 @@ namespace Jewellis.Data
             // Default value on system datetime columns:
             modelBuilder.Entity<UserWishlistProduct>()
                 .Property(e => e.DateAdded)
+                .HasDefaultValueSql("GETDATE()");
+
+            #endregion
+
+            #region [NewsletterSubscribers] table
+
+            // Default value on system datetime columns:
+            modelBuilder.Entity<NewsletterSubscriber>()
+                .Property(e => e.DateJoined)
                 .HasDefaultValueSql("GETDATE()");
 
             #endregion

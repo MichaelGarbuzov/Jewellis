@@ -1,0 +1,11 @@
+﻿@model Jewellis.Areas.Account.ViewModels.Newsletter.SubscribeVM
+
+<form asp-area="Account" asp-controller="Newsletter" asp-action="Subscribe" method="post"
+      data-ajax="true" data-ajax-method="post" data-ajax-update="#index-sub-result" data-ajax-success-clear="true">
+    <div class="i-txt-with-btn-wrapper mob-break px-5">
+        <input asp-for="EmailAddress" class="i-txt bg-input-txt font-italic" />
+        <button type="submit" class="btn outline-primary text-nowrap" data-submit-loader>Subscribe</button>
+    </div>
+    <span asp-validation-for="EmailAddress" class="text-danger txt-lg mt-3"></span>
+    <div id="index-sub-result" class="font-weight-bold p-3"></div>
+</form>

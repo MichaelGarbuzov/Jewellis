@@ -500,12 +500,7 @@
                 <div class="col newsletter">
                     <h3>Join our newsletter</h3>
                     <p>Get Updates On Awesome Jewelry!<br>Daily Offers &amp; Discounts!</p>
-                    <form action="" method="post">
-                        <div class="i-txt-with-btn-wrapper rounded mt-4 bg-background">
-                            <input type="email" name="email" class="i-txt italic border-0 m-0" placeholder="Your email address..." required />
-                            <button type="submit" class="btn txt-secondary"><span class="icon icon-paperplane" aria-hidden="true"></span></button>
-                        </div>
-                    </form>
+                    <partial name="~/Views/Shared/PartialViews/_NewsletterSubscriptionPartial.cshtml" />
                 </div>
             </div>
             <p class="copyright">&copy; @DateTime.Now.Year Jewellis. All rights reserved.</p>
@@ -514,6 +509,7 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

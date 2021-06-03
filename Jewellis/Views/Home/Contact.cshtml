@@ -97,8 +97,6 @@
 }
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
     @if (TempData["Success"] != null && (bool)TempData["Success"] == true)
     {
         <script>

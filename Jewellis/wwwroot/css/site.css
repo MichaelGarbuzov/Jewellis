@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-01
+    Last Update: 2021-06-03
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -8560,7 +8560,7 @@ html[theme="light"] #main-admin-logo .logo {
 }
 
 .table-actions {
-    width: 33rem;
+    width: 33rem !important;
 }
 
 @media screen and (max-width: 1200px) {

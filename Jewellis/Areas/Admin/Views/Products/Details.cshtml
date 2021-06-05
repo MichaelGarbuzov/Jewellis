@@ -1,0 +1,86 @@
+﻿@model Jewellis.Models.Product
+
+@{
+    ViewData["Title"] = $"Product #{Model.Id} Details";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Products" asp-action="Index" class="primary-link"><u>Products</u></a></li>
+                <li class="breadcrumb-item">Product #@Model.Id</li>
+            </ul>
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <h1 class="title-1 font-weight-bold mb-5">Product #@Model.Id</h1>
+                <div class="mb-4">
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Edit</a>
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@Model.Id" class="btn title-1-btn outline-danger px-sm-5 mb-4 ml-3">Delete</a>
+                </div>
+            </div>
+            <div class="form-container bg-white mb-5">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="single-form-item">
+                            <label asp-for="Name"></label>
+                            <p>@Html.DisplayFor(m => m.Name)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Description"></label>
+                            <p class="pre-line">@Html.DisplayFor(m => m.Description)</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Price"></label>
+                            <p>@Html.DisplayFor(m => m.Price)</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="single-form-item">
+                                    <label asp-for="Category"></label>
+                                    <p>@Html.DisplayFor(m => m.Category.Name)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="single-form-item">
+                                    <label asp-for="Type"></label>
+                                    <p>@Html.DisplayFor(m => m.Type.Name)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Sale"></label>
+                            <p>@(Model.Sale != null ? Html.DisplayFor(m => m.Sale.Name) : "-")</p>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="IsAvailable"></label>
+                            <p>@(Model.IsAvailable ? "Yes" : "No")</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="single-form-item">
+                                    <label asp-for="DateAdded"></label>
+                                    <p>@Html.DisplayFor(m => m.DateAdded)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="single-form-item">
+                                    <label asp-for="DateLastModified"></label>
+                                    <p>@Html.DisplayFor(m => m.DateLastModified)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-5">
+                            <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <div class="d-flex justify-content-center align-items-center h-100 p-5">
+                            <img src="@Model.ImagePath" alt="@Model.Name" class="img-fluid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

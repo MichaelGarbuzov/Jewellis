@@ -331,7 +331,7 @@ namespace Jewellis.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("SaleId")
+                    b.Property<int?>("SaleId")
                         .HasColumnType("int");
 
                     b.Property<int>("TypeId")
@@ -610,9 +610,7 @@ namespace Jewellis.Migrations
 
                     b.HasOne("Jewellis.Models.Sale", "Sale")
                         .WithMany()
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SaleId");
 
                     b.HasOne("Jewellis.Models.ProductType", "Type")
                         .WithMany()

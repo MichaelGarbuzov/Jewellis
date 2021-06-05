@@ -41,9 +41,8 @@ namespace Jewellis.Models
         /// <summary>
         /// The path to the image of the product.
         /// </summary>
-        [Display(Name = "Image Path")]
+        [Display(Name = "Image")]
         [Required]
-        [StringLength(400)]
         [DataType(DataType.ImageUrl)]
         public string ImagePath { get; set; }
 
@@ -104,7 +103,7 @@ namespace Jewellis.Models
         /// The current sale id on the product.
         /// </summary>
         /// <remarks>[Foreign Key]</remarks>
-        public int SaleId { get; set; }
+        public int? SaleId { get; set; }
 
         /// <summary>
         /// The current sale on the product.

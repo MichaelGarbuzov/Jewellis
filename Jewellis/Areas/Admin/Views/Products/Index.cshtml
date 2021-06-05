@@ -1,0 +1,110 @@
+﻿@model Jewellis.Areas.Admin.ViewModels.Products.IndexVM
+
+@{
+    ViewData["Title"] = "Products";
+
+    List<Product> products = (ViewData["ProductsModel"] as List<Product>);
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item">Products</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Products</h1>
+            <div class="form-container bg-white mb-5">
+                <form asp-area="Admin" asp-controller="Products" asp-action="Index" method="get">
+                    <div class="d-flex flex-column flex-lg-row align-items-end mb-lg-3">
+                        <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0">
+                            <div class="col-lg-3 col-sm-6 p-0 pr-sm-5">
+                                <div class="single-form-item">
+                                    <label asp-for="CategoryId"></label>
+                                    <select asp-for="CategoryId" class="i-txt bg-input-txt" asp-items="ViewBag.ProductCategories">
+                                        <option selected></option>
+                                    </select>
+                                    <span asp-validation-for="SaleId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 p-0 pr-lg-5">
+                                <div class="single-form-item">
+                                    <label asp-for="TypeId"></label>
+                                    <select asp-for="TypeId" class="i-txt bg-input-txt" asp-items="ViewBag.ProductTypes">
+                                        <option selected></option>
+                                    </select>
+                                    <span asp-validation-for="SaleId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 p-0 pr-sm-5">
+                                <div class="single-form-item">
+                                    <label asp-for="SaleId"></label>
+                                    <select asp-for="SaleId" class="i-txt bg-input-txt" asp-items="ViewBag.Sales">
+                                        <option selected></option>
+                                    </select>
+                                    <span asp-validation-for="SaleId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 p-0 pr-lg-5">
+                                <div class="single-form-item">
+                                    <input asp-for="Query" class="i-txt bg-input-txt" autocomplete="off" />
+                                    <span asp-validation-for="Query" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-form-item">
+                            <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end">
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn btn-primary mb-5">Create New<span class="icon icon-plus icon-top-adjust ml-3" aria-hidden="true"></span></a>
+                </div>
+                <div class="border">
+                    <div class="table-header text-center">
+                        <div class="d-flex">
+                            <div class="row flex-fill">
+                                <div class="col-md-7">Product</div>
+                                <div class="col-md-5 d-none d-md-block">Category &amp; Type</div>
+                            </div>
+                            <div class="table-actions d-none d-lg-block">Actions</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        @foreach (Product product in products)
+                        {
+                            <div class="table-row hover-bg px-4 py-5">
+                                <div class="d-flex flex-column flex-lg-row justify-content-end align-items-center">
+                                    <div class="row flex-fill d-flex align-items-center w-100 w-lg-auto px-lg-5 mb-4 mb-lg-0">
+                                        <div class="col-md-7 d-flex align-items-center text-center text-md-left">
+                                            <a asp-area="Admin" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="mr-5">
+                                                <img src="@product.ImagePath" alt="@product.Name" class="row-image" />
+                                            </a>
+                                            <a asp-area="Admin" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="primary-link font-weight-bold text-ellipsis d-inline-block">@product.Name</a>
+                                        </div>
+                                        <div class="col-md-5 text-center">
+                                            <div class="py-3">@product.Category.Name | @product.Type.Name</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-actions w-100 w-md-auto text-center text-lg-right px-3">
+                                        <a asp-area="Admin" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
+                                        <a asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm txt-md outline-warning m-1">Edit</a>
+                                        <a asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm txt-md outline-danger m-1">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (products.Count < 1)
+                        {
+                            <p class="text-center txt-secondary p-5">No Results.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

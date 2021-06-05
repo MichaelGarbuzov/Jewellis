@@ -1,0 +1,112 @@
+﻿@model Jewellis.Areas.Admin.ViewModels.Products.CreateVM
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Products" asp-action="Index" class="primary-link"><u>Products</u></a></li>
+                <li class="breadcrumb-item">Create</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Create Product</h1>
+            <div class="form-container bg-white mb-5">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form asp-area="Admin" asp-controller="Products" asp-action="Create" method="post" enctype="multipart/form-data">
+                            <div class="single-form-item">
+                                <label asp-for="Name"></label>
+                                <input asp-for="Name" class="i-txt bg-input-txt" autocomplete="off" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="single-form-item">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="i-txt bg-input-txt" cols="30" rows="6"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="single-form-item">
+                                        <label asp-for="ImageFile"></label>
+                                        <input asp-for="ImageFile" accept="image/png" class="i-txt bg-input-txt" />
+                                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="single-form-item">
+                                        <label asp-for="Price"></label>
+                                        <input asp-for="Price" class="i-txt bg-input-txt" autocomplete="off" />
+                                        <span asp-validation-for="Price" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="single-form-item">
+                                        <label asp-for="CategoryId"></label>
+                                        <select asp-for="CategoryId" class="i-txt bg-input-txt" asp-items="ViewBag.ProductCategories">
+                                            <option selected></option>
+                                        </select>
+                                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="single-form-item">
+                                        <label asp-for="TypeId"></label>
+                                        <select asp-for="TypeId" class="i-txt bg-input-txt" asp-items="ViewBag.ProductTypes">
+                                            <option selected></option>
+                                        </select>
+                                        <span asp-validation-for="TypeId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="single-form-item">
+                                <label asp-for="SaleId"></label>
+                                <select asp-for="SaleId" class="i-txt bg-input-txt" asp-items="ViewBag.Sales">
+                                    <option selected></option>
+                                </select>
+                                <span asp-validation-for="SaleId" class="text-danger"></span>
+                            </div>
+                            <div class="single-form-item">
+                                <div class="custom-control custom-checkbox py-3">
+                                    <input asp-for="IsAvailable" class="custom-control-input" />
+                                    <label asp-for="IsAvailable" class="custom-control-label txt-primary"></label>
+                                </div>
+                            </div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-3">
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                                <button type="submit" class="btn btn-primary align-self-stretch px-5 m-2" data-submit-loader>Create<span class="icon icon-arrow-right1 icon-top-adjust ml-3" aria-hidden="true"></span></button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span id="product-icon" class="icon icon-qrcode icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                            <img id="product-image" src="" class="img-fluid p-5" style="display: none;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(function () {
+            $('#@Html.IdFor(m => m.ImageFile)').change(function () {
+                if (this.files && this.files[0]) {
+                    $('#product-icon').hide();
+                    $('#product-image').show();
+                    $('#product-image').attr('src', URL.createObjectURL(this.files[0]));
+                } else {
+                    $('#product-image').hide();
+                    $('#product-icon').show();
+                }
+            });
+        });
+    </script>
+}

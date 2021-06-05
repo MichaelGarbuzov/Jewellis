@@ -79,6 +79,20 @@ namespace Jewellis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NewsletterSubscribers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmailAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DateJoined = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NewsletterSubscribers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductCategories",
                 columns: table => new
                 {
@@ -168,7 +182,7 @@ namespace Jewellis.Migrations
                     DateLastModified = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     TypeId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false)
+                    SaleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -190,7 +204,7 @@ namespace Jewellis.Migrations
                         column: x => x.SaleId,
                         principalTable: "Sales",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -330,6 +344,12 @@ namespace Jewellis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_NewsletterSubscribers_EmailAddress",
+                table: "NewsletterSubscribers",
+                column: "EmailAddress",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_BillingAddressId",
                 table: "Orders",
                 column: "BillingAddressId");
@@ -422,6 +442,9 @@ namespace Jewellis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Contacts");
+
+            migrationBuilder.DropTable(
+                name: "NewsletterSubscribers");
 
             migrationBuilder.DropTable(
                 name: "OrdersVsProducts");

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jewellis.Migrations
 {
     [DbContext(typeof(JewellisDbContext))]
-    [Migration("20210530144634_FirstInit")]
+    [Migration("20210604073710_FirstInit")]
     partial class FirstInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,31 @@ namespace Jewellis.Migrations
                     b.ToTable("DeliveryMethods");
                 });
 
+            modelBuilder.Entity("Jewellis.Models.NewsletterSubscriber", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateJoined")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
+
+                    b.ToTable("NewsletterSubscribers");
+                });
+
             modelBuilder.Entity("Jewellis.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -308,7 +333,7 @@ namespace Jewellis.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("SaleId")
+                    b.Property<int?>("SaleId")
                         .HasColumnType("int");
 
                     b.Property<int>("TypeId")
@@ -587,9 +612,7 @@ namespace Jewellis.Migrations
 
                     b.HasOne("Jewellis.Models.Sale", "Sale")
                         .WithMany()
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SaleId");
 
                     b.HasOne("Jewellis.Models.ProductType", "Type")
                         .WithMany()

@@ -4,14 +4,16 @@ using Jewellis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Jewellis.Migrations
 {
     [DbContext(typeof(JewellisDbContext))]
-    partial class JewellisDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210608201711_UpdateUserPassword")]
+    partial class UpdateUserPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

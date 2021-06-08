@@ -2,6 +2,7 @@
 using Jewellis.Areas.Admin.ViewModels.Products;
 using Jewellis.Data;
 using Jewellis.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 namespace Jewellis.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
         private const string IMAGES_FOLDER_PATH = "/files/images/products";

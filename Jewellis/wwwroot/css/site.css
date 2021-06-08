@@ -6030,6 +6030,15 @@ figure {
     margin: 0.5rem 0;
 }
 
+.validation-summary-errors {
+    text-align: center;
+    color: #dc3545;
+    background-color: #fbe7e9;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
 /*#endregion */
 
 .during-dates {

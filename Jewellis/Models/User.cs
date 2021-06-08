@@ -47,13 +47,21 @@ namespace Jewellis.Models
         public string EmailAddress { get; set; }
 
         /// <summary>
-        /// The password of the user.
+        /// The hashed password of the user.
         /// </summary>
-        [Display(Name = "Password")]
+        [Display(Name = "Password Hash")]
         [Required]
-        [StringLength(100)]
+        [StringLength(400)]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
+
+        /// <summary>
+        /// The salt password of the user.
+        /// </summary>
+        [Display(Name = "Password Salt")]
+        [Required]
+        [StringLength(400)]
+        public string PasswordSalt { get; set; }
 
         /// <summary>
         /// The role of the user.

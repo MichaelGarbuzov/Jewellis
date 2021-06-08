@@ -240,16 +240,25 @@
                         </div>
                     </li>
                     <li class="dropdown">
-                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-user5" aria-hidden="true"></span></a>
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon @(Context.User.Identity.IsAuthenticated ? "icon-user5" : "icon-user-plus")" aria-hidden="true"></span></a>
                         <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu">
                             <ul id="main-profile-menu">
-                                <li class="primary-link-all pb-2 px-2"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
-                                <li class="dropdown-divider m-3"></li>
-                                <li><a asp-area="Account" asp-controller="Home" asp-action="Orders"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
-                                <li><a asp-area="Account" asp-controller="Home" asp-action="Profile"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
-                                <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Logout"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
-                                @*<li><a asp-area="Account" asp-controller="Authenticate" asp-action="Login"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
-                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>*@
+                                @if (Context.User.Identity.IsAuthenticated && Context.User.Identity.GetRole().Equals("Admin"))
+                                {
+                                    <li class="primary-link-all pb-2 px-2"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
+                                    <li class="dropdown-divider m-3"></li>
+                                }
+                                @if (Context.User.Identity.IsAuthenticated)
+                                {
+                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Orders"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
+                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Profile"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Logout"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Login"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>
+                                }
                                 <li class="dropdown-divider m-3"></li>
                                 <li class="dropdown-sm"><a href="#" role="button" id="main-currency-btn" data-dd-close="0" data-dd-mega-to="#main-currency-menu"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold" data-updatable>@currentCurrency.Code</span></a></li>
                                 <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-close="0" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-updatable>@currentTheme.DisplayName</span></a></li>

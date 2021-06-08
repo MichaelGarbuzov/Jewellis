@@ -1,6 +1,7 @@
 ﻿using Jewellis.Data;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace Jewellis.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ContactsController : Controller
     {
         private readonly JewellisDbContext _dbContext;

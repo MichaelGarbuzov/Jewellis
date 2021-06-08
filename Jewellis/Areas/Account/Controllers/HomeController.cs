@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Jewellis.Areas.Account.Controllers
 {
     [Area("Account")]
+    [Authorize]
     public class HomeController : Controller
     {
 

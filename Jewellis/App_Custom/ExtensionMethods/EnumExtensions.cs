@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace Jewellis.App_Custom.ExtensionMethods
+namespace Jewellis
 {
     /// <summary>
     /// Represents extension methods for enums.

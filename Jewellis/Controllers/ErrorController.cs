@@ -52,5 +52,11 @@ namespace Jewellis.Controllers
             }
         }
 
+        [Route("/error/access-denied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

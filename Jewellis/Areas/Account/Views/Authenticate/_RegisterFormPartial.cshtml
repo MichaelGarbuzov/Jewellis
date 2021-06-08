@@ -1,36 +1,47 @@
-﻿@{
+﻿@model Jewellis.Areas.Account.ViewModels.Authenticate.RegisterVM
+
+@{
     bool includeSubmitAction = (bool)ViewData["IncludeSubmitAction"];
 }
 
 <div class="row">
     <div class="col-lg-6">
         <div class="single-form-item">
-            <input type="text" name="FirstName" class="i-txt bg-input-txt" placeholder="First Name" required />
+            <input asp-for="FirstName" class="i-txt bg-input-txt" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="single-form-item">
-            <input type="text" name="LastName" class="i-txt bg-input-txt" placeholder="Last Name" required />
+            <input asp-for="LastName" class="i-txt bg-input-txt" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
         </div>
     </div>
 </div>
 <div class="single-form-item">
-    <input type="email" name="Email" class="i-txt bg-input-txt" placeholder="Email Address" required />
+    <input asp-for="EmailAddress" class="i-txt bg-input-txt" />
+    <span asp-validation-for="EmailAddress" class="text-danger"></span>
 </div>
 <div class="single-form-item">
-    <input type="password" name="Password" class="i-txt bg-input-txt" placeholder="Password" autocomplete="off" required />
+    <input asp-for="Password" class="i-txt bg-input-txt" autocomplete="off" />
+    <span asp-validation-for="Password" class="text-danger"></span>
 </div>
 <div class="single-form-item">
-    <input type="password" name="ConfirmPassword" class="i-txt bg-input-txt" placeholder="Confirm Password" autocomplete="off" required />
+    <input asp-for="ConfirmPassword" class="i-txt bg-input-txt" autocomplete="off" />
+    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 </div>
 <div class="single-form-item txt-md my-5">
     <div class="custom-control custom-checkbox">
-        <input type="checkbox" id="NewsletterSubscribe" class="custom-control-input" />
-        <label for="NewsletterSubscribe" class="custom-control-label txt-primary">Subscribe our newsletter</label>
+        <input type="checkbox" asp-for="SubscribeNewsletter" class="custom-control-input" />
+        <label asp-for="SubscribeNewsletter" class="custom-control-label txt-primary"></label>
     </div>
 </div>
 @if (includeSubmitAction)
 {
+    if (ViewData["ErrorMessage"] != null)
+    {
+        <div class="validation-summary-errors txt-md">@ViewData["ErrorMessage"]</div>
+    }
     <div class="single-form-item text-center">
         <button type="submit" class="btn outline-primary w-100">Sign up</button>
     </div>

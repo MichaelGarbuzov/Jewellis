@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Jewellis.Areas.Account.ViewModels.Authenticate.RegisterVM
+
+@{
     ViewData["Title"] = "Sign Up";
 }
 
@@ -7,8 +9,8 @@
         <div class="container py-5-desktop">
             <h3 class="txt-accent text-uppercase text-center mb-5">Sign Up</h3>
             <div class="form-container maxw-md bg-light-2">
-                <form action="" method="post">
-                    <partial name="~/Areas/Account/Views/Authenticate/_RegisterFormPartial.cshtml" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", true } }' />
+                <form asp-area="Account" asp-controller="Authenticate" asp-action="Register" method="post">
+                    <partial name="~/Areas/Account/Views/Authenticate/_RegisterFormPartial.cshtml" model="Model" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", true } }' />
                 </form>
                 <hr class="sec-separator my-5" />
                 <p class="text-center m-0">Already have an account? <a asp-area="Account" asp-controller="Authenticate" asp-action="Login">Login</a></p>

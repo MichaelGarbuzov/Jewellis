@@ -1,8 +1,8 @@
 ﻿using Jewellis.Data;
 using Jewellis.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace Jewellis.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class NewsletterController : Controller
     {
         private readonly JewellisDbContext _dbContext;

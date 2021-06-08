@@ -1,58 +1,84 @@
-﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+﻿@using Jewellis.App_Custom.Helpers.ViewModelHelpers
+
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Areas.Shop.ViewModels.Home.IndexVM
 
 @{
     ViewData["Title"] = "Shop";
+
+    List<Product> products = (ViewData["Products"] as List<Product>);
+    List<ProductCategory> productCategories = (ViewData["ProductCategories"] as List<ProductCategory>);
+    List<ProductType> productTypes = (ViewData["ProductTypes"] as List<ProductType>);
+
+    // Gets the minimum and maximum price values in all products:
+    double minPrice = (double)ViewData["ProductsMinPrice"];
+    double maxPrice = (double)ViewData["ProductsMaxPrice"];
+    double currentMinPrice = (Model.MinPrice.HasValue ? Model.MinPrice.Value : minPrice);
+    double currentMaxPrice = (Model.MaxPrice.HasValue ? Model.MaxPrice.Value : maxPrice);
 }
 
 <section class="bg-light-2">
     <div class="sec-container">
-        <form action="" method="get">
+        <form asp-area="Shop" asp-controller="Home" asp-action="Index" method="get">
+            <input type="hidden" asp-for="CategoryId" data-on-change-submit />
+            <input type="hidden" asp-for="TypeId" data-on-change-submit />
+            <input type="hidden" asp-for="MinPrice" data-on-change-submit />
+            <input type="hidden" asp-for="MaxPrice" data-on-change-submit />
             <div class="row flex-column-reverse flex-lg-row">
                 <div class="col-xl-3 col-lg-4">
                     <aside class="form-container bg-white" id="shop-menu">
                         <div class="shop-menu-sec">
                             <h3>Category</h3>
                             <ul class="shop-menu-links">
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-type="" asp-route-keywords="">Women</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-type="" asp-route-keywords="">Men</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-type="" asp-route-keywords="">Kids</a></li>
+                                @foreach (ProductCategory category in productCategories)
+                                {
+                                    <li @(Model.CategoryId.HasValue && Model.CategoryId.Value.Equals(category.Id) ? "class=active" : "")>
+                                        <span>- </span><button type="button" value="@category.Id" data-change-val="#@Html.IdFor(m => Model.CategoryId)">@category.Name</button>
+                                    </li>
+                                }
                             </ul>
                         </div>
                         <div class="shop-menu-sec">
                             <h3>Type</h3>
                             <ul class="shop-menu-links">
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Rings" asp-route-keywords="">Rings</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Earrings" asp-route-keywords="">Earrings</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Necklaces" asp-route-keywords="">Necklaces</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Bracelets" asp-route-keywords="">Bracelets</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Watches" asp-route-keywords="">Watches</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Glasses" asp-route-keywords="">Glasses</a></li>
-                                <li>- <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="" asp-route-type="Other" asp-route-keywords="">Other</a></li>
+                                @foreach (ProductType type in productTypes)
+                                {
+                                    <li @(Model.TypeId.HasValue && Model.TypeId.Value.Equals(type.Id) ? "class=active" : "")>
+                                        <span>- </span><button type="button" value="@type.Id" data-change-val="#@Html.IdFor(m => Model.TypeId)">@type.Name</button>
+                                    </li>
+                                }
                             </ul>
                         </div>
                         <div class="shop-menu-sec">
-                            <h3>Price</h3>
-                            <div data-slider id="Price" class="mb-3">
-                                <input type="range" min="22" max="105" step="1" value="22" name="PriceMin" data-slider-min data-slider-label-target="#price-label-min">
-                                <input type="range" min="22" max="105" step="1" value="105" name="PriceMax" data-slider-max data-slider-label-target="#price-label-max">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="mb-3">Prices</h3>
+                                @if (Model.MinPrice.HasValue || Model.MaxPrice.HasValue)
+                                {
+                                    <button type="button" value="" data-change-val="#@Html.IdFor(m => Model.MinPrice),#@Html.IdFor(m => Model.MaxPrice)" class="btn txt-sm outline-accent px-3 py-2 mb-3">Clear</button>
+                                }
+                            </div>
+                            <div data-slider id="price-range" class="mb-3">
+                                <input type="range" min="@minPrice" max="@maxPrice" step="1" value="@currentMinPrice" data-change-val="#@Html.IdFor(m => Model.MinPrice)" data-slider-min data-slider-label-target="#price-label-min">
+                                <input type="range" min="@minPrice" max="@maxPrice" step="1" value="@currentMaxPrice" data-change-val="#@Html.IdFor(m => Model.MaxPrice)" data-slider-max data-slider-label-target="#price-label-max">
                             </div>
                             <div class="d-flex justify-content-between txt-md">
-                                <span>From $<span id="price-label-min">22</span></span>
-                                <span>To $<span id="price-label-max">105</span></span>
+                                <span>From @ClientCurrency.GetCurrent().Symbol<span id="price-label-min">@Math.Floor(ClientCurrency.GetPrice(currentMinPrice))</span></span>
+                                <span>To @ClientCurrency.GetCurrent().Symbol<span id="price-label-max">@Math.Ceiling(ClientCurrency.GetPrice(currentMaxPrice))</span></span>
                             </div>
                         </div>
                         <div class="shop-menu-sec">
                             <h3>Keywords</h3>
                             <div class="i-txt-with-btn-wrapper txt-md">
-                                <input type="text" name="Keywords" class="i-txt bg-input-txt" placeholder="Type keywords here..." />
+                                <input asp-for="Query" class="i-txt bg-input-txt" />
                                 <button type="submit" class="btn outline-primary"><span class="icon icon-search2 icon-top-adjust"></span></button>
                             </div>
                         </div>
                         <div class="shop-menu-sec">
                             <h3>Special Offers</h3>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" id="OnSale" name="OnSale" class="custom-control-input" />
-                                <label for="OnSale" class="custom-control-label txt-primary">On Sale</label>
+                                <input type="checkbox" asp-for="Sale" class="custom-control-input" data-on-change-submit />
+                                <label asp-for="Sale" class="custom-control-label txt-primary"></label>
                             </div>
                         </div>
                     </aside>
@@ -61,9 +87,22 @@
                     <div class="form-container bg-white mb-5">
                         <ul class="breadcrumb shop-breadcrumb p-0 mb-5">
                             <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" class="primary-link"><u>Home</u></a></li>
-                            <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" class="primary-link"><u>Shop</u></a></li>
-                            <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" class="primary-link"><u>Women</u></a></li>
-                            <li class="breadcrumb-item">Rings</li>
+                            <li class="breadcrumb-item"><button type="button" value="" data-change-val="#@Html.IdFor(m => Model.CategoryId),#@Html.IdFor(m => Model.TypeId)" class="primary-link"><u>Shop</u></button></li>
+                            @if (Model.CategoryId.HasValue)
+                            {
+                                if (Model.TypeId.HasValue)
+                                {
+                                    <li class="breadcrumb-item"><button type="button" value="" data-change-val="#@Html.IdFor(m => Model.TypeId)" class="primary-link"><u>@productCategories.FirstOrDefault(c => c.Id == Model.CategoryId).Name</u></button></li>
+                                }
+                                else
+                                {
+                                    <li class="breadcrumb-item">@productCategories.FirstOrDefault(c => c.Id == Model.CategoryId).Name</li>
+                                }
+                            }
+                            @if (Model.TypeId.HasValue)
+                            {
+                                <li class="breadcrumb-item">@productTypes.FirstOrDefault(t => t.Id == Model.TypeId).Name</li>
+                            }
                         </ul>
                         <header class="shop-header bg-light-1">
                             <div class="d-block d-lg-none w-100">
@@ -80,46 +119,23 @@
                             </div>
                             <div>
                                 <span>Sort By:</span>
-                                <select class="form-select txt-title bg-input-txt rounded" aria-label="Select how to sort the products.">
-                                    <option value="1" selected>Time: Newset First</option>
-                                    <option value="2">Price: Low to High</option>
-                                    <option value="3">Price: High to Low</option>
-                                    <option value="4">Name: A to Z</option>
-                                    <option value="5">Name: Z to A</option>
-                                </select>
+                                <select asp-for="Sort" asp-items="Html.GetEnumSelectList<SortOptions>()" class="form-select txt-title bg-input-txt rounded" aria-label="Select how to sort the products." data-on-change-submit></select>
                             </div>
                         </header>
                         <section class="py-5">
-                            <div class="row">
-                                @for (int i = 0; i < 12; i++)
-                                {
-                                    <div class="col-xl-3 col-sm-4 col-6">
-                                        <div class="shop-product">
-                                            <div class="shop-product-img">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                                    <img src="~/images/product-lg-1.jpg" alt="Product 1" />
-                                                </a>
-                                                <div class="overlap-container pe-none">
-                                                    <div class="d-flex @(i<2 ? "justify-content-between" : "justify-content-end") align-items-start">
-                                                        @if (i < 2)
-                                                        {
-                                                            <span class="tag tag-danger txt-md text-uppercase px-4 m-3">15% Off</span>
-                                                        }
-                                                        <div class="shop-product-actions">
-                                                            <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Cart"><span class="icon icon-cart-add icon-top-adjust"></span></button>
-                                                            <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Wishlist"><span class="icon icon-heart6 icon-top-adjust"></span></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="shop-product-details">
-                                                <div class="shop-product-title"><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="">Product Title @(i+1)</a></div>
-                                                <div>@ClientCurrency.DisplayPrice(45)</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                            @if (products.Count > 0)
+                            {
+                                <div class="row">
+                                    @foreach (Product product in products)
+                                    {
+                                        <partial name="~/Areas/Shop/Views/Home/_SingleProductPartial.cshtml" model="product" />
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-center txt-secondary p-5">No Results.</p>
+                            }
                         </section>
                         <nav class="d-flex justify-content-center mb-3" aria-label="Page Navigation">
                             <ul class="pagination">
@@ -146,6 +162,8 @@
 @section Scripts {
     <script>
         $(function () {
+            // Gets the conversion rate to the client's currency:
+            var convertionRate = @ClientCurrency.GetConversionRateToCurrent();
 
             // Shop Menu click (shown in mobile screens):
             $('#shop-menu-btn').click(function () {
@@ -153,6 +171,16 @@
                 $('html, body').stop().animate({
                     'scrollTop': ($menu.offset().top - $('#main-header').outerHeight() - (3 * 10))
                 }, 500, 'swing');
+            });
+
+            // Formats the price labels in the search menu, to convert to client's currency:
+            $('#price-label-min').change(function () {
+                var $this = $(this);
+                $this.text(Math.floor(parseFloat($this.text()) * convertionRate));
+            });
+            $('#price-label-max').change(function () {
+                var $this = $(this);
+                $this.text(Math.ceil(parseFloat($this.text()) * convertionRate));
             });
 
         });

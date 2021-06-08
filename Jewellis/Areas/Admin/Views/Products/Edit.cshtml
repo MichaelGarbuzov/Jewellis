@@ -34,7 +34,7 @@
                                 <div class="col-md-6">
                                     <div class="single-form-item">
                                         <label asp-for="ImageFile"></label>
-                                        <input asp-for="ImageFile" accept="image/png" class="i-txt bg-input-txt" />
+                                        <input asp-for="ImageFile" accept="image/png,image/jpeg" class="i-txt bg-input-txt" />
                                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -81,9 +81,9 @@
                         </form>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block">
-                        <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="d-flex justify-content-center align-items-center h-100 p-5">
                             <span id="product-icon" style="display: none;" class="icon icon-qrcode icon-land-lg txt-hover-bg" aria-hidden="true"></span>
-                            <img id="product-image" src="@Model.ImagePath" alt="@Model.Name" class="img-fluid p-5" />
+                            <img id="product-image" src="@Model.ImagePath" alt="@Model.Name" class="img-fluid bg-block" />
                         </div>
                     </div>
                 </div>

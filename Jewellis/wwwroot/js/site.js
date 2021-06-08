@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-03
+    Last Update: 2021-06-08
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -372,6 +372,7 @@ $(function () {
             var $target = $($(this).attr('data-slider-label-target'));
             if ($target) {
                 $target.text($(this).val());
+                $target.trigger('change');
             }
             // Updates the selected range fill:
             updateSelectedRangeFill($slider);
@@ -389,6 +390,7 @@ $(function () {
             var $target = $($(this).attr('data-slider-label-target'));
             if ($target) {
                 $target.text($(this).val());
+                $target.trigger('change');
             }
             // Updates the selected range fill:
             updateSelectedRangeFill($slider);
@@ -491,6 +493,23 @@ $(function () {
                 }
             }
         });
+    });
+
+    // Changes the value of an input element by click:
+    // -----------------------------------------------
+    $('[data-change-val]').click(function (e) {
+        e.preventDefault();
+        var $this = $(this);
+        var $toChange = $($this.attr('data-change-val'));
+        $toChange.val($this.val());
+        $toChange.trigger('change');
+    });
+
+    // Submits the parent form, on value change of this element:
+    // ---------------------------------------------------------
+    $('[data-on-change-submit]').change(function (e) {
+        e.preventDefault();
+        $(this).parents('form').submit();
     });
 
 });

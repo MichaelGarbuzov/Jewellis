@@ -1,0 +1,45 @@
+﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Models.Product
+
+@{
+    bool isOnSale = (Model.Sale != null && Model.Sale.DateStart < DateTime.Now && (Model.Sale.DateEnd == null || DateTime.Now < Model.Sale.DateEnd));
+}
+
+<div class="col-xl-3 col-sm-4 col-6">
+    <div class="shop-product">
+        <div class="shop-product-img">
+            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@Model.Id">
+                <img src="@Model.ImagePath" alt="@Model.Name" />
+            </a>
+            <div class="overlap-container pe-none">
+                <div class="d-flex @(isOnSale ? "justify-content-between" : "justify-content-end") align-items-start">
+                    @if (isOnSale)
+                    {
+                        <span class="tag tag-danger txt-md text-uppercase px-4 m-3">@Html.DisplayFor(m => Model.Sale.DiscountRate) Off</span>
+                    }
+                    <div class="shop-product-actions">
+                        <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Cart"><span class="icon icon-cart-add icon-top-adjust"></span></button>
+                        <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Wishlist"><span class="icon icon-heart6 icon-top-adjust"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="shop-product-details">
+            <div class="shop-product-title"><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@Model.Id" class="primary-link">@Model.Name</a></div>
+            @if (isOnSale)
+            {
+                <div class="shop-product-price discount">
+                    <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price * (1 - Model.Sale.DiscountRate))</span>
+                    <span class="regular-price"><strike>@ClientCurrency.GetPriceAndDisplay(Model.Price)</strike></span>
+                </div>
+            }
+            else
+            {
+                <div class="shop-product-price">
+                    <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price)</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

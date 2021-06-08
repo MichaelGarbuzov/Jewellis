@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-03
+    Last Update: 2021-06-08
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -546,6 +546,10 @@ figure {
 
 .bg-input-txt {
     background: var(--color-background-input-text) !important;
+}
+
+.bg-block {
+    background: var(--color-block) !important;
 }
 
 .tag-info {
@@ -8423,18 +8427,18 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
     margin-bottom: 0.25rem;
 }
 
-    .shop-menu-links > li > a {
+    .shop-menu-links > li > button {
         font-size: 1.74rem;
         color: var(--color-primary);
         letter-spacing: 1px;
         margin-left: 0.5rem;
     }
 
-        .shop-menu-links > li > a:hover {
+        .shop-menu-links > li > button:hover {
             color: var(--color-accent);
         }
 
-    .shop-menu-links > li.active > a {
+    .shop-menu-links > li.active > button {
         color: var(--color-accent);
         font-weight: 700;
     }
@@ -8502,23 +8506,36 @@ html[theme="dark"] .newspaper .paper-cut-bottom {
         z-index: 10;
     }
 
-        .shop-product .shop-product-details .shop-product-title {
-            font-size: 1.55rem;
-            font-weight: 700;
-            max-width: 100%;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
+    .shop-product .shop-product-title {
+        font-size: 1.55rem;
+        font-weight: 700;
+        max-width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+
+        .shop-product .shop-product-title > a {
+            color: var(--color-text-title);
         }
 
-            .shop-product .shop-product-details .shop-product-title > a {
-                color: var(--color-text-title);
+            .shop-product .shop-product-title > a:hover {
+                color: var(--color-accent);
             }
 
-                .shop-product .shop-product-details .shop-product-title > a:hover {
-                    color: var(--color-accent);
-                }
+    .shop-product .shop-product-price {
+        color: var(--color-text-title);
+    }
+
+        .shop-product .shop-product-price > .regular-price {
+            font-size: 0.9em;
+        }
+
+        .shop-product .shop-product-price.discount > .actual-price {
+            color: var(--color-accent);
+            margin-right: 0.5rem;
+        }
 
 @media screen and (max-width: 480px) {
     .shop-breadcrumb, .shop-header {
@@ -8578,5 +8595,3 @@ html[theme="light"] #main-admin-logo .logo {
 /*#endregion */
 
 /*#endregion */
-
-

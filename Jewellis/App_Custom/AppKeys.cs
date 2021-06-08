@@ -15,5 +15,13 @@
             public const string ClientCurrency = "currency";
         }
 
+        /// <summary>
+        /// Represents all the keys to be used in "Cache", in the entire application.
+        /// </summary>
+        public static class Cache
+        {
+            public const string ClientCurrency = "clientcurrency";
+        }
+
     }
 }

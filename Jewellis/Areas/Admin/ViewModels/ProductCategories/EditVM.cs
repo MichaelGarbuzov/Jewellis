@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Jewellis.Areas.Admin.ViewModels.ProductCategories
 {
-    public class EditVM
+    public class EditVM : CreateVM
     {
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Jewellis.Areas.Admin.ViewModels.ProductCategories
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(50, ErrorMessage = "Maximum length allowed is 50 characters.")]
         [Remote("CheckNameEditAvailability", "ProductCategories", "Admin", AdditionalFields = nameof(CurrentName), ErrorMessage = "Name already taken.")]
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
     }
 }

@@ -1,5 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Platinum Hazel Ring"; // TODO: by DB
+﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+
+    bool isOnSale = (Model.Sale != null && Model.Sale.DateStart < DateTime.Now && (Model.Sale.DateEnd == null || DateTime.Now < Model.Sale.DateEnd));
 }
 
 <section class="bg-light-2">
@@ -8,25 +14,34 @@
             <ul class="breadcrumb product-breadcrumb bg-light-1 p-4 mb-5">
                 <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index" class="primary-link"><u>Home</u></a></li>
                 <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" class="primary-link"><u>Shop</u></a></li>
-                <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" class="primary-link"><u>Women</u></a></li>
-                <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-type="Rings" class="primary-link"><u>Rings</u></a></li>
-                <li class="breadcrumb-item">Platinum Hazel Ring</li>
+                <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="@Model.Category.Name" class="primary-link"><u>@Model.Category.Name</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="@Model.Category.Name" asp-route-type="@Model.Type.Name" class="primary-link"><u>@Model.Type.Name</u></a></li>
+                <li class="breadcrumb-item">@Model.Name</li>
             </ul>
             <div class="product-view">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="product-img bg-light-1 mb-5 mb-md-0">
-                            @* TODO: by DB *@
-                            <img src="~/images/product-lg-1.jpg" alt="Platinum Hazel Ring" />
+                            <img src="@Model.ImagePath" alt="@Model.Name" />
                         </div>
                     </div>
                     <div class="col-md-8 px-4 pl-md-5">
-                        <h1 class="product-title">Platinum Hazel Ring</h1>
-                        <div class="product-price discount">
-                            <span class="actual-price">$35.00</span>
-                            <span class="regular-price"><strike>$65.00</strike></span>
-                        </div>
-                        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut hendrerit ipsum. Phasellus tempor, elit eget varius luctus, justo arcu scelerisque arcu, non pulvinar sapien nibh in sapien.</p>
+                        <h1 class="product-title">@Model.Name</h1>
+                        @if (isOnSale)
+                        {
+                            <div class="product-price discount">
+                                <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price * (1 - Model.Sale.DiscountRate))</span>
+                                <span class="regular-price"><strike>@ClientCurrency.GetPriceAndDisplay(Model.Price)</strike></span>
+                                <span class="tag tag-danger txt-md text-uppercase px-4 m-3">@Html.DisplayFor(m => Model.Sale.DiscountRate) Off</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="product-price">
+                                <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price)</span>
+                            </div>
+                        }
+                        <p class="product-desc pre-line">@Model.Description</p>
                         <div class="product-actions d-flex align-items-end flex-wrap">
                             <span data-in-num data-in-num-min="1" data-in-num-max="10" class="mr-4">
                                 <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>

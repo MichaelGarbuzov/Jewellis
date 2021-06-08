@@ -1,4 +1,6 @@
-﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+﻿@using Jewellis.Areas.Account.ViewModels.Newsletter
+
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
 @inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
 
@@ -72,7 +74,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-type="Other">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-type="Other Accessories">
                                         <span><img src="~/images/menu-cat-women-other.jpg" alt="Other Accessories" /></span>
                                         <span>Other Accessories</span>
                                     </a>
@@ -107,7 +109,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-type="Other">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-type="Other Accessories">
                                         <span><img src="~/images/menu-cat-men-other.jpg" alt="Other Accessories" /></span>
                                         <span>Other Accessories</span>
                                     </a>
@@ -148,7 +150,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-type="Other">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-type="Other Accessories">
                                         <span><img src="~/images/menu-cat-kids-other.jpg" alt="Other Accessories" /></span>
                                         <span>Other Accessories</span>
                                     </a>
@@ -156,22 +158,22 @@
                             </ul>
                         </li>
                         <li class="dropdown-show">
-                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-sale="1">Sale</a>
+                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-sale="true">Sale</a>
                             <ul class="dropdown-nav category-list">
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-sale="1">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Women" asp-route-sale="true">
                                         <span><img src="~/images/menu-cat-sale-women.jpg" alt="Women" /></span>
                                         <span>Women</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-sale="1">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Men" asp-route-sale="true">
                                         <span><img src="~/images/menu-cat-sale-men.jpg" alt="Men" /></span>
                                         <span>Men</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-sale="1">
+                                    <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-category="Kids" asp-route-sale="true">
                                         <span><img src="~/images/menu-cat-sale-kids.jpg" alt="Kids" /></span>
                                         <span>Kids</span>
                                     </a>
@@ -500,7 +502,7 @@
                 <div class="col newsletter">
                     <h3>Join our newsletter</h3>
                     <p>Get Updates On Awesome Jewelry!<br>Daily Offers &amp; Discounts!</p>
-                    <partial name="~/Views/Shared/PartialViews/_NewsletterSubscriptionPartial.cshtml" />
+                    <partial name="~/Views/Shared/PartialViews/_NewsletterSubscriptionPartial.cshtml" model="new SubscribeVM()" />
                 </div>
             </div>
             <p class="copyright">&copy; @DateTime.Now.Year Jewellis. All rights reserved.</p>

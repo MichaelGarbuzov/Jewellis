@@ -37,7 +37,7 @@ namespace Jewellis.Areas.Admin.Controllers
                             ((model.CategoryId == null) || p.CategoryId == model.CategoryId) &&
                             ((model.TypeId == null) || p.TypeId == model.TypeId) &&
                             ((model.SaleId == null) || p.SaleId == model.SaleId))
-                .OrderByDescending(s => s.DateLastModified)
+                .OrderByDescending(p => p.DateLastModified)
                 .Include(p => p.Category).Include(p => p.Type).Include(p => p.Sale)
                 .ToListAsync();
             ViewData["ProductsModel"] = products;

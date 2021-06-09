@@ -1,0 +1,102 @@
+﻿@model Jewellis.Models.User
+
+@{
+    ViewData["Title"] = $"User #{Model.Id} Details";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Users" asp-action="Index" class="primary-link"><u>Users</u></a></li>
+                <li class="breadcrumb-item">User #@Model.Id</li>
+            </ul>
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <h1 class="title-1 font-weight-bold mb-5">User #@Model.Id</h1>
+                <div class="mb-4">
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Edit</a>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id" class="btn title-1-btn outline-danger px-sm-5 mb-4 ml-3">Delete</a>
+                </div>
+            </div>
+            <div class="form-container bg-white mb-5">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="FirstName"></label>
+                                    <p>@Html.DisplayFor(m => m.FirstName)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="LastName"></label>
+                                    <p>@Html.DisplayFor(m => m.LastName)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="EmailAddress"></label>
+                                    <p>@Html.DisplayFor(m => m.EmailAddress)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="PhoneNumber"></label>
+                                    @if (Model.PhoneNumber == null)
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {<p>@Html.DisplayFor(m => m.PhoneNumber)</p>}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="Address"></label>
+                            @if (Model.Address == null)
+                            {
+                                <p>-</p>
+                            }
+                            else
+                            {<p>@Html.DisplayFor(m => m.Address)</p>}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Role"></label>
+                                    <p>@Html.DisplayFor(m => m.Role)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Currency"></label>
+                                    <p>@Html.DisplayFor(m => m.Currency)</p>
+                                </div>                                
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Theme"></label>
+                                    <p>@Html.DisplayFor(m => m.Theme)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateLastModified"></label>
+                            <p>@Html.DisplayFor(m => m.DateLastModified)</p>
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center flex-column-reverse flex-sm-row mt-5">
+                            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn align-self-stretch m-2"><span class="icon icon-arrow-left icon-top-adjust mr-3" aria-hidden="true"></span>Back to List</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <span class="icon icon-user icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

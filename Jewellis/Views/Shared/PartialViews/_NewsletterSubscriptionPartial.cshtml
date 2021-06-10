@@ -3,7 +3,7 @@
     <form asp-area="Account" asp-controller="Newsletter" asp-action="Subscribe" method="post"
           data-ajax="true" data-ajax-method="post" data-ajax-update="#footer-sub-result" data-ajax-success-clear="true">
         <div class="i-txt-with-btn-wrapper rounded mt-4 bg-background">
-            <input asp-for="EmailAddress" class="i-txt italic border-0 m-0" />
+            <input asp-for="EmailAddress" id="footer-newsletter-email" class="i-txt italic border-0 m-0" />
             <button type="submit" class="btn txt-secondary text-nowrap" data-submit-loader><span class="icon icon-paperplane" aria-hidden="true"></span></button>
         </div>
         <span asp-validation-for="EmailAddress" class="text-danger mt-3"></span>

@@ -63,8 +63,8 @@
                                 <input type="range" min="@minPrice" max="@maxPrice" step="1" value="@currentMaxPrice" data-change-val="#@Html.IdFor(m => Model.MaxPrice)" data-slider-max data-slider-label-target="#price-label-max">
                             </div>
                             <div class="d-flex justify-content-between txt-md">
-                                <span>From @ClientCurrency.GetCurrent().Symbol<span id="price-label-min">@Math.Floor(ClientCurrency.GetPrice(currentMinPrice))</span></span>
-                                <span>To @ClientCurrency.GetCurrent().Symbol<span id="price-label-max">@Math.Ceiling(ClientCurrency.GetPrice(currentMaxPrice))</span></span>
+                                <span>From @ClientCurrency.Currency.Symbol<span id="price-label-min">@Math.Floor(ClientCurrency.GetPrice(currentMinPrice))</span></span>
+                                <span>To @ClientCurrency.Currency.Symbol<span id="price-label-max">@Math.Ceiling(ClientCurrency.GetPrice(currentMaxPrice))</span></span>
                             </div>
                         </div>
                         <div class="shop-menu-sec">
@@ -163,7 +163,7 @@
     <script>
         $(function () {
             // Gets the conversion rate to the client's currency:
-            var convertionRate = @ClientCurrency.GetConversionRateToCurrent();
+            var convertionRate = @ClientCurrency.ConversionRate;
 
             // Shop Menu click (shown in mobile screens):
             $('#shop-menu-btn').click(function () {

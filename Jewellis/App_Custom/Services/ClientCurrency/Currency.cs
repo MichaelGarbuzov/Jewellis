@@ -28,8 +28,8 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// <param name="symbol">The symbol of the currency.</param>
         public Currency(string code, char symbol)
         {
-            if (string.IsNullOrWhiteSpace(code))
-                throw new ArgumentNullException("{code} cannot be null or empty.");
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentNullException(nameof(code), $"{nameof(code)} cannot be null or empty.");
 
             this.Code = code;
             this.Symbol = symbol;

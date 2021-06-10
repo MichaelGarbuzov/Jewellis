@@ -32,9 +32,9 @@ namespace Jewellis
                 options.DefaultTheme = "default";
                 options.SupportedThemes = new[]
                 {
-                    new Theme("default", "1", "Default"),
-                    new Theme("dark", "2", "Dark"),
-                    new Theme("light", "3", "Light")
+                    new Theme("default", "Default"),
+                    new Theme("dark", "Dark"),
+                    new Theme("light", "Light")
                 };
             });
             services.AddClientCurrency(options =>

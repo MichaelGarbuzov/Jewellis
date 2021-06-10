@@ -30,7 +30,7 @@
                                 <div class="col-md-7">Email Address</div>
                                 <div class="col-md-5 d-none d-md-block">Joined</div>
                             </div>
-                            <div class="table-actions d-none d-lg-block">Actions</div>
+                            <div class="d-none d-lg-block px-5">Actions</div>
                         </div>
                     </div>
                     <div class="table-body">
@@ -46,7 +46,7 @@
                                             <div class="py-3">@Html.DisplayFor(m => subscriber.DateJoined)</div>
                                         </div>
                                     </div>
-                                    <div class="table-actions w-100 w-md-auto text-center text-lg-right px-3">
+                                    <div class="w-100 w-md-auto text-center text-lg-right px-3">
                                         <a asp-area="Admin" asp-controller="Newsletter" asp-action="Remove" asp-route-id="@subscriber.Id" class="btn btn-sm txt-md outline-danger m-1">Remove</a>
                                     </div>
                                 </div>

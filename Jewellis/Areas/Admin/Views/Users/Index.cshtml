@@ -1,7 +1,11 @@
-﻿@model IEnumerable<Jewellis.Models.User>
+﻿@using Jewellis.Models.Helpers
+
+@model Jewellis.Areas.Admin.ViewModels.Users.IndexVM
 
 @{
     ViewData["Title"] = "Users";
+
+    List<User> users = (ViewData["UsersModel"] as List<User>);
 }
 
 <section class="bg-light-2">
@@ -14,32 +18,58 @@
             <h1 class="title-1 font-weight-bold mb-5">Users</h1>
             <div class="form-container bg-white mb-5">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="flex-fill maxw-sm mb-5 mr-sm-5">
+                    <div class="flex-fill maxw-lg mb-3">
                         <form asp-area="Admin" asp-controller="Users" asp-action="Index" method="get">
-                            <div class="i-txt-with-btn-wrapper">
-                                <input type="text" name="query" value="@ViewData["SearchQuery"]" class="i-txt bg-input-txt" placeholder="Enter keywords here..." autocomplete="off" />
-                                <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                            <div class="d-flex flex-column flex-md-row align-items-end">
+                                <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0">
+                                    <div class="col-sm-6 p-0 pr-sm-5">
+                                        <div class="single-form-item">
+                                            <label asp-for="Role"></label>
+                                            <select asp-for="Role" asp-items="Html.GetEnumSelectList<UserRole>()" class="i-txt bg-input-txt">
+                                                <option selected></option>
+                                            </select>
+                                            <span asp-validation-for="Role" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 p-0 pr-md-5">
+                                        <div class="single-form-item">
+                                            <input asp-for="Query" class="i-txt bg-input-txt" autocomplete="off" />
+                                            <span asp-validation-for="Query" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-form-item">
+                                    <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                                </div>
                             </div>
                         </form>
-                    </div>                  
+                    </div>
                 </div>
                 <div class="border">
-
                     <div class="table-header text-center">
                         <div class="d-flex">
-                            <div class="flex-fill">User</div>
-                            <div class="table-actions d-none d-md-block">Actions</div>
+                            <div class="row flex-fill">
+                                <div class="col-md-7">User</div>
+                                <div class="col-md-5 d-none d-md-block">Register Date</div>
+                            </div>
+                            <div class="table-actions d-none d-lg-block">Actions</div>
                         </div>
                     </div>
                     <div class="table-body">
-                        @foreach (User user in Model)
+                        @foreach (User user in users)
                         {
                             <div class="table-row hover-bg px-4 py-5">
-                                <div class="d-flex flex-column flex-md-row justify-content-end align-items-center">
-                                    <div class="flex-fill w-100 w-md-auto text-center text-md-left px-4 mb-4 mb-md-0">
-                                        <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@user.Id" class="primary-link text-ellipsis d-inline-block">@user.EmailAddress</a>
+                                <div class="d-flex flex-column flex-lg-row justify-content-end align-items-center">
+                                    <div class="row flex-fill d-flex align-items-center w-100 w-lg-auto px-lg-5 mb-4 mb-lg-0">
+                                        <div class="col-md-7 text-center text-md-left">
+                                            <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@user.Id" class="primary-link font-weight-bold text-ellipsis d-inline-block">@($"{user.FirstName} {user.LastName}")</a>
+                                            <p class="text-ellipsis m-0">@user.EmailAddress</p>
+                                        </div>
+                                        <div class="col-md-5 text-center">
+                                            <div class="py-3">@user.DateRegistered.ToShortDateString()</div>
+                                        </div>
                                     </div>
-                                    <div class="table-actions w-100 w-md-auto text-center text-md-right px-3">
+                                    <div class="w-100 w-md-auto text-center text-lg-right px-3">
                                         <a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
                                         <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm txt-md outline-warning m-1">Edit</a>
                                         <a asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm txt-md outline-danger m-1">Delete</a>
@@ -47,7 +77,7 @@
                                 </div>
                             </div>
                         }
-                        @if (Model.Count() < 1)
+                        @if (users.Count < 1)
                         {
                             <p class="text-center txt-secondary p-5">No Results.</p>
                         }

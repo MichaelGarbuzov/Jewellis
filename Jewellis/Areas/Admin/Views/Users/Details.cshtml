@@ -49,7 +49,9 @@
                                         <p>-</p>
                                     }
                                     else
-                                    {<p>@Html.DisplayFor(m => m.PhoneNumber)</p>}
+                                    {
+                                        <p>@Html.DisplayFor(m => m.PhoneNumber)</p>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -60,7 +62,9 @@
                                 <p>-</p>
                             }
                             else
-                            {<p>@Html.DisplayFor(m => m.Address)</p>}
+                            {
+                                <p>@Model.Address.Street, @Model.Address.PostalCode<br />@Model.Address.City<br />@Model.Address.Country</p>
+                            }
                         </div>
                         <div class="row">
                             <div class="col-sm-4">
@@ -73,7 +77,7 @@
                                 <div class="single-form-item">
                                     <label asp-for="Currency"></label>
                                     <p>@Html.DisplayFor(m => m.Currency)</p>
-                                </div>                                
+                                </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="single-form-item">
@@ -81,6 +85,10 @@
                                     <p>@Html.DisplayFor(m => m.Theme)</p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="single-form-item">
+                            <label asp-for="DateRegistered"></label>
+                            <p>@Html.DisplayFor(m => m.DateRegistered)</p>
                         </div>
                         <div class="single-form-item">
                             <label asp-for="DateLastModified"></label>
@@ -92,7 +100,7 @@
                     </div>
                     <div class="col-lg-6 d-none d-lg-block">
                         <div class="d-flex justify-content-center align-items-center h-100">
-                            <span class="icon icon-user icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                            <span class="icon icon-user5 icon-land-lg txt-hover-bg" aria-hidden="true"></span>
                         </div>
                     </div>
                 </div>

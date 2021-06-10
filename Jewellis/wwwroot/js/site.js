@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-08
+    Last Update: 2021-06-10
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -405,27 +405,41 @@ $(function () {
     // Submit Button Loader:
     // ---------------------
     $('[data-submit-loader]').each(function () {
-        var $form = $(this).parents('form');
+        var $thisSubmitBtn = $(this);
+        // Finds the related form:
+        var $form;
+        if ($thisSubmitBtn.attr('data-submit-loader')) {
+            $form = $($thisSubmitBtn.attr('data-submit-loader'));
+        } else {
+            $form = $thisSubmitBtn.parents('form');
+        }
 
+        // Registers to the submit event of the form:
         $form.submit(function () {
-            var $submitBtn = $(this).find('[data-submit-loader]');
             if (!$.isFunction($.fn.valid) || $(this).valid() === true) {
-                $submitBtn.attr('disabled', '');
-                if (!$submitBtn.find('.spinner-border').length) {
-                    $submitBtn.prepend('<span class="spinner-border icon-top-adjust mr-3" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
+                $thisSubmitBtn.attr('disabled', '');
+                if (!$thisSubmitBtn.find('.spinner-border').length) {
+                    $thisSubmitBtn.prepend('<span class="spinner-border icon-top-adjust mr-3" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
                 }
             } else {
-                $submitBtn.removeAttr('disabled');
-                $submitBtn.find('.spinner-border').remove();
+                $thisSubmitBtn.removeAttr('disabled');
+                $thisSubmitBtn.find('.spinner-border').remove();
             }
         });
 
         // Binds to the invalid event, mostly for remote validation:
         $form.bind("invalid-form.validate", function () {
-            var $submitBtn = $(this).find('[data-submit-loader]');
-            $submitBtn.removeAttr('disabled');
-            $submitBtn.find('.spinner-border').remove();
+            $thisSubmitBtn.removeAttr('disabled');
+            $thisSubmitBtn.find('.spinner-border').remove();
         });
+    });
+
+    // Remote Submit Form Button:
+    // --------------------------
+    $('[data-remote-submit]').click(function (e) {
+        e.preventDefault();
+        var $form = $($(this).attr('data-remote-submit'));
+        $form.submit();
     });
 
     // AJAX Unobtrusive Submition:
@@ -627,8 +641,15 @@ $(function () {
         $themeMenu.find('[data-dd-check]').appendTo($(this));
         $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-updatable]').text($(this).attr('data-theme-set-display'));
         // Updates the cookie:
-        setCookie(AppKeys.Cookies.ClientTheme, $(this).attr('data-theme-set-val'), 365 * 100);
-        // TODO: Send AJAX request if user authenticated
+        setCookie(AppKeys.Cookies.ClientTheme, $(this).attr('data-theme-set'), 365 * 100);
+        // Sends an AJAX request, to update the server side if needed (when user is authenticated):
+        $.ajax({
+            type: 'post',
+            url: $themeMenu.attr('data-theme-set-link'),
+            data: JSON.stringify($(this).attr('data-theme-set')),
+            contentType: 'application/json',
+            dataType: 'json'
+        });
     });
 
     // Currency change:
@@ -641,8 +662,14 @@ $(function () {
         $currencyMenu.parent('[data-dd-mega]').find('#main-currency-btn').find('[data-updatable]').text($(this).attr('data-currency-set'));
         // Updates the cookie:
         setCookie(AppKeys.Cookies.ClientCurrency, $(this).attr('data-currency-set'), 365 * 100);
-        // TODO: Send AJAX request if user authenticated
-
+        // Sends an AJAX request, to update the server side if needed (when user is authenticated):
+        $.ajax({
+            type: 'post',
+            url: $currencyMenu.attr('data-currency-set-link'),
+            data: JSON.stringify($(this).attr('data-currency-set')),
+            contentType: 'application/json',
+            dataType: 'json'
+        });
         // Reloads the page:
         location.reload();
         return false;

@@ -1,6 +1,9 @@
-﻿using Jewellis.WebServices.CurrencyConverterApi;
+﻿using Jewellis.Data;
+using Jewellis.Models;
+using Jewellis.WebServices.CurrencyConverterApi;
 using Jewellis.WebServices.IpApi;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -33,18 +36,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
-
-        /// <summary>
-        /// Holds the client's currency in the scope.
-        /// Can be null, initialized only after the first call of <see cref="GetCurrent()"/>.
-        /// </summary>
-        private Currency _clientCurrency;
-
-        /// <summary>
-        /// Holds the client's currency conversion rate in the scope.
-        /// Can be null, initialized only after the first call of <see cref="GetConversionRateToCurrent()"/>.
-        /// </summary>
-        private double? _clientCurrencyConversionRate;
+        private readonly JewellisDbContext _dbContext;
 
         #endregion
 
@@ -55,13 +47,26 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// </summary>
         public ClientCurrencyOptions Options { get; private set; }
 
+        /// <summary>
+        /// Gets the current client's currency in this scope.
+        /// </summary>
+        public Currency Currency { get; private set; }
+
+        /// <summary>
+        /// Gets the current client's currency conversion rate in this scope.
+        /// </summary>
+        /// <remarks>
+        /// Returns the conversion rate from the base currency (<see cref="BASE_CURRENCY"/>) to the current currency of the client.
+        /// </remarks>
+        public double ConversionRate { get; private set; }
+
         #endregion
 
         /// <summary>
         /// Represents a service (scoped) for managing the client's preferred currency.
         /// </summary>
         /// <param name="options">The options to configure the <see cref="ClientCurrencyService"/>.</param>
-        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IMemoryCache cache)
+        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IMemoryCache cache, JewellisDbContext dbContext)
         {
             if (string.IsNullOrEmpty(options.Value.DefaultCurrency))
                 throw new ArgumentNullException("{options.DefaultCurrency} cannot be null or empty.");
@@ -74,28 +79,87 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
             _cache = cache;
+            _dbContext = dbContext;
+
+            this.InitializeClientCurrency();
         }
 
         #region Public API
 
         /// <summary>
-        /// Gets the current client's currency, either from the database (if user is registered), the cookie, or a web service to detect currency by IP address.
+        /// Sets the current client's currency, either to the database (if user is registered) or the cookie.
         /// </summary>
-        /// <returns>Returns the <see cref="Currency"/> of the current client.</returns>
-        public Currency GetCurrent()
+        /// <param name="currencyCode">The code (id) of the supported currency to set.</param>
+        public async Task SetAsync(string currencyCode)
         {
-            // Since this is a scoped service, checks if currnecy already found in scope:
-            if (_clientCurrency != null)
-                return _clientCurrency;
+            if (string.IsNullOrEmpty(currencyCode))
+                throw new ArgumentNullException(nameof(currencyCode), $"{nameof(currencyCode)} cannot be null.");
 
-            // Otherwise, this is the first call in the scope:
+            // Ensures a supported currency:
+            Currency currency = this.GetSupportedCurrencyOrNull(currencyCode);
+            if (currency == null)
+                currency = this.Options.SupportedCurrencies.FirstOrDefault(c => c.Code.Equals(this.Options.DefaultCurrency));
+
+            // Sets the currency:
+            // Checks if the user is registered, to assign the currency to the database:
+            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            {
+                await this.SetUserCurrencyToDatabase(currency);
+            }
+
+            // Assigns the currency to the cookie:
+            this.SetUserCurrencyToCookie(currency);
+
+            // Assigns the currency to the current scope:
+            this.Currency = currency;
+        }
+
+        /// <summary>
+        /// Gets the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.
+        /// </summary>
+        /// <param name="price">The price in the base currency (<see cref="BASE_CURRENCY"/>).</param>
+        /// <returns>Returns the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.</returns>
+        public double GetPrice(double price)
+        {
+            return Math.Round(price * this.ConversionRate, 2);
+        }
+
+        /// <summary>
+        /// Gets the price value in the base currency (<see cref="BASE_CURRENCY"/>), after conversion from the client's current currency to the base currency (<see cref="BASE_CURRENCY"/>).
+        /// </summary>
+        /// <param name="price">The price in the client's current currency.</param>
+        /// <returns>Returns the price value in the base currency (<see cref="BASE_CURRENCY"/>), after conversion from the client's current currency to the base currency (<see cref="BASE_CURRENCY"/>)</returns>
+        public double GetBasePrice(double price)
+        {
+            return Math.Round(price / this.ConversionRate, 2);
+        }
+
+        /// <summary>
+        /// Gets the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency, then displays it.
+        /// </summary>
+        /// <param name="price">The price in the base currency (<see cref="BASE_CURRENCY"/>).</param>
+        /// <returns>Returns the display format of the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.</returns>
+        public string GetPriceAndDisplay(double price)
+        {
+            double convertedPrice = this.GetPrice(price);
+            return string.Format("{0}{1:0.00}", this.Currency.Symbol, convertedPrice);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Initializes the client's currency, either from the database (if user is registered), the cookie, or a web service to detect currency by IP address.
+        /// </summary>
+        private void InitializeClientCurrency()
+        {
             // The following (4) steps are looking for a supported currency in various methods:
             Currency userCurrency = null;
 
-            // TODO: check if user is registered:
-            //// (1) - Checks if the user is authenticated - then gets the currency from the DB:
-            // if (user.isAuth())
-            // userCurrency = this.GetUserCurrencyFromDatabase()
+            // (1) - Checks if the user is authenticated - then gets the currency from the DB:
+            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                userCurrency = Task.Run(() => GetUserCurrencyByDatabase()).Result;
 
             // (2) - User is not authenticated - so gets the currency from the cookie:
             if (userCurrency == null)
@@ -110,90 +174,13 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
                 userCurrency = this.Options.SupportedCurrencies.FirstOrDefault(c => c.Code.Equals(this.Options.DefaultCurrency));
 
             // Finally, assigns the currency to the cookie:
-            _httpContextAccessor.HttpContext.Response.Cookies.Append(CURRENCY_COOKIE, userCurrency.Code, new CookieOptions()
-            {
-                HttpOnly = false,
-                Secure = true,
-                Expires = DateTimeOffset.Now.AddYears(100)
-            });
+            this.SetUserCurrencyToCookie(userCurrency);
             // Assigns the currency found to the current scope:
-            _clientCurrency = userCurrency;
-            return userCurrency;
+            this.Currency = userCurrency;
+
+            // Initializes the conversion rate:
+            this.ConversionRate = this.GetConversionRate(this.Currency);
         }
-
-        /// <summary>
-        /// Returns the conversion rate from the base currency (<see cref="BASE_CURRENCY"/>) to the current currency of the client.
-        /// Using a web service to get the conversion rate.
-        /// </summary>
-        /// <returns>Returns the conversion rate from the base currency (<see cref="BASE_CURRENCY"/>) to the current currency of the client.</returns>
-        public double GetConversionRateToCurrent()
-        {
-            // Checks if conversion rate already calculated in this scope:
-            if (_clientCurrencyConversionRate != null)
-                return _clientCurrencyConversionRate.Value;
-
-            // Otherwise it's the first call in this scope:
-            Currency currency = this.GetCurrent();
-            double cachedConversionRate;
-
-            // Checks if it's the base currency, no conversion is needed:
-            if (string.Equals(currency.Code, BASE_CURRENCY, StringComparison.OrdinalIgnoreCase))
-            {
-                _clientCurrencyConversionRate = 1;
-            }
-            // Otherwise, checks if the currencies already converted in the cache:
-            else if (_cache.TryGetValue($"{CACHE_IDENTIFIER}_{BASE_CURRENCY}_{currency.Code}", out cachedConversionRate))
-            {
-                _clientCurrencyConversionRate = cachedConversionRate;
-            }
-            // Otherwise, gets the conversion rate by web service:
-            else
-            {
-                _clientCurrencyConversionRate = this.ConvertByWebService(BASE_CURRENCY, currency.Code);
-
-                // Enters the conversion rate to cache (in order to reduce calls):
-                _cache.Set($"{CACHE_IDENTIFIER}_{BASE_CURRENCY}_{currency.Code}", _clientCurrencyConversionRate.Value, new MemoryCacheEntryOptions()
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
-                });
-            }
-            return _clientCurrencyConversionRate.Value;
-        }
-
-        /// <summary>
-        /// Gets the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.
-        /// </summary>
-        /// <param name="price">The price in the base currency (<see cref="BASE_CURRENCY"/>).</param>
-        /// <returns>Returns the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.</returns>
-        public double GetPrice(double price)
-        {
-            return Math.Round(price * this.GetConversionRateToCurrent(), 2);
-        }
-
-        /// <summary>
-        /// Gets the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency, then displays it.
-        /// </summary>
-        /// <param name="price">The price in the base currency (<see cref="BASE_CURRENCY"/>).</param>
-        /// <returns>Returns the display format of the price value in the client's currency, after conversion from the base currency (<see cref="BASE_CURRENCY"/>) to client's current currency.</returns>
-        public string GetPriceAndDisplay(double price)
-        {
-            double convertedPrice = this.GetPrice(price);
-            return string.Format("{0}{1:0.00}", this.GetCurrent().Symbol, convertedPrice);
-        }
-
-        /// <summary>
-        /// Gets the price value in the base currency (<see cref="BASE_CURRENCY"/>), after conversion from the client's current currency to the base currency (<see cref="BASE_CURRENCY"/>).
-        /// </summary>
-        /// <param name="price">The price in the client's current currency.</param>
-        /// <returns>Returns the price value in the base currency (<see cref="BASE_CURRENCY"/>), after conversion from the client's current currency to the base currency (<see cref="BASE_CURRENCY"/>)</returns>
-        public double GetBasePrice(double price)
-        {
-            return Math.Round(price / this.GetConversionRateToCurrent(), 2);
-        }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Returns the supported currency for the specified currency code, or null if not supported.
@@ -207,7 +194,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
 
             foreach (Currency currency in this.Options.SupportedCurrencies)
             {
-                if (currency.Code.Equals(currencyCode, StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(currency.Code, currencyCode, StringComparison.OrdinalIgnoreCase))
                     return currency;
             }
             return null;
@@ -217,10 +204,18 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// Gets the currency of the user by the database (for an authenticated user).
         /// </summary>
         /// <returns>Returns the currency of the user by the database if found and supported, otherwise null.</returns>
-        private Currency GetUserCurrencyByDatabase()
+        private async Task<Currency> GetUserCurrencyByDatabase()
         {
-            // TODO
-            throw new NotImplementedException();
+            int? userId = _httpContextAccessor.HttpContext.User.Identity.GetId();
+            if (userId != null)
+            {
+                User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
+                if (user != null)
+                {
+                    return this.GetSupportedCurrencyOrNull(user.Currency);
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -231,6 +226,41 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         {
             string cookieValue = _httpContextAccessor.HttpContext.Request.Cookies[CURRENCY_COOKIE];
             return this.GetSupportedCurrencyOrNull(cookieValue);
+        }
+
+        /// <summary>
+        /// Sets the specified currency to the current authenticated user in the database.
+        /// </summary>
+        /// <param name="currency">The currency to set to the current user.</param>
+        private async Task SetUserCurrencyToDatabase(Currency currency)
+        {
+            int? userId = _httpContextAccessor.HttpContext.User.Identity.GetId();
+            if (userId != null)
+            {
+                User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
+                if (user != null)
+                {
+                    user.Currency = currency.Code;
+                    user.DateLastModified = DateTime.Now;
+
+                    _dbContext.Users.Update(user);
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the specified currency to the current user's cookie.
+        /// </summary>
+        /// <param name="currency">The currency to set to the current user's cookie.</param>
+        private void SetUserCurrencyToCookie(Currency currency)
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(CURRENCY_COOKIE, currency.Code, new CookieOptions()
+            {
+                HttpOnly = false,
+                Secure = true,
+                Expires = DateTimeOffset.Now.AddYears(100)
+            });
         }
 
         /// <summary>
@@ -256,12 +286,45 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         }
 
         /// <summary>
+        /// Returns the conversion rate from the base currency (<see cref="BASE_CURRENCY"/>) to the specified currency.
+        /// Using a web service to get the conversion rate.
+        /// </summary>
+        /// <returns>Returns the conversion rate from the base currency (<see cref="BASE_CURRENCY"/>) to the specified currency.</returns>
+        private double GetConversionRate(Currency currency)
+        {
+            double conversionRate;
+
+            // Checks if it's the base currency, no conversion is needed:
+            if (string.Equals(currency.Code, BASE_CURRENCY, StringComparison.OrdinalIgnoreCase))
+            {
+                return 1;
+            }
+            // Otherwise, checks if the currencies already converted in the cache:
+            else if (_cache.TryGetValue($"{CACHE_IDENTIFIER}_{BASE_CURRENCY}_{currency.Code}", out conversionRate))
+            {
+                return conversionRate;
+            }
+            // Otherwise, gets the conversion rate by web service:
+            else
+            {
+                conversionRate = this.GetConversionRateByWebService(BASE_CURRENCY, currency.Code);
+
+                // Enters the conversion rate to cache (in order to reduce calls):
+                _cache.Set($"{CACHE_IDENTIFIER}_{BASE_CURRENCY}_{currency.Code}", conversionRate, new MemoryCacheEntryOptions()
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+                });
+                return conversionRate;
+            }
+        }
+
+        /// <summary>
         /// Converts from one currency to another, using the <see cref="CurrencyConverterApiService"/> web service.
         /// </summary>
         /// <param name="fromCurrency">The currency to convert from.</param>
         /// <param name="toCurrency">The currency to convert to.</param>
         /// <returns>Returns the conversion rate from one currency to another, using the <see cref="CurrencyConverterApiService"/> web service.</returns>
-        private double ConvertByWebService(string fromCurrency, string toCurrency)
+        private double GetConversionRateByWebService(string fromCurrency, string toCurrency)
         {
             string ccApiKey = _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials")["CurrencyConverterApi"];
             CurrencyConverterApiService ccApiService = new CurrencyConverterApiService(ccApiKey);

@@ -1,11 +1,11 @@
 ﻿@using Jewellis.Models.Helpers
 
-@model IEnumerable<Jewellis.Models.Contact>
+@model Jewellis.Areas.Admin.ViewModels.Contacts.IndexVM
 
 @{
     ViewData["Title"] = "Contacts";
 
-    ContactStatus? searchStatus = (ViewData["SearchStatus"] as ContactStatus?);
+    List<Contact> contacts = (ViewData["ContactsModel"] as List<Contact>);
 }
 
 <section class="bg-light-2">
@@ -18,21 +18,28 @@
             <h1 class="title-1 font-weight-bold mb-5">Contacts</h1>
             <div class="form-container bg-white mb-5">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="flex-fill mb-5 mr-sm-5">
+                    <div class="flex-fill maxw-lg mb-3">
                         <form asp-area="Admin" asp-controller="Contacts" asp-action="Index" method="get">
-                            <div class="d-flex flex-wrap align-items-end">
-                                <div class="mr-md-5">
-                                    <label for="SearchStatus">Show Status:</label>
-                                    <select name="status" id="SearchStatus" class="i-txt bg-input-txt" aria-label="Select the status of contacts to show in results.">
-                                        <option value="" selected="@(!searchStatus.HasValue ? "" : null)">All</option>
-                                        <option value="@ContactStatus.Pending" selected="@(searchStatus.HasValue && searchStatus.Value == ContactStatus.Pending ? "" : null)">@ContactStatus.Pending</option>
-                                        <option value="@ContactStatus.Handling" selected="@(searchStatus.HasValue && searchStatus.Value == ContactStatus.Handling ? "" : null)">@ContactStatus.Handling</option>
-                                        <option value="@ContactStatus.Closed" selected="@(searchStatus.HasValue && searchStatus.Value == ContactStatus.Closed ? "" : null)">@ContactStatus.Closed</option>
-                                    </select>
+                            <div class="d-flex flex-column flex-md-row align-items-end">
+                                <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0">
+                                    <div class="col-sm-6 p-0 pr-sm-5">
+                                        <div class="single-form-item">
+                                            <label asp-for="Status"></label>
+                                            <select asp-for="Status" asp-items="Html.GetEnumSelectList<ContactStatus>()" class="i-txt bg-input-txt">
+                                                <option selected></option>
+                                            </select>
+                                            <span asp-validation-for="Status" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 p-0 pr-md-5">
+                                        <div class="single-form-item">
+                                            <input asp-for="Query" class="i-txt bg-input-txt" autocomplete="off" />
+                                            <span asp-validation-for="Query" class="text-danger"></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="i-txt-with-btn-wrapper mt-4">
-                                    <input type="text" name="query" value="@ViewData["SearchQuery"]" class="i-txt bg-input-txt" placeholder="Enter keywords here..." autocomplete="off" />
-                                    <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                                <div class="single-form-item">
+                                    <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
                                 </div>
                             </div>
                         </form>
@@ -50,7 +57,7 @@
                         </div>
                     </div>
                     <div class="table-body">
-                        @foreach (Contact contact in Model)
+                        @foreach (Contact contact in contacts)
                         {
                             <div class="table-row hover-bg px-4 py-5">
                                 <div class="d-flex flex-column flex-lg-row justify-content-end align-items-center">
@@ -68,7 +75,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="table-actions w-100 w-md-auto text-center text-lg-right px-3">
+                                    <div class="w-100 w-md-auto text-center text-lg-right px-3">
                                         <a asp-area="Admin" asp-controller="Contacts" asp-action="Details" asp-route-id="@contact.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
                                         <div class="dropdown d-inline-block">
                                             <button type="button" id="@($"ChangeStatus{contact.Id}")" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm txt-md outline-warning m-1">Change Status</button>
@@ -86,7 +93,7 @@
                                 </div>
                             </div>
                         }
-                        @if (Model.Count() < 1)
+                        @if (contacts.Count < 1)
                         {
                             <p class="text-center txt-secondary p-5">No Results.</p>
                         }

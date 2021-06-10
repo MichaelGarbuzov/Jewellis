@@ -1,5 +1,7 @@
 ﻿@using Jewellis.Areas.Account.Controllers
 
+@model Jewellis.Areas.Account.ViewModels.Home.AddressVM
+
 @{
     ViewData["Title"] = "Account Address";
 }
@@ -15,37 +17,76 @@
                 <div class="col-xl-9 mb-5">
                     <h3 class="block-title">Address</h3>
                     <div class="form-container bg-white maxw-md m-0">
-                        <form action="" method="post">
+                        <form id="address-edit" asp-area="Account" asp-controller="Home" asp-action="EditAddress" method="post">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="single-form-item">
-                                        <label for="Street">Street</label>
-                                        <input type="text" id="Street" name="Street" class="i-txt" />
+                                        <label asp-for="Street"></label>
+                                        <input asp-for="Street" class="i-txt" />
+                                        <span asp-validation-for="Street" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="single-form-item">
-                                        <label for="PostalCode">Postal Code</label>
-                                        <input type="text" id="PostalCode" name="PostalCode" class="i-txt" />
+                                        <label asp-for="PostalCode"></label>
+                                        <input asp-for="PostalCode" class="i-txt" />
+                                        <span asp-validation-for="PostalCode" class="text-danger"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="single-form-item">
-                                <label for="City">City</label>
-                                <input type="text" id="City" name="City" class="i-txt" />
+                                <label asp-for="City"></label>
+                                <input asp-for="City" class="i-txt" />
+                                <span asp-validation-for="City" class="text-danger"></span>
                             </div>
                             <div class="single-form-item">
-                                <label for="Country">Country</label>
-                                <input type="text" id="Country" name="Country" class="i-txt" />
+                                <label asp-for="Country"></label>
+                                <input asp-for="Country" class="i-txt" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
                             </div>
-                            <div class="single-form-item text-right mt-2 mb-0">
-                                <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
-                            </div>
-                            <div class="form-messege"></div>
                         </form>
+                        <div class="d-flex justify-content-end mt-2">
+                            @if (Model.Street != null)
+                            {
+                                <form asp-area="Account" asp-controller="Home" asp-action="DeleteAddress" method="post">
+                                    <button type="submit" class="btn outline-primary px-5" data-submit-loader>Remove</button>
+                                </form>
+                            }
+                            <button type="button" class="btn btn-primary px-5 ml-4" data-remote-submit="#address-edit" data-submit-loader="#address-edit">Save Changes</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@if (TempData["SuccessTitle"] != null)
+{
+    <div id="success-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-shadow">
+                <div class="modal-header">
+                    <h2 class="modal-title"><span class="icon icon-checkmark2 icon-top-adjust mr-3" aria-hidden="true"></span>@TempData["SuccessTitle"]</h2>
+                </div>
+                <div class="modal-body">
+                    <p class="p-2 m-0">@TempData["SuccessBody"]</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary px-5" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (TempData["SuccessTitle"] != null)
+    {
+        <script>
+            $(function () {
+                $('#success-modal').modal('show');
+            });
+        </script>
+    }
+}

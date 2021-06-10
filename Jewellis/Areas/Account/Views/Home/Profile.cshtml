@@ -1,5 +1,7 @@
 ﻿@using Jewellis.Areas.Account.Controllers
 
+@model Jewellis.Areas.Account.ViewModels.Home.ProfileVM
+
 @{
     ViewData["Title"] = "Account Profile";
 }
@@ -15,73 +17,82 @@
                 <div class="col-xl-9 mb-5">
                     <h3 class="block-title">Profile</h3>
                     <div class="form-container bg-white">
-                        <form action="" method="post">
+                        <form asp-area="Account" asp-controller="Home" asp-action="EditProfile" method="post">
+                            <input type="hidden" asp-for="EditProfileVM.CurrentEmail" />
                             <div class="row">
                                 <div class="col-sm-6 single-form-item">
-                                    <label for="FirstName">First Name *</label>
-                                    <input type="text" id="FirstName" name="FirstName" class="i-txt" required />
+                                    <label asp-for="EditProfileVM.FirstName"></label>
+                                    <input asp-for="EditProfileVM.FirstName" class="i-txt" />
+                                    <span asp-validation-for="EditProfileVM.FirstName" class="text-danger"></span>
                                 </div>
                                 <div class="col-sm-6 single-form-item">
-                                    <label for="LastName">Last Name *</label>
-                                    <input type="text" id="LastName" name="LastName" class="i-txt" required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6 single-form-item">
-                                    <label for="EmailAddress">Email Address *</label>
-                                    <input type="email" id="EmailAddress" name="EmailAddress" class="i-txt" required />
+                                    <label asp-for="EditProfileVM.LastName"></label>
+                                    <input asp-for="EditProfileVM.LastName" class="i-txt" />
+                                    <span asp-validation-for="EditProfileVM.LastName" class="text-danger"></span>
                                 </div>
                                 <div class="col-sm-6 single-form-item">
-                                    <label for="PhoneNumber">Phone Number</label>
-                                    <input type="text" id="PhoneNumber" name="PhoneNumber" class="i-txt" />
+                                    <label asp-for="EditProfileVM.EmailAddress"></label>
+                                    <input asp-for="EditProfileVM.EmailAddress" class="i-txt" />
+                                    <span asp-validation-for="EditProfileVM.EmailAddress" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-6 single-form-item">
+                                    <label asp-for="EditProfileVM.PhoneNumber"></label>
+                                    <input asp-for="EditProfileVM.PhoneNumber" class="i-txt" />
+                                    <span asp-validation-for="EditProfileVM.PhoneNumber" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="single-form-item text-right mt-2 mb-0">
-                                <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
+                            <div class="text-right mt-2">
+                                <button type="submit" class="btn btn-primary px-5" data-submit-loader>Save Changes</button>
                             </div>
-                            <div class="form-messege"></div>
                         </form>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <h3 class="block-title mt-5">Security</h3>
                             <div class="form-container bg-white">
-                                <form action="" method="post">
+                                <form asp-area="Account" asp-controller="Home" asp-action="EditPassword" method="post">
                                     <div class="single-form-item">
-                                        <label for="CurrentPassword">Current Password</label>
-                                        <input type="password" id="CurrentPassword" name="CurrentPassword" class="i-txt" required />
-                                    </div>
-                                    <div class="single-form-item">
-                                        <label for="NewPassword">New Password</label>
-                                        <input type="password" id="NewPassword" name="NewPassword" class="i-txt" required />
+                                        <label asp-for="EditPasswordVM.CurrentPassword"></label>
+                                        <input asp-for="EditPasswordVM.CurrentPassword" class="i-txt" />
+                                        <span asp-validation-for="EditPasswordVM.CurrentPassword" class="text-danger"></span>
                                     </div>
                                     <div class="single-form-item">
-                                        <label for="NewPasswordConfirm">Confirm Password</label>
-                                        <input type="password" id="NewPasswordConfirm" name="NewPasswordConfirm" class="i-txt" required />
+                                        <label asp-for="EditPasswordVM.NewPassword"></label>
+                                        <input asp-for="EditPasswordVM.NewPassword" class="i-txt" />
+                                        <span asp-validation-for="EditPasswordVM.NewPassword" class="text-danger"></span>
                                     </div>
-                                    <div class="single-form-item text-right mt-2 mb-0">
-                                        <button type="submit" name="submit" class="btn btn-primary px-5">Change Password</button>
+                                    <div class="single-form-item">
+                                        <label asp-for="EditPasswordVM.NewPasswordConfirm"></label>
+                                        <input asp-for="EditPasswordVM.NewPasswordConfirm" class="i-txt" />
+                                        <span asp-validation-for="EditPasswordVM.NewPasswordConfirm" class="text-danger"></span>
                                     </div>
-                                    <div class="form-messege"></div>
+                                    @if (TempData["EditPassword_ErrorMessage"] != null)
+                                    {
+                                        <div class="validation-summary-errors txt-md">@TempData["EditPassword_ErrorMessage"]</div>
+                                    }
+                                    <div class="text-right mt-2">
+                                        <button type="submit" class="btn btn-primary px-5" data-submit-loader>Change Password</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
                         <div class="col-md-6 px-4 pl-md-5">
                             <h3 class="block-title mt-5">Preferences</h3>
                             <div class="form-container bg-white">
-                                <form action="" method="post">
+                                <form asp-area="Account" asp-controller="Home" asp-action="EditPreferences" method="post">
                                     <div class="single-form-item">
-                                        <label for="Currency">Currency</label>
-                                        <input type="text" id="Currency" name="Currency" class="i-txt" required />
+                                        <label asp-for="EditPreferencesVM.Currency"></label>
+                                        <select asp-for="EditPreferencesVM.Currency" asp-items="ViewBag.SupportedCurrencies" class="i-txt bg-input-txt"></select>
+                                        <span asp-validation-for="EditPreferencesVM.Currency" class="text-danger"></span>
                                     </div>
                                     <div class="single-form-item">
-                                        <label for="Theme">Theme</label>
-                                        <input type="text" id="Theme" name="Theme" class="i-txt" required />
+                                        <label asp-for="EditPreferencesVM.Theme"></label>
+                                        <select asp-for="EditPreferencesVM.Theme" asp-items="ViewBag.SupportedThemes" class="i-txt bg-input-txt"></select>
+                                        <span asp-validation-for="EditPreferencesVM.Theme" class="text-danger"></span>
                                     </div>
-                                    <div class="single-form-item text-right mt-2 mb-0">
-                                        <button type="submit" name="submit" class="btn btn-primary px-5">Save Changes</button>
+                                    <div class="text-right mt-2">
+                                        <button type="submit" class="btn btn-primary px-5" data-submit-loader>Save Changes</button>
                                     </div>
-                                    <div class="form-messege"></div>
                                 </form>
                             </div>
                         </div>
@@ -91,3 +102,33 @@
         </div>
     </div>
 </section>
+
+@if (TempData["SuccessTitle"] != null)
+{
+    <div id="success-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content modal-shadow">
+                <div class="modal-header">
+                    <h2 class="modal-title"><span class="icon icon-checkmark2 icon-top-adjust mr-3" aria-hidden="true"></span>@TempData["SuccessTitle"]</h2>
+                </div>
+                <div class="modal-body">
+                    <p class="p-2 m-0">@TempData["SuccessBody"]</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary px-5" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (TempData["SuccessTitle"] != null)
+    {
+        <script>
+            $(function () {
+                $('#success-modal').modal('show');
+            });
+        </script>
+    }
+}

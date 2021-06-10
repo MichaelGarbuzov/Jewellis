@@ -24,24 +24,21 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Users
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
             List<User> users = await _dbContext.Users
-                .Where(u => (query == null) ||
-                            u.FirstName.Contains(query) ||
-                            u.LastName.Contains(query) ||
-                            u.EmailAddress.Contains(query) ||
-                            (u.FirstName + " " + u.LastName).Equals(query))
-                .OrderBy(u => u.FirstName)
+                .Where(u => (model.Query == null || u.FirstName.Contains(model.Query) || u.LastName.Contains(model.Query) || u.EmailAddress.Contains(model.Query) || (u.FirstName + " " + u.LastName).Equals(model.Query)) &&
+                            (model.Role == null || u.Role == model.Role.Value))
+                .OrderByDescending(u => u.DateRegistered)
                 .ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(users);
+            ViewData["UsersModel"] = users;
+            return View(model);
         }
 
         // GET: /Admin/Users/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            User user = await _dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
             else
@@ -96,7 +93,7 @@ namespace Jewellis.Areas.Admin.Controllers
         // GET: /Admin/Users/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            User user = await _dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
                 return NotFound();
             else
@@ -110,6 +107,7 @@ namespace Jewellis.Areas.Admin.Controllers
         public async Task<IActionResult> Delete_POST(int id)
         {
             User user = await _dbContext.Users.FindAsync(id);
+            _dbContext.Addresses.Remove(user.Address);
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

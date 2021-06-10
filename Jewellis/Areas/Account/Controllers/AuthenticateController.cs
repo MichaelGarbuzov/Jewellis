@@ -62,8 +62,8 @@ namespace Jewellis.Areas.Account.Controllers
                 EmailAddress = model.EmailAddress,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                Currency = _clientCurrency.GetCurrent().Code,
-                Theme = _clientTheme.GetCurrent().ID,
+                Currency = _clientCurrency.Currency.Code,
+                Theme = _clientTheme.Theme.ID,
                 Role = UserRole.Customer
             };
             _dbContext.Users.Add(newUser);

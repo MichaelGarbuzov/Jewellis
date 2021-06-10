@@ -14,24 +14,76 @@
             </ul>
             <h1 class="title-1 font-weight-bold mb-5">Delete User #@Model.Id</h1>
             <div class="form-container bg-white mb-5">
-                <h2 class="tag tag-danger px-5 py-4 mb-4">Are you sure you want to delete this?</h2>
+                <h2 class="tag tag-danger px-5 py-4 mb-4">Are you sure you want to delete this user?</h2>
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="single-form-item">
-                            <label asp-for="FirstName"></label>
-                            <p>@Html.DisplayFor(m => m.FirstName)</p>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="FirstName"></label>
+                                    <p>@Html.DisplayFor(m => m.FirstName)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="LastName"></label>
+                                    <p>@Html.DisplayFor(m => m.LastName)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="EmailAddress"></label>
+                                    <p>@Html.DisplayFor(m => m.EmailAddress)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="single-form-item">
+                                    <label asp-for="PhoneNumber"></label>
+                                    @if (Model.PhoneNumber == null)
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@Html.DisplayFor(m => m.PhoneNumber)</p>
+                                    }
+                                </div>
+                            </div>
                         </div>
                         <div class="single-form-item">
-                            <label asp-for="LastName"></label>
-                            <p>@Html.DisplayFor(m => m.LastName)</p>
+                            <label asp-for="Address"></label>
+                            @if (Model.Address == null)
+                            {
+                                <p>-</p>
+                            }
+                            else
+                            {
+                                <p>@Model.Address.Street, @Model.Address.PostalCode<br />@Model.Address.City<br />@Model.Address.Country</p>
+                            }
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Role"></label>
+                                    <p>@Html.DisplayFor(m => m.Role)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Currency"></label>
+                                    <p>@Html.DisplayFor(m => m.Currency)</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="single-form-item">
+                                    <label asp-for="Theme"></label>
+                                    <p>@Html.DisplayFor(m => m.Theme)</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="single-form-item">
-                            <label asp-for="EmailAddress"></label>
-                            <p>@Html.DisplayFor(m => m.EmailAddress)</p>
-                        </div>
-                        <div class="single-form-item">
-                            <label asp-for="Role"></label>
-                            <p class="pre-line">@Html.DisplayFor(m => m.Role)</p>
+                            <label asp-for="DateRegistered"></label>
+                            <p>@Html.DisplayFor(m => m.DateRegistered)</p>
                         </div>
                         <div class="single-form-item">
                             <label asp-for="DateLastModified"></label>
@@ -47,7 +99,7 @@
                     </div>
                     <div class="col-lg-6 d-none d-lg-block">
                         <div class="d-flex justify-content-center align-items-center h-100">
-                            <span class="icon icon-user icon-land-lg txt-hover-bg" aria-hidden="true"></span>
+                            <span class="icon icon-user5 icon-land-lg txt-hover-bg" aria-hidden="true"></span>
                         </div>
                     </div>
                 </div>

@@ -185,53 +185,7 @@
                     <li>
                         <a href="#" id="main-search-open" role="button"><span class="icon icon-search2" aria-hidden="true"></span></a>
                         <div id="main-search">
-                            <div class="search-header">
-                                <div class="lay-wrapper h-100">
-                                    <div class="lay-middle w-100">
-                                        <div class="search-box w-100">
-                                            <form action="#" method="post">
-                                                <div class="i-txt-with-btn-wrapper">
-                                                    <input type="search" id="search-query" class="i-txt" placeholder="Type keywords here..." required />
-                                                    <button type="submit" class="btn outline-primary mob-icon"><span class="mob-icon-text">Search</span><span class="icon icon-search2" aria-hidden="true"></span></button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="lay-right">
-                                        <button id="main-search-close" class="primary-link" type="button"><span class="icon icon-close2"></span></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="search-body">
-                                <div class="maxw-lg m-auto search-results">
-                                    <div id="main-search-results">
-                                        @for (int i = 0; i < 5; i++)
-                                        {
-                                            <div class="single-search-product">
-                                                <div class="row">
-                                                    <div class="col-sm-9 d-flex align-items-center">
-                                                        <div class="search-product-img">
-                                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                                                <img src="~/images/product-lg-1.jpg" alt="Product 1" />
-                                                            </a>
-                                                        </div>
-                                                        <div class="search-product-details">
-                                                            <div class="search-product-title"><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="primary-link">Product Title @(i+1)</a></div>
-                                                            <div>$10.00</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-3 d-none d-sm-flex justify-content-end align-items-center">
-                                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="btn outline-primary mr-5">View<span class="icon icon-arrow-right4 icon-top-adjust ml-3" aria-hidden="true"></span></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <a id="main-search-more" asp-area="Shop" asp-controller="Home" asp-action="Index" asp-route-keywords="keywords here" class="btn btn-neutral btn-lg">Show More<span class="icon icon-arrow-right4 icon-top-adjust ml-3" aria-hidden="true"></span></a>
-                                    </div>
-                                </div>
-                            </div>
+                            <partial name="~/Views/Shared/PartialViews/_MainSearchPartial.cshtml" />
                         </div>
                     </li>
                     <li class="dropdown">
@@ -381,89 +335,108 @@
                     <button type="button" class="p-3 m-0 h2" data-dismiss="modal" aria-label="Close"><span class="icon icon-close icon-top-adjust" aria-hidden="true"></span></button>
                 </div>
                 <div class="modal-body px-5 py-4">
-                    @*<div class="d-flex justify-content-center align-items-center h-100">
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <div class="mini-wishlist-items">
+                            <div class="single-mini-product">
+                                <figure>
+                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
+                                        <img src="~/images/product-1.jpg" alt="Product 1" />
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">Sprite Yoga Companion</a></h2>
+                                    <div class="quantity-x-price">
+                                        <span>$77.00</span>
+                                    </div>
+                                    <div class="actions d-flex justify-content-between">
+                                        <div class="d-flex">
+                                            <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
+                                                <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
+                                                <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
+                                            </div>
+                                            <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
+                                        </div>
+                                        <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="single-mini-product">
+                                <figure>
+                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">
+                                        <img src="~/images/product-2.jpg" alt="Product 2" />
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">Yoga Companion Kit</a></h2>
+                                    <div class="quantity-x-price">
+                                        <span>$58.00</span>
+                                    </div>
+                                    <div class="actions d-flex justify-content-between">
+                                        <div class="d-flex">
+                                            <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
+                                                <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
+                                                <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
+                                            </div>
+                                            <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
+                                        </div>
+                                        <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="single-mini-product">
+                                <figure>
+                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">
+                                        <img src="~/images/product-3.jpg" alt="Product 3" />
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">Sprite Yoga Companion Kit</a></h2>
+                                    <div class="quantity-x-price">
+                                        <span>$20.00</span>
+                                    </div>
+                                    <div class="actions d-flex justify-content-between">
+                                        <div class="d-flex">
+                                            <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
+                                                <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
+                                                <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
+                                            </div>
+                                            <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
+                                        </div>
+                                        <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="d-flex justify-content-center align-items-center h-100">
+                                <div class="mini-cart-empty">
+                                    <div class="text-center txt-secondary mb-2"><span class="icon icon-heart-broken display-1" aria-hidden="true"></span></div>
+                                    <h4 class="text-secondary text-center m-0 py-3">Your wishlist is empty.</h4>
+                                </div>
+                            </div>*@
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-center align-items-center h-100">
                             <div class="mini-cart-empty">
-                                <div class="text-center txt-secondary mb-2"><span class="icon icon-heart-broken display-1" aria-hidden="true"></span></div>
-                                <h4 class="text-secondary text-center m-0 py-3">Your wishlist is empty.</h4>
-                            </div>
-                        </div>*@
-                    <div class="mini-wishlist-items">
-                        <div class="single-mini-product">
-                            <figure>
-                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                    <img src="~/images/product-1.jpg" alt="Product 1" />
-                                </a>
-                            </figure>
-                            <div class="product-details">
-                                <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">Sprite Yoga Companion</a></h2>
-                                <div class="quantity-x-price">
-                                    <span>$77.00</span>
-                                </div>
-                                <div class="actions d-flex justify-content-between">
-                                    <div class="d-flex">
-                                        <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                            <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
-                                            <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
-                                            <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
-                                        </div>
-                                        <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
-                                    </div>
-                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
-                                </div>
+                                <div class="text-center txt-secondary mb-2"><span class="icon icon-user-plus display-1" aria-hidden="true"></span></div>
+                                <h4 class="text-secondary text-center m-0 py-3">Please <a asp-area="Account" asp-controller="Authenticate" asp-action="Login" class="primary-link"><u>log in</u></a> or <a asp-area="Account" asp-controller="Authenticate" asp-action="Register" class="primary-link"><u>sign up</u></a> to use this feature.</h4>
                             </div>
                         </div>
-                        <div class="single-mini-product">
-                            <figure>
-                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">
-                                    <img src="~/images/product-2.jpg" alt="Product 2" />
-                                </a>
-                            </figure>
-                            <div class="product-details">
-                                <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">Yoga Companion Kit</a></h2>
-                                <div class="quantity-x-price">
-                                    <span>$58.00</span>
-                                </div>
-                                <div class="actions d-flex justify-content-between">
-                                    <div class="d-flex">
-                                        <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                            <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
-                                            <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
-                                            <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
-                                        </div>
-                                        <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
-                                    </div>
-                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single-mini-product">
-                            <figure>
-                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">
-                                    <img src="~/images/product-3.jpg" alt="Product 3" />
-                                </a>
-                            </figure>
-                            <div class="product-details">
-                                <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">Sprite Yoga Companion Kit</a></h2>
-                                <div class="quantity-x-price">
-                                    <span>$20.00</span>
-                                </div>
-                                <div class="actions d-flex justify-content-between">
-                                    <div class="d-flex">
-                                        <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                            <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
-                                            <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1">
-                                            <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
-                                        </div>
-                                        <button type="button" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
-                                    </div>
-                                    <button type="button" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    }
                 </div>
                 <div class="modal-footer p-5">
-                    <a asp-area="Account" asp-controller="Home" asp-action="Wishlist" class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <a asp-area="Account" asp-controller="Home" asp-action="Wishlist" class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                    }
+                    else
+                    {
+                        <a href="#" disabled class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                    }
                 </div>
             </div>
         </div>

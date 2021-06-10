@@ -1,11 +1,13 @@
-﻿using Jewellis.Data;
+﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Services.ClientCurrency;
+using Jewellis.Data;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
 using Jewellis.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jewellis.Controllers
@@ -13,10 +15,12 @@ namespace Jewellis.Controllers
     public class HomeController : Controller
     {
         private readonly JewellisDbContext _dbContext;
+        private readonly ClientCurrencyService _clientCurrency;
 
-        public HomeController(JewellisDbContext dbContext)
+        public HomeController(JewellisDbContext dbContext, ClientCurrencyService clientCurrency)
         {
             _dbContext = dbContext;
+            _clientCurrency = clientCurrency;
         }
 
         [Route("/")]
@@ -85,6 +89,34 @@ namespace Jewellis.Controllers
             List<Branch> branches = await _dbContext.Branches.OrderBy(b => b.Name).ToListAsync();
             return View(branches);
         }
+
+        #region AJAX Actions
+
+        [Route("/main-search")]
+        [AjaxOnly]
+        public async Task<IActionResult> MainSearch(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+                return Json(false);
+
+            List<Product> products = await _dbContext.Products
+                .Where(p => p.Name.Contains(query) || p.Description.Contains(query))
+                .Take(5)
+                .Include(p => p.Sale)
+                .ToListAsync();
+
+            var bindProductsJSON = products.Select(p => new
+            {
+                id = p.Id,
+                name = p.Name,
+                imagePath = p.ImagePath,
+                price = _clientCurrency.GetPriceAndDisplay(p.SaleId.HasValue ? (p.Price * (1 - p.Sale.DiscountRate)) : p.Price)
+            }).ToList();
+
+            return Json(bindProductsJSON);
+        }
+
+        #endregion
 
     }
 }

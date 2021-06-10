@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-08
+    Last Update: 2021-06-11
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -5754,7 +5754,7 @@ figure {
     font-size: 1.6rem;
     color: var(--color-text-title);
     font-weight: 700;
-    font-family: "Montserrat";
+    font-family: serif;
     font-style: normal;
     text-transform: uppercase;
     box-shadow: none;
@@ -7469,6 +7469,11 @@ html[theme="light"] #main-logo {
         padding: 4rem;
     }
 
+    #main-search .search-results-more {
+        display: flex;
+        justify-content: center;
+    }
+
 .single-search-product {
     background: var(--color-white);
     border: 2px solid var(--color-white);
@@ -7491,8 +7496,8 @@ html[theme="light"] #main-logo {
     }
 
     .single-search-product .search-product-img {
-        min-width: 12rem;
-        max-width: 12rem;
+        height: 12rem;
+        width: 12rem;
         background: var(--color-background-light-1);
         position: relative;
     }
@@ -8009,7 +8014,7 @@ html[theme="light"] #main-logo {
     }
 
 #about-sec .about-content-wrap {
-    font-family: "Montserrat";
+    font-family: serif;
 }
 
     #about-sec .about-content-wrap h2, #about-sec .about-content-wrap h3, #about-sec .about-content-wrap h4 {

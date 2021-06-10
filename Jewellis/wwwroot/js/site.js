@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-10
+    Last Update: 2021-06-11
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -454,17 +454,19 @@ $(function () {
         }
 
         // Builds the view model:
-        var SubscribeVM = {};
+        var viewModel = {};
         $form.find('[name]').each(function () {
-            SubscribeVM[$(this).attr('name')] = $(this).val();
+            viewModel[$(this).attr('name')] = $(this).val();
         });
+
+        var method = $form.attr('data-ajax-method');
 
         // Sends the AJAX request:
         $.ajax({
-            type: $form.attr('data-ajax-method'),
+            type: method,
             url: $form.attr('action'),
-            data: JSON.stringify(SubscribeVM),
-            headers: { 'RequestVerificationToken': SubscribeVM["__RequestVerificationToken"] },
+            data: (method === 'post' ? JSON.stringify(viewModel) : viewModel),
+            headers: { 'RequestVerificationToken': viewModel["__RequestVerificationToken"] },
             contentType: 'application/json',
             dataType: 'json',
             complete: function () {
@@ -481,11 +483,29 @@ $(function () {
                 }
             },
             success: function (response) {
+                // Updates the html:
                 if ($form.attr('data-ajax-update')) {
-                    var $msgElement = $($form.attr('data-ajax-update'));
-                    $msgElement.text(response.message);
+                    var $updateElement = $($form.attr('data-ajax-update'));
+                    $updateElement.empty();
+                    $updateElement.show();
+                    // Checks if there's a template:
+                    if ($form.attr('data-ajax-update-template')) {
+                        var template = $($form.attr('data-ajax-update-template')).html();
+                        $.each(response, function (i, val) {
+                            var templateVar = template;
+
+                            $.each(val, function (key, value) {
+                                templateVar = templateVar.replaceAll('{' + key + '}', value);
+                            });
+
+                            $updateElement.append(templateVar);
+                        });
+                    } else {
+                        $updateElement.text(response.message);
+                    }
                 }
 
+                // Clears the form on success:
                 if ($form.attr('data-ajax-success-clear')) {
                     $form.find('input:not([type="hidden"])').val('');
                 }
@@ -609,7 +629,7 @@ $(function () {
 
         WindowScroll.disable();
         $searchContainer.fadeIn(200);
-        $searchContainer.find('#search-query').focus();
+        $searchContainer.find('#main-search-query').focus();
         // Listens to 'Esc' press, to close the main search:
         $(document).keydown(mainSearchEscListener);
         return false;
@@ -624,7 +644,7 @@ $(function () {
 
         WindowScroll.enable();
         $searchContainer.fadeOut(300, function () {
-            $searchContainer.find('#search-query').val('');
+            $searchContainer.find('#main-search-query').val('');
         });
         // Removes listener to 'Esc' press:
         $(document).unbind('keydown', mainSearchEscListener);

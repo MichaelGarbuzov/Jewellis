@@ -320,6 +320,10 @@ figure {
     border: 1px solid var(--color-separator) !important;
 }
 
+.border-primary {
+    border: 1px solid var(--color-primary) !important;
+}
+
 .tooltip-inner {
     font-size: 1.5rem;
     padding: 0.5rem 1rem;
@@ -6374,6 +6378,12 @@ figure {
         margin-bottom: 2rem;
     }
 
+    .sec-title h3 {
+        font-size: 3.5rem;
+        line-height: 1.2;
+        margin-bottom: 2rem;
+    }
+
     .sec-title p {
         color: #878787;
         font-style: italic;
@@ -6658,6 +6668,10 @@ figure {
         font-size: 3.2rem;
     }
 
+    .sec-title h3 {
+        font-size: 3rem;
+    }
+
     .sec-container {
         padding: 4rem 4%;
     }
@@ -6682,6 +6696,10 @@ figure {
 @media screen and (max-width: 480px) {
     .sec-title h2 {
         font-size: 2.7rem;
+    }
+
+    .sec-title h3 {
+        font-size: 2.5rem;
     }
 
     .modal.right .modal-dialog {
@@ -8196,7 +8214,6 @@ html[theme="dark"] .single-cat-item figure img {
 
     #newsletter-sec form {
         max-width: 46rem;
-        width: 46rem;
         margin: 0 auto;
     }
 

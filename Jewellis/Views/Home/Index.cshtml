@@ -1,5 +1,14 @@
-﻿@{
+﻿@using Jewellis.WebServices.TwitterApi
+
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
+
+@{
     ViewData["Title"] = "Home";
+
+    OEmbedTwitterApiService oEmbedTwitterApi = new OEmbedTwitterApiService();
+    bool useDarkTheme = ClientTheme.Theme.ID.Equals("dark");
+    string oEmbedTwitterHtml = await oEmbedTwitterApi.GetEmbeddedTimelineAsync(Configuration.GetSection("Metadata")["TwitterUsername"], darkTheme: useDarkTheme);
 }
 
 <section id="banner-sec">
@@ -220,16 +229,30 @@
     </div>
 </section>
 
-<section id="newsletter-sec">
+<section id="stay-up-to-date-sec">
     <div class="sec-container">
-        <div class="row">
-            <div class="sec-title col-lg-12 text-center">
-                <h2>Join The Newsletter</h2>
-                <p>Get Updates On Awesome Jewelry!</p>
-            </div>
+        <div class="sec-title col-lg-12 text-center">
+            <h2>Stay Up To Date</h2>
         </div>
-        <div class="row">
-            <partial name="~/Views/Home/_NewsletterSubscriptionPartial.cshtml" />
+        <div class="container p-lg-5">
+            <div class="row">
+                <div class="col-lg-6 pr-lg-5 mb-5 mb-lg-0">
+                    <div class="d-flex align-items-center border-primary px-5 py-4">
+                        @Html.Raw(oEmbedTwitterHtml)
+                    </div>
+                </div>
+                <div class="col-lg-6 pl-lg-5 mt-4 mb-5 my-lg-0">
+                    <div class="h-100 d-flex justify-content-center align-items-center border-primary px-3 py-5">
+                        <div id="newsletter-sec">
+                            <div class="sec-title text-center">
+                                <h3>Join The Newsletter</h3>
+                                <p>Get Updates On Awesome Jewelry!</p>
+                            </div>
+                            <partial name="~/Views/Home/_NewsletterSubscriptionPartial.cshtml" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

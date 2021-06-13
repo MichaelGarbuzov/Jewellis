@@ -119,10 +119,16 @@ namespace Jewellis.Models
         public Address Address { get; set; }
 
         /// <summary>
-        /// The cart products of the user.
+        /// The cart related to the user.
         /// </summary>
-        /// <remarks>[Relationship: One-to-Many]</remarks>
-        public List<UserCartProduct> Cart { get; set; }
+        /// <remarks>[Foreign Key]</remarks>
+        public int? ClientCartId { get; set; }
+
+        /// <summary>
+        /// The cart related to the user.
+        /// </summary>
+        /// <remarks>[Relationship: One-to-One]</remarks>
+        public ClientCart ClientCart { get; set; }
 
         /// <summary>
         /// The wishlist products of the user.

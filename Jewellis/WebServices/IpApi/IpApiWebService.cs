@@ -1,6 +1,7 @@
 ﻿using Jewellis.App_Custom.Helpers;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Jewellis.WebServices.IpApi
@@ -36,6 +37,10 @@ namespace Jewellis.WebServices.IpApi
         {
             if (string.IsNullOrEmpty(ipAddress))
                 throw new ArgumentNullException(nameof(ipAddress), $"{nameof(ipAddress)} cannot be null or empty.");
+
+            IPAddress ip;
+            if (!IPAddress.TryParse(ipAddress, out ip) || ipAddress.Equals("::1"))
+                return null;
 
             string url = $"{BASE_URL}/{ipAddress}?fields={PARAM_CURRENCY_CODE}";
 

@@ -4,7 +4,7 @@
         <div class="lay-middle w-100">
             <div class="search-box w-100">
                 <form asp-area="" asp-controller="Home" asp-action="MainSearch" method="get"
-                      data-ajax="true" data-ajax-method="get" data-ajax-update="#main-search-results" data-ajax-update-template="#single-main-search-item" data-ajax-success="MainSearchSuccess">
+                      data-ajax="true" data-ajax-method="get" data-ajax-update="#main-search-results" data-ajax-update-template="#single-main-search-item" data-ajax-success="MainSearchSuccess" data-ajax-failure="MainSearchFailure">
                     <div class="i-txt-with-btn-wrapper">
                         <input type="text" id="main-search-query" name="query" placeholder="What are you looking for?" class="i-txt" />
                         <button type="submit" class="btn outline-primary text-nowrap mob-icon" data-submit-loader><span class="mob-icon-text">Search</span><span class="icon icon-search2" aria-hidden="true"></span></button>
@@ -64,5 +64,8 @@
         }
 
         $resultsContainer.parent().show();
+    }
+    function MainSearchFailure() {
+        alert("Something went wrong, please try again later.");
     }
 </script>

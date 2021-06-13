@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-11
+    Last Update: 2021-06-13
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -20,7 +20,8 @@ Table of Contents:
 var AppKeys = {
     Cookies: {
         ClientTheme: "theme",
-        ClientCurrency: "currency"
+        ClientCurrency: "currency",
+        ClientCart: "cart"
     }
 };
 
@@ -28,6 +29,41 @@ var AppKeys = {
 /*----------------------------------------------
  * (2) - General Methods
 ----------------------------------------------*/
+var ArrayHelper = {
+    /**
+     * Checks if an array contains an object by the specified key value.
+     */
+    containsObjectByKey: function (array, key, value) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i][key] === value) {
+                return true;
+            }
+        }
+        return false;
+    },
+    /**
+     * Gets an object by the specified key value in the array.
+     */
+    getObjectByKey: function (array, key, value) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i][key] === value) {
+                return array[i];
+            }
+        }
+        return null;
+    },
+    /**
+     * Removes an object from the array by the specified key value.
+     */
+    removeObjectByKey: function (array, key, value) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i][key] === value) {
+                array.splice(i, 1);
+            }
+        }
+    }
+};
+
 /**
  * Disables/Enables window scrolling temporarily.
  */
@@ -91,6 +127,22 @@ function setCookie(cookieName, cookieValue, daysToExpire) {
     document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/;secure;";
 }
 
+/**
+ * Binds the object to the specified template, and returns the binded template.
+ */
+function bindObjectToTemplate(object, template) {
+    let templateVar = template;
+
+    for (var key of Object.keys(object)) {
+        if (object[key] !== null) {
+            templateVar = templateVar.replaceAll('{' + key + '}', object[key]);
+        } else {
+            templateVar = templateVar.replaceAll('{' + key + '}', '');
+        }
+    }
+    return templateVar;
+}
+
 
 /*----------------------------------------------
  * (3) - General Components
@@ -106,7 +158,9 @@ $(function () {
     // Attribute for bootstrap's dropdown - marks an inner link to not close the dropdown on click, because the default closes the dropdown.
     $('[data-dd-close="0"]').on('click.bs.dropdown', function (e) {
         e.stopPropagation();
-        e.preventDefault();
+    });
+    $('[data-dd-close="1"]').on('click.bs.dropdown', function (e) {
+        $(this).parents('.dropdown').find('[data-toggle]').dropdown('toggle');
     });
 
     // [Dropdown Mega] = A dropdown with several menus inside, with cool animation that "replaces" the current menu.
@@ -201,9 +255,11 @@ $(function () {
         if (maxVal) {
             if (currentVal + 1 <= maxVal) {
                 $input.val(currentVal + 1);
+                $input.trigger('change');
             }
         } else {
             $input.val(currentVal + 1);
+            $input.trigger('change');
         }
     });
     // Occurres when the decrease button is clicked:
@@ -218,9 +274,11 @@ $(function () {
         if (minVal) {
             if (currentVal - 1 >= minVal) {
                 $input.val(currentVal - 1);
+                $input.trigger('change');
             }
         } else {
             $input.val(currentVal - 1);
+            $input.trigger('change');
         }
     });
 
@@ -653,7 +711,8 @@ $(function () {
 
     // Theme change:
     // -------------
-    $('[data-theme-set]').click(function () {
+    $('[data-theme-set]').click(function (e) {
+        e.preventDefault();
         var $themeMenu = $(this).parents('#main-theme-menu');
 
         // Updates the html:
@@ -674,7 +733,8 @@ $(function () {
 
     // Currency change:
     // ----------------
-    $('[data-currency-set]').click(function () {
+    $('[data-currency-set]').click(function (e) {
+        e.preventDefault();
         var $currencyMenu = $(this).parents('#main-currency-menu');
 
         // Updates the html:
@@ -693,6 +753,137 @@ $(function () {
         // Reloads the page:
         location.reload();
         return false;
+    });
+
+    // Add To Cart (Mini Cart):
+    // ------------------------
+    $(document).on('click', '[data-add-to-cart]', function () {
+        if (!clientCart)
+            alert("Failed to add to cart, please try again later.");
+
+        let product = JSON.parse($(this).attr('data-add-to-cart'));
+
+        // Gets the quantity to add (if requested):
+        let $quantityInput = $(this).parent().find('[data-add-to-cart-quantity]');
+        let quantityRequest;
+        if ($quantityInput) {
+            quantityRequest = parseInt($quantityInput.val());
+        }
+
+        // Checks if the product already exists in the cart:
+        let currentProductInCart = ArrayHelper.getObjectByKey(clientCart, 'id', product.id);
+        let cacheToRevert = Object.assign({}, currentProductInCart);
+        if (currentProductInCart) {
+            if (quantityRequest) {
+                currentProductInCart.quantity = quantityRequest;
+            } else {
+                currentProductInCart.quantity++;
+            }
+            product.quantity = currentProductInCart.quantity;
+        } else {
+            if (quantityRequest) {
+                product.quantity = quantityRequest;
+            } else {
+                product.quantity = 1;
+            }
+            clientCart.unshift(product);
+        }
+
+        // Updates the html of the cart:
+        updateMiniCartHtml(clientCart);
+
+        // Updates the server using AJAX about adding this item:
+        let $miniCartContainer = $('#mini-cart');
+        $.ajax({
+            type: 'post',
+            url: $miniCartContainer.attr('data-mini-cart-set-link'),
+            data: { productId: product.id, quantity: product.quantity },
+            error: function () {
+                // Reverts the change:
+                if (currentProductInCart) {
+                    currentProductInCart.quantity = cacheToRevert.quantity;
+                } else {
+                    ArrayHelper.removeObjectByKey(clientCart, 'id', product.id);
+                }
+                // Updates the html of the cart:
+                updateMiniCartHtml(clientCart);
+            }
+        });
+    });
+    /**
+     * Updates the html of the mini shopping cart in the header (layout), by the specified JSON array of products.
+     */
+    var updateMiniCartHtml = function (products) {
+        let $container = $('#mini-cart');
+        let $miniCartCounter = $container.parent().find('#mini-cart-counter');
+        let $miniCartWrapper = $container.children('.mini-cart-wrapper');
+        let $miniCartItems = $miniCartWrapper.children('.mini-cart-items');
+        let $miniCartTotal = $miniCartWrapper.find('#mini-cart-total');
+        let miniCartItemtemplate = $container.children('#mini-cart-item-template').html();
+
+        $miniCartItems.empty();
+        $miniCartTotal.empty();
+
+        // Updates the cart:
+        if (products && products.length > 0) {
+            let totalPrice = 0;
+
+            // Appends the product items:
+            for (let i = 0; i < products.length; i++) {
+                let bindedTemplate = bindObjectToTemplate(products[i], miniCartItemtemplate);
+
+                // Checks if there's a sale on the product:
+                if (products[i].regularPrice) {
+                    bindedTemplate = $(bindedTemplate).find('.actual-price').addClass('txt-accent').parents('.single-mini-product');
+                }
+                $miniCartItems.append(bindedTemplate);
+
+                // Adds to the total price:
+                totalPrice += (parseFloat(products[i].actualPrice.substring(1)) * products[i].quantity);
+            }
+            // Sets the total price:
+            $miniCartTotal.text(products[0].actualPrice.charAt(0) + totalPrice.toFixed(2));
+
+            // Updates the counter:
+            $miniCartCounter.text(products.length);
+            $miniCartCounter.show();
+            // Updates the cart container:
+            $container.find('.mini-cart-empty').hide();
+            $miniCartWrapper.show();
+        } else {
+            // Updates the counter:
+            $miniCartCounter.text('0');
+            $miniCartCounter.hide();
+            // Updates the cart container:
+            $miniCartWrapper.hide();
+            $container.find('.mini-cart-empty').show();
+        }
+    };
+    $(window).ready(function () {
+        // Reloads the client's cart from server on load:
+        updateMiniCartHtml(clientCart);
+    });
+    $('#mini-cart').on('click', '[data-remove-from-cart]', function () {
+        if (!clientCart)
+            alert("Failed to remove from cart, please try again later.");
+
+        // Removes the product from the cart:
+        let productId = parseInt($(this).attr('data-remove-from-cart'));
+        ArrayHelper.removeObjectByKey(clientCart, 'id', productId);
+
+        // Updates the html of the cart:
+        updateMiniCartHtml(clientCart);
+
+        // Updates the server using AJAX about adding this item:
+        let $miniCartContainer = $('#mini-cart');
+        $.ajax({
+            type: 'post',
+            url: $miniCartContainer.attr('data-mini-cart-remove-link'),
+            data: { productId: productId },
+            error: function () {
+                alert("Failed to remove from cart, please try again later.");
+            }
+        });
     });
 
 });

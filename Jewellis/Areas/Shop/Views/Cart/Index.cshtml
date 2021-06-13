@@ -1,5 +1,14 @@
-﻿@{
+﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+@inject Jewellis.App_Custom.Services.ClientShoppingCart.ClientShoppingCartService ClientCart
+
+@{
     ViewData["Title"] = "View Cart";
+
+    string cartJSON = Json.Serialize(ClientCart.Cart.Products.Select(p => new
+    {
+        ProductId = p.ProductId,
+        Quantity = p.Quantity
+    })).ToString();
 }
 
 <section class="bg-light-2">
@@ -8,7 +17,7 @@
             <h1 class="title-1 font-weight-bold mb-5">Shopping Cart</h1>
             <div class="row">
                 <div class="col-xl-8 mb-5">
-                    <h3 class="block-title">Items (3)</h3>
+                    <h3 class="block-title">Items (@ClientCart.Count())</h3>
                     <div class="form-container bg-white txt-md">
                         <div class="table-header text-center d-none d-md-block">
                             <div class="row">
@@ -24,142 +33,71 @@
                             </div>
                         </div>
                         <div class="table-body">
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <button type="button" class="txt-lg float-right d-md-none mt-3 ml-3"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                                <img class="row-image" src="~/images/product-1.jpg" alt="Product 1" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="primary-link text-uppercase">SPRITE YOGA COMPANION</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">
-                                                        <strike>$65.00</strike>
-                                                        <br class="d-none d-md-block" />
-                                                        <span class="txt-accent ml-2 ml-md-0">$35.00</span>
+                            @if (!ClientCart.IsEmpty())
+                            {
+                                foreach (var cartProduct in ClientCart.Cart.Products)
+                                {
+                                    <div class="table-row">
+                                        <div class="d-flex align-items-center text-left text-md-center row">
+                                            <div class="col-12 col-md-5">
+                                                <form asp-area="Shop" asp-controller="Cart" asp-action="RemoveProduct" asp-route-productid="@cartProduct.ProductId">
+                                                    <button type="submit" class="txt-lg float-right d-md-none mt-3 ml-3"><span class="icon icon-remove1" aria-hidden="true"></span></button>
+                                                </form>
+                                                <div class="d-flex align-items-center">
+                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id">
+                                                        <img class="row-image" src="@cartProduct.Product.ImagePath" alt="@cartProduct.Product.Name" />
+                                                    </a>
+                                                    <div class="row-title text-left">
+                                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id" class="primary-link text-uppercase">@cartProduct.Product.Name</a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between align-items-center">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
-                                                        <input type="text" class="i-txt text-center maxw-6 p-0 py-md-3 m-0" value="2">
-                                                        <button type="button" class="primary-link py-3 pl-3 pr-md-3 ml-1" data-in-num-inc>+</button>
+                                            <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                            <div class="d-md-none txt-secondary">Price</div>
+                                                            <div class="text-right text-md-center">
+                                                                @if (cartProduct.Product.IsOnSaleNow())
+                                                                {
+                                                                    <strike>@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.Price)</strike>
+                                                                    <br class="d-none d-md-block" />
+                                                                }
+                                                                <span class="@(cartProduct.Product.IsOnSaleNow() ? "txt-accent" : "") ml-2 ml-md-0">@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.ActualPrice())</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="d-flex justify-content-md-center justify-content-between align-items-center">
+                                                            <div class="d-md-none txt-secondary">Quantity</div>
+                                                            <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                                <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
+                                                                <input data-quantity-for="@cartProduct.Product.Id" type="text" class="i-txt text-center maxw-6 p-0 py-md-3 m-0" value="@cartProduct.Quantity" />
+                                                                <button type="button" class="primary-link py-3 pl-3 pr-md-3 ml-1" data-in-num-inc>+</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                            <div class="d-md-none txt-secondary">Total Price</div>
+                                                            <div data-product-total class="text-right text-md-center">@ClientCurrency.GetPriceAndDisplay((cartProduct.Quantity * cartProduct.Product.ActualPrice()))</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-none d-md-block text-center col-2">
+                                                        <form asp-area="Shop" asp-controller="Cart" asp-action="RemoveProduct" asp-route-productid="@cartProduct.ProductId">
+                                                            <button type="submit" class="txt-lg"><span class="icon icon-remove1" aria-hidden="true"></span></button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$130.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="d-none d-md-block text-center col-2">
-                                                <button type="button" class="txt-lg"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <button type="button" class="txt-lg float-right d-md-none mt-3 ml-3"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">
-                                                <img class="row-image" src="~/images/product-2.jpg" alt="Product 2" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2" class="primary-link text-uppercase">Yoga COMPANION KIT</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between align-items-center">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
-                                                        <input type="text" class="i-txt text-center maxw-6 p-0 py-md-3 m-0" value="3">
-                                                        <button type="button" class="primary-link py-3 pl-3 pr-md-3 ml-1" data-in-num-inc>+</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="d-none d-md-block text-center col-2">
-                                                <button type="button" class="txt-lg"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <button type="button" class="txt-lg float-right d-md-none mt-3 ml-3"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">
-                                                <img class="row-image" src="~/images/product-3.jpg" alt="Product 3" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3" class="primary-link text-uppercase">SPRITE YOGA COMPANION KIT</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between align-items-center">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
-                                                        <input type="text" class="i-txt text-center maxw-6 p-0 py-md-3 m-0" value="1">
-                                                        <button type="button" class="primary-link py-3 pl-3 pr-md-3 ml-1" data-in-num-inc>+</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="d-none d-md-block text-center col-2">
-                                                <button type="button" class="txt-lg"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                }
+                            }
+                            else
+                            {
+                                <h4 class="txt-lg text-center txt-secondary py-5 mt-md-5">Your cart is empty.</h4>
+                            }
                         </div>
                     </div>
                 </div>
@@ -167,14 +105,33 @@
                     <h3 class="block-title">Order Summary</h3>
                     <div class="form-container bg-white mb-5">
                         <ul class="list-unstyled mb-3">
-                            <li class="summary-item"><span>Order Subtotal </span><span>$300.00</span></li>
-                            <li class="summary-item"><span>Discount</span><span>-$50.00</span></li>
-                            <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">$250.00</strong></li>
+                            <li class="summary-item"><span>Order Subtotal </span><span id="cart-subtotal">@ClientCurrency.GetPriceAndDisplay(ClientCart.GetSubtotal())</span></li>
+                            <li class="summary-item"><span>Discount</span><span id="cart-discount">-@ClientCurrency.GetPriceAndDisplay(ClientCart.GetTotalDiscount())</span></li>
+                            <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total" id="cart-total">@ClientCurrency.GetPriceAndDisplay(ClientCart.GetTotalPrice())</strong></li>
                         </ul>
                         <div>
-                            <a asp-area="Shop" asp-controller="Order" asp-action="Checkout" class="btn btn-primary w-100 hover-push">Proceed to Checkout<span class="icon icon-arrow-right4 icon-top-adjust ml-3" aria-hidden="true"></span></a>
+                            <form asp-area="Shop" asp-controller="Cart" asp-action="ProceedToCheckout" method="post">
+                                <input type="hidden" name="cartJson" id="cartJson" value="@cartJSON" />
+                                @if (ClientCart.IsEmpty())
+                                {
+                                    <div data-toggle="popover" data-placement="top" data-content="Your cart is empty. Add some products to proceed.">
+                                        <button type="submit" class="btn btn-primary w-100 hover-push disabled" disabled>
+                                            <span>Proceed to Checkout</span><span class="icon icon-arrow-right4 icon-top-adjust ml-3" aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary w-100 hover-push">
+                                        <span>Proceed to Checkout</span><span class="icon icon-arrow-right4 icon-top-adjust ml-3" aria-hidden="true"></span>
+                                    </button>
+                                }
+                            </form>
                             <hr class="sec-separator my-4">
-                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" class="btn primary-link w-100 hover-push"><span class="icon icon-arrow-left3 icon-top-adjust pr-3" aria-hidden="true"></span>Continue Shopping</a>
+                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" class="btn primary-link w-100 hover-push">
+                                <span class="icon icon-arrow-left3 icon-top-adjust pr-3" aria-hidden="true"></span>
+                                <span>@(ClientCart.IsEmpty() ? "Start Shopping" : "Continue Shopping")</span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -182,3 +139,67 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('[data-quantity-for]').change(function () {
+                // Getting the elements to work with:
+                let $cartJsonInput = $('#cartJson');
+                let $container = $(this).parents('.table-row');
+
+                // Getting the data to work with:
+                let productId = parseInt($(this).attr('data-quantity-for'));
+                let productQuantity = parseInt($(this).val());
+                let productInCart = ArrayHelper.getObjectByKey(clientCart, 'id', productId);
+
+                if (productInCart) {
+                    // Updates the value in the cart JSON:
+                    let cartJson = JSON.parse($cartJsonInput.val());
+                    (ArrayHelper.getObjectByKey(cartJson, 'productId', productId)).quantity = productQuantity;
+                    $cartJsonInput.val(JSON.stringify(cartJson));
+
+                    // Updates the local clientCart variable:
+                    (ArrayHelper.getObjectByKey(clientCart, 'id', productId)).quantity = productQuantity;
+
+                    // Updates the product's total price:
+                    let productTotalPrice = (parseFloat(productInCart.actualPrice.substring(1)) * productQuantity);
+                    $container.find('[data-product-total]').text(productInCart.actualPrice.charAt(0) + productTotalPrice.toFixed(2));
+
+                    // Updates the order summary:
+                    let symbol = productInCart.actualPrice.charAt(0);
+                    $('#cart-subtotal').text(symbol + getCartSubTotal(clientCart).toFixed(2));
+                    $('#cart-discount').text("-" + symbol + getCartDiscount(clientCart).toFixed(2));
+                    $('#cart-total').text(symbol + getCartTotal(clientCart).toFixed(2));
+                }
+            });
+        });
+        function getCartSubTotal(products) {
+            let subtotal = 0;
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].regularPrice) {
+                    subtotal += (parseFloat(products[i].regularPrice.substring(1)) * products[i].quantity);
+                } else {
+                    subtotal += (parseFloat(products[i].actualPrice.substring(1)) * products[i].quantity);
+                }
+            }
+            return subtotal;
+        }
+        function getCartDiscount(products) {
+            let discount = 0;
+            for (let i = 0; i < products.length; i++) {
+                if (products[i].regularPrice) {
+                    discount += ((parseFloat(products[i].regularPrice.substring(1)) - parseFloat(products[i].actualPrice.substring(1))) * products[i].quantity);
+                }
+            }
+            return discount;
+        }
+        function getCartTotal(products) {
+            let total = 0;
+            for (let i = 0; i < products.length; i++) {
+                total += (parseFloat(products[i].actualPrice.substring(1)) * products[i].quantity);
+            }
+            return total;
+        }
+    </script>
+}

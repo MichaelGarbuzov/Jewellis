@@ -20,7 +20,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The id of the user related to the wishlist.
         /// </summary>
-        /// <remarks>[Foreign Key]</remarks>
+        /// <remarks>[Foreign Key], [Primary Key with <see cref="ProductId"/>]</remarks>
         public int UserId { get; set; }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Jewellis.Models
         /// <summary>
         /// The id of the product related to the user's wishlist.
         /// </summary>
-        /// <remarks>[Foreign Key]</remarks>
+        /// <remarks>[Foreign Key], [Primary Key with <see cref="UserId"/>]</remarks>
         public int ProductId { get; set; }
 
         /// <summary>

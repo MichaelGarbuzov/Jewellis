@@ -3,6 +3,7 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
 @inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+@inject Jewellis.App_Custom.Services.ClientShoppingCart.ClientShoppingCartService ClientCart
 
 <!DOCTYPE html>
 <html lang="en" theme="@ClientTheme.Theme.ID">
@@ -190,34 +191,34 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon @(Context.User.Identity.IsAuthenticated ? "icon-user5" : "icon-user-plus")" aria-hidden="true"></span></a>
-                        <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu">
+                        <div class="dropdown-menu dropdown-nav" data-dd-mega data-dd-mega-start="#main-profile-menu" data-dd-close="0">
                             <ul id="main-profile-menu">
                                 @if (Context.User.Identity.IsAuthenticated && Context.User.Identity.GetRole().Equals("Admin"))
                                 {
-                                    <li class="primary-link-all pb-2 px-2"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="shadow-bold"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
+                                    <li class="primary-link-all pb-2 px-2"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="shadow-bold" data-dd-close="1"><span class="icon icon-console" aria-hidden="true"></span>Admin Interface</a></li>
                                     <li class="dropdown-divider m-3"></li>
                                 }
                                 @if (Context.User.Identity.IsAuthenticated)
                                 {
-                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Orders"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
-                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Profile"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
-                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Logout"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
+                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Orders" data-dd-close="1"><span class="icon icon-stack1" aria-hidden="true"></span>Orders</a></li>
+                                    <li><a asp-area="Account" asp-controller="Home" asp-action="Profile" data-dd-close="1"><span class="icon icon-vcard" aria-hidden="true"></span>Account</a></li>
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Logout" data-dd-close="1"><span class="icon icon-exit" aria-hidden="true"></span>Log out</a></li>
                                 }
                                 else
                                 {
-                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Login"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
-                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Register"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Login" data-dd-close="1"><span class="icon icon-enter" aria-hidden="true"></span>Log In</a></li>
+                                    <li><a asp-area="Account" asp-controller="Authenticate" asp-action="Register" data-dd-close="1"><span class="icon icon-pencil4" aria-hidden="true"></span>Sign Up</a></li>
                                 }
                                 <li class="dropdown-divider m-3"></li>
-                                <li class="dropdown-sm"><a href="#" role="button" id="main-currency-btn" data-dd-close="0" data-dd-mega-to="#main-currency-menu"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold" data-updatable>@ClientCurrency.Currency.Code</span></a></li>
-                                <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-close="0" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-updatable>@ClientTheme.Theme.DisplayName</span></a></li>
+                                <li class="dropdown-sm"><a href="#" role="button" id="main-currency-btn" data-dd-mega-to="#main-currency-menu"><span class="icon icon-coin" aria-hidden="true"></span>Currency: <span class="font-weight-bold" data-updatable>@ClientCurrency.Currency.Code</span></a></li>
+                                <li class="dropdown-sm"><a href="#" role="button" id="main-theme-btn" data-dd-mega-to="#main-theme-menu"><span class="icon icon-palette" aria-hidden="true"></span>Theme: <span class="font-weight-bold" data-updatable>@ClientTheme.Theme.DisplayName</span></a></li>
                             </ul>
                             <ul id="main-currency-menu" data-currency-set-link="@Url.Action("UpdateClientCurrency", "Preferences", new { area = "" })">
-                                <li class="dropdown-header"><a href="#" role="button" data-dd-close="0" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Currency</span></li>
+                                <li class="dropdown-header"><a href="#" role="button" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Currency</span></li>
                                 @foreach (var currency in ClientCurrency.Options.SupportedCurrencies)
                                 {
                                     <li>
-                                        <a href="#" role="button" data-dd-close="0" data-currency-set="@currency.Code" data-currency-set-symbol="@currency.Symbol" class="d-flex justify-content-between align-items-center">
+                                        <a href="#" role="button" data-currency-set="@currency.Code" data-currency-set-symbol="@currency.Symbol" class="d-flex justify-content-between align-items-center">
                                             <span class="line-height-2">@currency.ToString()</span>
                                             @if (currency == ClientCurrency.Currency)
                                             {
@@ -228,11 +229,11 @@
                                 }
                             </ul>
                             <ul id="main-theme-menu" data-theme-set-link="@Url.Action("UpdateClientTheme", "Preferences", new { area = "" })">
-                                <li class="dropdown-header"><a href="#" role="button" data-dd-close="0" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Theme</span></li>
+                                <li class="dropdown-header"><a href="#" role="button" data-dd-mega-to="#main-profile-menu"><span class="icon icon-arrow-left3" aria-hidden="true"></span></a><span>Theme</span></li>
                                 @foreach (var theme in ClientTheme.Options.SupportedThemes)
                                 {
                                     <li>
-                                        <a href="#" role="button" data-dd-close="0" data-theme-set="@theme.ID" data-theme-set-display="@theme.DisplayName">
+                                        <a href="#" role="button" data-theme-set="@theme.ID" data-theme-set-display="@theme.DisplayName">
                                             <span class="icon icon-theme-@theme.ID " aria-hidden="true"></span>
                                             <span>@string.Format("{0} theme", theme.DisplayName)</span>
                                             @if (theme == ClientTheme.Theme)
@@ -249,76 +250,74 @@
                         <a href="#" role="button" data-toggle="modal" data-target="#wishlist-modal"><span class="icon icon-heart6" aria-hidden="true"></span></a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-cart5" aria-hidden="true"></span><span class="count">3</span></a>
-                        <div id="mini-cart" class="dropdown-menu dropdown-menu-right dropdown-nav">
-                            @*<div class="mini-cart-empty">
-                                    <h4 class="text-secondary text-center m-0 py-3">Your cart is empty.</h4>
-                                </div>*@
-                            <div class="mini-cart-items">
+                        <a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="icon icon-cart5" aria-hidden="true"></span><span class="count" id="mini-cart-counter" @(ClientCart.IsEmpty() ? "style=display:none;" : "")>@ClientCart.Count()</span></a>
+                        <div id="mini-cart" class="dropdown-menu dropdown-menu-right dropdown-nav" data-dd-close="0" data-mini-cart-set-link="@Url.Action("MiniCartSet", "Cart", new { area = "Shop" })" data-mini-cart-remove-link="@Url.Action("MiniCartRemove", "Cart", new { area = "Shop" })">
+                            <div class="mini-cart-wrapper" @(ClientCart.IsEmpty() ? "style=display:none;" : "" )>
+                                <div class="mini-cart-items">
+                                    @if (!ClientCart.IsEmpty())
+                                    {
+                                        foreach (var cartProduct in ClientCart.Cart.Products)
+                                        {
+                                            <div class="single-mini-product">
+                                                <figure>
+                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id" data-dd-close="1">
+                                                        <img src="@cartProduct.Product.ImagePath" alt="@cartProduct.Product.Name" />
+                                                    </a>
+                                                </figure>
+                                                <div class="product-details">
+                                                    <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id" data-dd-close="1">@cartProduct.Product.Name</a></h2>
+                                                    <div class="quantity-x-price">
+                                                        <span>@cartProduct.Quantity</span>
+                                                        <span class="multiply">X</span>
+                                                        <span class="price discount">
+                                                            <span class="actual-price @(cartProduct.Product.IsOnSaleNow() ? "txt-accent" : "")">@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.ActualPrice())</span>
+                                                            <span class="regular-price"><strike>@(cartProduct.Product.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(cartProduct.Product.Price) : "")</strike></span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="actions">
+                                                        <button type="button" class="remove-btn" data-remove-from-cart="@cartProduct.Product.Id"><span class="icon icon-remove1" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <div class="mini-cart-total">
+                                    <span class="text-uppercase txt-secondary">Total</span>
+                                    <strong id="mini-cart-total" class="text-uppercase">@ClientCurrency.GetPriceAndDisplay(ClientCart.GetTotalPrice())</strong>
+                                </div>
+                                <div class="mini-cart-actions">
+                                    <a asp-area="Shop" asp-controller="Cart" asp-action="Index" data-dd-close="1" class="btn btn-link primary-link shadow-none">View Cart<span class="icon icon-arrow-right4 ml-2" aria-hidden="true"></span></a>
+                                    <a asp-area="Shop" asp-controller="Order" asp-action="Checkout" data-dd-close="1" class="btn outline-primary">Checkout</a>
+                                </div>
+                            </div>
+                            <div class="mini-cart-empty" @(ClientCart.IsEmpty() ? "" : "style=display:none;" )>
+                                <h4 class="text-secondary text-center m-0 py-3">Your cart is empty.</h4>
+                            </div>
+                            @* Single Mini-Cart Item Template *@
+                            <script type="text/html" id="mini-cart-item-template">
                                 <div class="single-mini-product">
                                     <figure>
-                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                            <img src="~/images/product-1.jpg" alt="Product 1" />
+                                        <a href="@Url.Action("Index", "Product", new { area = "Shop", id = "" })/{id}" data-dd-close="1">
+                                            <img src="{imagePath}" alt="{name}" />
                                         </a>
                                     </figure>
                                     <div class="product-details">
-                                        <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">Sprite Yoga Companion</a></h2>
+                                        <h2><a href="@Url.Action("Index", "Product", new { area = "Shop", id = "" })/{id}" data-dd-close="1">{name}</a></h2>
                                         <div class="quantity-x-price">
-                                            <span>3</span>
+                                            <span>{quantity}</span>
                                             <span class="multiply">X</span>
-                                            <span>$77.00</span>
+                                            <span class="price discount">
+                                                <span class="actual-price">{actualPrice}</span>
+                                                <span class="regular-price"><strike>{regularPrice}</strike></span>
+                                            </span>
                                         </div>
                                         <div class="actions">
-                                            <button type="button" class="remove-btn"><span class="icon icon-remove1" aria-hidden="true"></span></button>
+                                            <button type="button" class="remove-btn" data-remove-from-cart="{id}"><span class="icon icon-remove1" aria-hidden="true"></span></button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="single-mini-product">
-                                    <figure>
-                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">
-
-                                            <img src="~/images/product-2.jpg" alt="Product 2" />
-                                        </a>
-                                    </figure>
-                                    <div class="product-details">
-                                        <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">Yoga Companion Kit</a></h2>
-                                        <div class="quantity-x-price">
-                                            <span>2</span>
-                                            <span class="multiply">X</span>
-                                            <span>$6.00</span>
-                                        </div>
-                                        <div class="actions">
-                                            <button type="button" class="remove-btn"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="single-mini-product">
-                                    <figure>
-                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">
-                                            <img src="~/images/product-3.jpg" alt="Product 3" />
-                                        </a>
-                                    </figure>
-                                    <div class="product-details">
-                                        <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">Sprite Yoga Companion Kit</a></h2>
-                                        <div class="quantity-x-price">
-                                            <span>1</span>
-                                            <span class="multiply">X</span>
-                                            <span>$116.00</span>
-                                        </div>
-                                        <div class="actions">
-                                            <button type="button" class="remove-btn"><span class="icon icon-remove1" aria-hidden="true"></span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mini-cart-total">
-                                <span class="text-uppercase txt-secondary">Total</span>
-                                <strong class="text-uppercase">$240.00</strong>
-                            </div>
-                            <div class="mini-cart-actions">
-                                <a asp-area="Shop" asp-controller="Cart" asp-action="Index" class="btn btn-link primary-link shadow-none">View Cart<span class="icon icon-arrow-right4 ml-2" aria-hidden="true"></span></a>
-                                <a asp-area="Shop" asp-controller="Order" asp-action="Checkout" class="btn outline-primary">Checkout</a>
-                            </div>
+                            </script>
                         </div>
                     </li>
                 </ul>
@@ -489,6 +488,17 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <partial name="~/Views/Shared/_ValidationScriptsPartial.cshtml" />
+    <script>
+        var clientCart = @Html.Raw(ClientCart.IsEmpty() ? "[]" : Json.Serialize(ClientCart.Cart.Products.Select(p => new
+                    {
+                        id = p.Product.Id,
+                        name = p.Product.Name,
+                        imagePath = p.Product.ImagePath,
+                        actualPrice = ClientCurrency.GetPriceAndDisplay(p.Product.ActualPrice()),
+                        regularPrice = (p.Product.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(p.Product.Price) : null),
+                        quantity = p.Quantity
+                    })).ToString());
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

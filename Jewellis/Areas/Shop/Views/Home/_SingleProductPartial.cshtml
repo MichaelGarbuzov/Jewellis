@@ -3,7 +3,14 @@
 @model Jewellis.Models.Product
 
 @{
-    bool isOnSale = (Model.Sale != null && Model.Sale.DateStart < DateTime.Now && (Model.Sale.DateEnd == null || DateTime.Now < Model.Sale.DateEnd));
+    var cartProductInfoJSON = Json.Serialize(new
+    {
+        id = Model.Id,
+        name = Model.Name,
+        imagePath = Model.ImagePath,
+        actualPrice = ClientCurrency.GetPriceAndDisplay(Model.ActualPrice()),
+        regularPrice = (Model.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(Model.Price) : null)
+    }).ToString();
 }
 
 <div class="col-xl-3 col-sm-4 col-6">
@@ -13,13 +20,13 @@
                 <img src="@Model.ImagePath" alt="@Model.Name" />
             </a>
             <div class="overlap-container pe-none">
-                <div class="d-flex @(isOnSale ? "justify-content-between" : "justify-content-end") align-items-start">
-                    @if (isOnSale)
+                <div class="d-flex @(Model.IsOnSaleNow() ? "justify-content-between" : "justify-content-end") align-items-start">
+                    @if (Model.IsOnSaleNow())
                     {
                         <span class="tag tag-danger txt-md text-uppercase px-4 m-3">@Html.DisplayFor(m => Model.Sale.DiscountRate) Off</span>
                     }
                     <div class="shop-product-actions">
-                        <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Cart"><span class="icon icon-cart-add icon-top-adjust"></span></button>
+                        <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Cart" data-add-to-cart="@cartProductInfoJSON"><span class="icon icon-cart-add icon-top-adjust"></span></button>
                         <button type="button" class="primary-link" data-toggle="tooltip" data-placement="left" title="Add to Wishlist"><span class="icon icon-heart6 icon-top-adjust"></span></button>
                     </div>
                 </div>
@@ -27,10 +34,10 @@
         </div>
         <div class="shop-product-details">
             <div class="shop-product-title"><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@Model.Id" class="primary-link">@Model.Name</a></div>
-            @if (isOnSale)
+            @if (Model.IsOnSaleNow())
             {
                 <div class="shop-product-price discount">
-                    <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price * (1 - Model.Sale.DiscountRate))</span>
+                    <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.ActualPrice())</span>
                     <span class="regular-price"><strike>@ClientCurrency.GetPriceAndDisplay(Model.Price)</strike></span>
                 </div>
             }

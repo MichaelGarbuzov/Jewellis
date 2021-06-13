@@ -1,6 +1,6 @@
 ﻿using Jewellis.Data;
 using Jewellis.Models;
-using Jewellis.WebServices.CurrencyConverterApi;
+using Jewellis.WebServices.CurrencyFreaksApi;
 using Jewellis.WebServices.IpApi;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -307,7 +307,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
             // Otherwise, gets the conversion rate by web service:
             else
             {
-                conversionRate = this.GetConversionRateByWebService(BASE_CURRENCY, currency.Code);
+                conversionRate = this.GetConversionRateByWebService(currency.Code);
 
                 // Enters the conversion rate to cache (in order to reduce calls):
                 _cache.Set($"{CACHE_IDENTIFIER}_{BASE_CURRENCY}_{currency.Code}", conversionRate, new MemoryCacheEntryOptions()
@@ -319,16 +319,15 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         }
 
         /// <summary>
-        /// Converts from one currency to another, using the <see cref="CurrencyConverterApiService"/> web service.
+        /// Converts from USD to the specified currency, using the <see cref="CurrencyFreaksApiService"/> web service.
         /// </summary>
-        /// <param name="fromCurrency">The currency to convert from.</param>
         /// <param name="toCurrency">The currency to convert to.</param>
-        /// <returns>Returns the conversion rate from one currency to another, using the <see cref="CurrencyConverterApiService"/> web service.</returns>
-        private double GetConversionRateByWebService(string fromCurrency, string toCurrency)
+        /// <returns>Returns the conversion rate from USD to the specified currency, using the <see cref="CurrencyFreaksApiService"/> web service.</returns>
+        private double GetConversionRateByWebService(string toCurrency)
         {
-            string ccApiKey = _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials")["CurrencyConverterApi"];
-            CurrencyConverterApiService ccApiService = new CurrencyConverterApiService(ccApiKey);
-            double conversionRate = Task.Run(() => ccApiService.ConvertAsync(fromCurrency, toCurrency)).Result;
+            string cfApiKey = _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials")["CurrencyFreaksAPI"];
+            CurrencyFreaksApiService cfApi = new CurrencyFreaksApiService(cfApiKey);
+            double conversionRate = Task.Run(() => cfApi.ConvertAsync(toCurrency)).Result;
             return conversionRate;
         }
 

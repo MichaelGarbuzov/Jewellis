@@ -119,5 +119,27 @@ namespace Jewellis.Models
 
         #endregion
 
+        #region Public API
+
+        /// <summary>
+        /// Checks whther the product is currently on sale or not.
+        /// </summary>
+        /// <returns>Returns true if the product is currently on sale, otherwise false.</returns>
+        public bool IsOnSaleNow()
+        {
+            return (this.Sale != null && this.Sale.DateStart < DateTime.Now && (this.Sale.DateEnd == null || DateTime.Now < this.Sale.DateEnd));
+        }
+
+        /// <summary>
+        /// Gets the actual price of the product, after calculation of sale discount (if exists).
+        /// </summary>
+        /// <returns>Returns the actual price of the product, after calculation of sale discount (if exists).</returns>
+        public double ActualPrice()
+        {
+            return (this.IsOnSaleNow() ? (this.Price * (1 - this.Sale.DiscountRate)) : this.Price);
+        }
+
+        #endregion
+
     }
 }

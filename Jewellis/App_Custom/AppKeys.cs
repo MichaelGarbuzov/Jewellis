@@ -13,6 +13,7 @@
         {
             public const string ClientTheme = "theme";
             public const string ClientCurrency = "currency";
+            public const string ClientCart = "cart";
         }
 
         /// <summary>
@@ -21,6 +22,7 @@
         public static class Cache
         {
             public const string ClientCurrency = "clientcurrency";
+            public const string ClientCart = "clientcart";
         }
 
     }

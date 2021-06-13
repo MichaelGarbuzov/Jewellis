@@ -44,6 +44,19 @@ namespace Jewellis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClientCarts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientCarts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -147,14 +160,16 @@ namespace Jewellis.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EmailAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    PasswordSalt = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Currency = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     Theme = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     DateRegistered = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     DateLastModified = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    AddressId = table.Column<int>(type: "int", nullable: true)
+                    AddressId = table.Column<int>(type: "int", nullable: true),
+                    ClientCartId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -165,6 +180,12 @@ namespace Jewellis.Migrations
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Users_ClientCarts_ClientCartId",
+                        column: x => x.ClientCartId,
+                        principalTable: "ClientCarts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,7 +196,7 @@ namespace Jewellis.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -255,26 +276,27 @@ namespace Jewellis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserCartProducts",
+                name: "ClientCartProducts",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClientCartId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false, defaultValueSql: "1"),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserCartProducts", x => new { x.UserId, x.ProductId });
+                    table.PrimaryKey("PK_ClientCartProducts", x => new { x.ClientCartId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_UserCartProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
+                        name: "FK_ClientCartProducts_ClientCarts_ClientCartId",
+                        column: x => x.ClientCartId,
+                        principalTable: "ClientCarts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserCartProducts_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_ClientCartProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -336,6 +358,11 @@ namespace Jewellis.Migrations
                 table: "Branches",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientCartProducts_ProductId",
+                table: "ClientCartProducts",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryMethods_Name",
@@ -414,14 +441,16 @@ namespace Jewellis.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserCartProducts_ProductId",
-                table: "UserCartProducts",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
                 table: "Users",
                 column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_ClientCartId",
+                table: "Users",
+                column: "ClientCartId",
+                unique: true,
+                filter: "[ClientCartId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_EmailAddress",
@@ -441,6 +470,9 @@ namespace Jewellis.Migrations
                 name: "Branches");
 
             migrationBuilder.DropTable(
+                name: "ClientCartProducts");
+
+            migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
@@ -448,9 +480,6 @@ namespace Jewellis.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrdersVsProducts");
-
-            migrationBuilder.DropTable(
-                name: "UserCartProducts");
 
             migrationBuilder.DropTable(
                 name: "UserWishlistProducts");
@@ -478,6 +507,9 @@ namespace Jewellis.Migrations
 
             migrationBuilder.DropTable(
                 name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "ClientCarts");
         }
     }
 }

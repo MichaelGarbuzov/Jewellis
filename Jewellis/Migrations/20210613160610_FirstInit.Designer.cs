@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jewellis.Migrations
 {
     [DbContext(typeof(JewellisDbContext))]
-    [Migration("20210608201711_UpdateUserPassword")]
-    partial class UpdateUserPassword
+    [Migration("20210613160610_FirstInit")]
+    partial class FirstInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -102,6 +102,48 @@ namespace Jewellis.Migrations
                         .IsUnique();
 
                     b.ToTable("Branches");
+                });
+
+            modelBuilder.Entity("Jewellis.Models.ClientCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClientCarts");
+                });
+
+            modelBuilder.Entity("Jewellis.Models.ClientCartProduct", b =>
+                {
+                    b.Property<int>("ClientCartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.HasKey("ClientCartId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ClientCartProducts");
                 });
 
             modelBuilder.Entity("Jewellis.Models.Contact", b =>
@@ -451,6 +493,9 @@ namespace Jewellis.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClientCartId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Currency")
                         .IsRequired()
                         .HasMaxLength(5)
@@ -507,30 +552,14 @@ namespace Jewellis.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("ClientCartId")
+                        .IsUnique()
+                        .HasFilter("[ClientCartId] IS NOT NULL");
+
                     b.HasIndex("EmailAddress")
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Jewellis.Models.UserCartProduct", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateAdded")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("UserId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("UserCartProducts");
                 });
 
             modelBuilder.Entity("Jewellis.Models.UserWishlistProduct", b =>
@@ -551,6 +580,25 @@ namespace Jewellis.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("UserWishlistProducts");
+                });
+
+            modelBuilder.Entity("Jewellis.Models.ClientCartProduct", b =>
+                {
+                    b.HasOne("Jewellis.Models.ClientCart", "ClientCart")
+                        .WithMany("Products")
+                        .HasForeignKey("ClientCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Jewellis.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClientCart");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Jewellis.Models.Order", b =>
@@ -637,26 +685,14 @@ namespace Jewellis.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId");
 
+                    b.HasOne("Jewellis.Models.ClientCart", "ClientCart")
+                        .WithOne()
+                        .HasForeignKey("Jewellis.Models.User", "ClientCartId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Address");
-                });
 
-            modelBuilder.Entity("Jewellis.Models.UserCartProduct", b =>
-                {
-                    b.HasOne("Jewellis.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Jewellis.Models.User", "User")
-                        .WithMany("Cart")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
+                    b.Navigation("ClientCart");
                 });
 
             modelBuilder.Entity("Jewellis.Models.UserWishlistProduct", b =>
@@ -678,6 +714,11 @@ namespace Jewellis.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Jewellis.Models.ClientCart", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("Jewellis.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
@@ -690,8 +731,6 @@ namespace Jewellis.Migrations
 
             modelBuilder.Entity("Jewellis.Models.User", b =>
                 {
-                    b.Navigation("Cart");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Wishlist");

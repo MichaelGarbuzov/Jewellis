@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.Services.ClientCurrency;
+using Jewellis.App_Custom.Services.ClientShoppingCart;
 using Jewellis.App_Custom.Services.ClientTheme;
 using Jewellis.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -47,6 +48,7 @@ namespace Jewellis
                     new Currency("ILS", '₪'),
                 };
             });
+            services.AddClientShoppingCart();
 
             services.AddDbContext<JewellisDbContext>(options =>
             {

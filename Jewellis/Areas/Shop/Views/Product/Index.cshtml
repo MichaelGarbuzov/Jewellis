@@ -5,7 +5,14 @@
 @{
     ViewData["Title"] = Model.Name;
 
-    bool isOnSale = (Model.Sale != null && Model.Sale.DateStart < DateTime.Now && (Model.Sale.DateEnd == null || DateTime.Now < Model.Sale.DateEnd));
+    var cartProductInfoJSON = Json.Serialize(new
+    {
+        id = Model.Id,
+        name = Model.Name,
+        imagePath = Model.ImagePath,
+        actualPrice = ClientCurrency.GetPriceAndDisplay(Model.ActualPrice()),
+        regularPrice = (Model.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(Model.Price) : null)
+    }).ToString();
 }
 
 <section class="bg-light-2">
@@ -27,10 +34,10 @@
                     </div>
                     <div class="col-md-8 px-4 pl-md-5">
                         <h1 class="product-title">@Model.Name</h1>
-                        @if (isOnSale)
+                        @if (Model.IsOnSaleNow())
                         {
                             <div class="product-price discount">
-                                <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.Price * (1 - Model.Sale.DiscountRate))</span>
+                                <span class="actual-price">@ClientCurrency.GetPriceAndDisplay(Model.ActualPrice())</span>
                                 <span class="regular-price"><strike>@ClientCurrency.GetPriceAndDisplay(Model.Price)</strike></span>
                                 <span class="tag tag-danger txt-md text-uppercase px-4 m-3">@Html.DisplayFor(m => Model.Sale.DiscountRate) Off</span>
                             </div>
@@ -45,10 +52,10 @@
                         <div class="product-actions d-flex align-items-end flex-wrap">
                             <span data-in-num data-in-num-min="1" data-in-num-max="10" class="mr-4">
                                 <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
-                                <input type="text" class="i-txt text-center maxw-6 py-3 m-0" value="1">
+                                <input type="text" class="i-txt text-center maxw-6 py-3 m-0" value="1" data-add-to-cart-quantity>
                                 <button type="button" class="primary-link p-3 ml-1" data-in-num-inc>+</button>
                             </span>
-                            <button type="button" class="btn btn-primary hover-push px-5 mt-4">Add to Cart<span class="icon icon-cart5 icon-top-adjust ml-3"></span></button>
+                            <button type="button" data-add-to-cart="@cartProductInfoJSON" class="btn btn-primary hover-push px-5 mt-4">Add to Cart<span class="icon icon-cart5 icon-top-adjust ml-3"></span></button>
                         </div>
                         <hr class="sec-separator mb-5" />
                         <button type="button" class="btn outline-primary txt-md">Add to Wishlist<span class="icon icon-heart6 icon-top-adjust ml-3"></span></button>

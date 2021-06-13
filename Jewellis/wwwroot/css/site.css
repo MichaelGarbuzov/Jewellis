@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-11
+    Last Update: 2021-06-13
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6113,6 +6113,7 @@ figure {
             .single-mini-product > figure > a > img {
                 height: 8rem;
                 width: 8rem;
+                background: var(--color-block);
             }
 
     .single-mini-product .product-details {
@@ -6149,6 +6150,14 @@ figure {
 
         .single-mini-product .product-details .multiply {
             margin: 0 0.7rem;
+        }
+
+        .single-mini-product .product-details .price > .regular-price {
+            font-size: 1.15rem;
+        }
+
+        .single-mini-product .product-details .price.discount > .actual-price {
+            margin-right: 0.15rem;
         }
 
     .single-mini-product .actions {
@@ -6615,6 +6624,7 @@ figure {
 .table-body .row-image {
     height: 9rem;
     width: 9rem;
+    background: var(--color-background-light-1);
 }
 
 .table-body .row-title {

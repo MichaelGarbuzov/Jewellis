@@ -10,8 +10,9 @@ namespace Jewellis.Data
         { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<UserCartProduct> UserCartProducts { get; set; }
         public DbSet<UserWishlistProduct> UserWishlistProducts { get; set; }
+        public DbSet<ClientCart> ClientCarts { get; set; }
+        public DbSet<ClientCartProduct> ClientCartProducts { get; set; }
         public DbSet<NewsletterSubscriber> NewsletterSubscribers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
@@ -28,25 +29,18 @@ namespace Jewellis.Data
         {
             #region [Users] table
 
+            // On delete "ClientCartId" foreign key - set null:
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.ClientCart)
+                .WithOne()
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Default value on system datetime columns:
             modelBuilder.Entity<User>()
                 .Property(e => e.DateRegistered)
                 .HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<User>()
                 .Property(e => e.DateLastModified)
-                .HasDefaultValueSql("GETDATE()");
-
-            #endregion
-
-            #region [UserCartProducts] table
-
-            // Sets 2 columns as PK, since it's a connection table:
-            modelBuilder.Entity<UserCartProduct>()
-                .HasKey(e => new { e.UserId, e.ProductId });
-
-            // Default value on system datetime columns:
-            modelBuilder.Entity<UserCartProduct>()
-                .Property(e => e.DateAdded)
                 .HasDefaultValueSql("GETDATE()");
 
             #endregion
@@ -59,6 +53,32 @@ namespace Jewellis.Data
 
             // Default value on system datetime columns:
             modelBuilder.Entity<UserWishlistProduct>()
+                .Property(e => e.DateAdded)
+                .HasDefaultValueSql("GETDATE()");
+
+            #endregion
+
+            #region [ClientCart] table
+
+            // Default value on system datetime columns:
+            modelBuilder.Entity<ClientCart>()
+                .Property(e => e.DateCreated)
+                .HasDefaultValueSql("GETDATE()");
+
+            #endregion
+
+            #region [ClientCartProducts] table
+
+            // Sets 2 columns as PK, since it's a connection table:
+            modelBuilder.Entity<ClientCartProduct>()
+                .HasKey(e => new { e.ClientCartId, e.ProductId });
+
+            // Default values on columns:
+            modelBuilder.Entity<ClientCartProduct>()
+                .Property(e => e.Quantity)
+                .HasDefaultValueSql("1");
+            // Default value on system datetime columns:
+            modelBuilder.Entity<ClientCartProduct>()
                 .Property(e => e.DateAdded)
                 .HasDefaultValueSql("GETDATE()");
 

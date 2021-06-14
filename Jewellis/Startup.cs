@@ -1,4 +1,5 @@
-﻿using Jewellis.App_Custom.Services.ClientCurrency;
+﻿using Jewellis.App_Custom.Services.AuthUser;
+using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientShoppingCart;
 using Jewellis.App_Custom.Services.ClientTheme;
 using Jewellis.Data;
@@ -49,6 +50,7 @@ namespace Jewellis
                 };
             });
             services.AddClientShoppingCart();
+            services.AddAuthUser();
 
             services.AddDbContext<JewellisDbContext>(options =>
             {

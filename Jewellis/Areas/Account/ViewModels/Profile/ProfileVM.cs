@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace Jewellis.Areas.Account.ViewModels.Home
+namespace Jewellis.Areas.Account.ViewModels.Profile
 {
     public class ProfileVM
     {
@@ -38,7 +38,7 @@ namespace Jewellis.Areas.Account.ViewModels.Home
             [Required(ErrorMessage = "Email address is required.")]
             [StringLength(50, ErrorMessage = "Maximum length is 50 characters.")]
             [DataType(DataType.EmailAddress, ErrorMessage = "Invalid email address.")]
-            [Remote("CheckEmailEditAvailability", "Home", "Account", AdditionalFields = nameof(CurrentEmail), ErrorMessage = "Email is already registered.")]
+            [Remote("CheckEmailEditAvailability", "Profile", "Account", AdditionalFields = nameof(CurrentEmail), ErrorMessage = "Email is already registered.")]
             public string EmailAddress { get; set; }
 
             [HiddenInput]

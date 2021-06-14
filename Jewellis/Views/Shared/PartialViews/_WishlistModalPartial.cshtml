@@ -1,0 +1,126 @@
+﻿@inject Jewellis.App_Custom.Services.AuthUser.AuthUserService AuthUser
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@{
+    User user = await AuthUser.GetAsync();
+}
+
+<div class="modal right fade" id="wishlist-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header px-5 pt-4">
+                <h2 class="modal-title">Wishlist</h2>
+                <button type="button" class="p-3 m-0 h2" data-dismiss="modal" aria-label="Close"><span class="icon icon-close icon-top-adjust" aria-hidden="true"></span></button>
+            </div>
+            <div id="mini-wishlist" class="modal-body px-5 py-4" data-wishlist-add-link="@Url.Action("Add", "Wishlist", new { area = "Account" })" data-wishlist-remove-link="@Url.Action("MiniWishlistRemove", "Wishlist", new { area = "Account" })">
+                @if (user != null)
+                {
+                    <div class="mini-wishlist-items" @(user.Wishlist.Count > 0 ? "" : "style=display:none;" )>
+                        @foreach (UserWishlistProduct wishlistProduct in user.Wishlist.OrderByDescending(uwp => uwp.DateAdded))
+                        {
+                            var wishlistProductInfoJSON = Json.Serialize(new
+                            {
+                                id = wishlistProduct.Product.Id,
+                                name = wishlistProduct.Product.Name,
+                                imagePath = wishlistProduct.Product.ImagePath,
+                                actualPrice = ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.ActualPrice()),
+                                regularPrice = (wishlistProduct.Product.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.Price) : null)
+                            }).ToString();
+
+                            <div class="single-mini-product">
+                                <figure>
+                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@wishlistProduct.Product.Id">
+                                        <img src="@wishlistProduct.Product.ImagePath" alt="@wishlistProduct.Product.Name" />
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@wishlistProduct.Product.Id">@wishlistProduct.Product.Name</a></h2>
+                                    <div class="quantity-x-price">
+                                        <span>@ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.ActualPrice())</span>
+                                    </div>
+                                    <div class="actions d-flex justify-content-between">
+                                        <div class="d-flex">
+                                            <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
+                                                <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1" data-add-to-cart-quantity>
+                                                <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
+                                            </div>
+                                            <button type="button" data-add-to-cart="@wishlistProductInfoJSON" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
+                                        </div>
+                                        <button type="button" data-remove-from-wishlist="@wishlistProduct.Product.Id" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="mini-wishlist-empty h-100" @(user.Wishlist.Count > 0 ? "style=display:none;" : "" )>
+                        <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                            <div class="text-center txt-secondary mb-2"><span class="icon icon-heart-broken display-1" aria-hidden="true"></span></div>
+                            <h4 class="text-secondary text-center m-0 py-3">Your wishlist is empty.</h4>
+                        </div>
+                    </div>
+                    @* Single Mini-Wishlist Item Template *@
+                    <script type="text/html" id="mini-wishlist-item-template">
+                        <div class="single-mini-product">
+                            <figure>
+                                <a href="@Url.Action("Index", "Product", new { area = "Shop", id = "" })/{id}">
+                                    <img src="{imagePath}" alt="{name}" />
+                                </a>
+                            </figure>
+                            <div class="product-details">
+                                <h2><a href="@Url.Action("Index", "Product", new { area = "Shop", id = "" })/{id}">{name}</a></h2>
+                                <div class="quantity-x-price">
+                                    <span>{actualPrice}</span>
+                                </div>
+                                <div class="actions d-flex justify-content-between">
+                                    <div class="d-flex">
+                                        <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                            <button type="button" class="primary-link py-2 pr-2 pl-0 mr-1" data-in-num-dec>-</button>
+                                            <input type="text" class="i-txt text-center maxw-5 p-1 m-0" value="1" data-add-to-cart-quantity>
+                                            <button type="button" class="primary-link p-2 ml-1" data-in-num-inc>+</button>
+                                        </div>
+                                        <button type="button" data-add-to-cart="{product}" class="btn btn-mini outline-primary mob-icon px-3 mx-3"><span class="mob-icon-text">Add to Cart</span><span class="icon icon-cart-plus txt-md" aria-hidden="true"></span></button>
+                                    </div>
+                                    <button type="button" data-remove-from-wishlist="{id}" class="wishlist-heart"><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </script>
+                }
+                else
+                {
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <div class="mini-cart-empty">
+                            <div class="text-center txt-secondary mb-2"><span class="icon icon-user-plus display-1" aria-hidden="true"></span></div>
+                            <h4 class="text-secondary text-center m-0 py-3">Please <a asp-area="Account" asp-controller="Authenticate" asp-action="Login" class="primary-link"><u>log in</u></a> or <a asp-area="Account" asp-controller="Authenticate" asp-action="Register" class="primary-link"><u>sign up</u></a> to use this feature.</h4>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer p-5">
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <a asp-area="Account" asp-controller="Wishlist" asp-action="Index" class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                }
+                else
+                {
+                    <a href="#" disabled class="btn outline-primary w-100">View Wishlist<span class="icon icon-arrow-right4 icon-top-adjust ml-2" aria-hidden="true"></span></a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (user != null)
+{
+    <script>
+        var userWishlist = @Html.Raw(user.Wishlist.Count < 1 ? "[]" : Json.Serialize(user.Wishlist.Select(p => new
+                      {
+                          id = p.Product.Id,
+                          name = p.Product.Name,
+                          imagePath = p.Product.ImagePath,
+                          actualPrice = ClientCurrency.GetPriceAndDisplay(p.Product.ActualPrice()),
+                          regularPrice = (p.Product.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(p.Product.Price) : null)
+                      })).ToString());
+    </script>
+}

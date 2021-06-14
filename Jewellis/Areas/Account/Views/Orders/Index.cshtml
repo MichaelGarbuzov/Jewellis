@@ -1,6 +1,4 @@
-﻿@using Jewellis.Areas.Account.Controllers
-
-@{
+﻿@{
     ViewData["Title"] = "Orders";
 }
 
@@ -10,7 +8,7 @@
             <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
             <div class="row">
                 <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
-                    <partial name="~/Areas/Account/Views/Home/_MenuPartial.cshtml" model="nameof(HomeController.Orders)" />
+                    <partial name="~/Areas/Account/Views/Shared/_MenuPartial.cshtml" model="@("Orders")" />
                 </div>
                 <div class="col-xl-9 mb-5">
                     <h3 class="block-title">Orders</h3>
@@ -53,7 +51,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="text-right text-md-center my-3">
-                                            <a asp-area="Account" asp-controller="Home" asp-action="Order" asp-route-id="1" class="btn outline-primary">View</a>
+                                            <a asp-area="Account" asp-controller="Orders" asp-action="Details" asp-route-id="1" class="btn outline-primary">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -86,7 +84,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="text-right text-md-center my-3">
-                                            <a asp-area="Account" asp-controller="Home" asp-action="Order" asp-route-id="2" class="btn outline-primary">View</a>
+                                            <a asp-area="Account" asp-controller="Orders" asp-action="Details" asp-route-id="2" class="btn outline-primary">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -119,7 +117,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="text-right text-md-center my-3">
-                                            <a asp-area="Account" asp-controller="Home" asp-action="Order" asp-route-id="3" class="btn outline-primary">View</a>
+                                            <a asp-area="Account" asp-controller="Orders" asp-action="Details" asp-route-id="3" class="btn outline-primary">View</a>
                                         </div>
                                     </div>
                                 </div>

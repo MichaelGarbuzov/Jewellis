@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Jewellis.Areas.Account.ViewModels.Home
+namespace Jewellis.Areas.Account.ViewModels.Profile
 {
     public class AddressVM
     {

@@ -1,8 +1,9 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
 using Jewellis.App_Custom.Helpers;
+using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientTheme;
-using Jewellis.Areas.Account.ViewModels.Home;
+using Jewellis.Areas.Account.ViewModels.Profile;
 using Jewellis.Data;
 using Jewellis.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,62 +17,25 @@ namespace Jewellis.Areas.Account.Controllers
 {
     [Area("Account")]
     [Authorize]
-    public class HomeController : Controller
+    public class ProfileController : Controller
     {
         private readonly JewellisDbContext _dbContext;
+        private readonly AuthUserService _authUser;
         private readonly ClientCurrencyService _clientCurrency;
         private readonly ClientThemeService _clientTheme;
 
-        public HomeController(JewellisDbContext dbContext, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
+        public ProfileController(JewellisDbContext dbContext, AuthUserService authUser, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
         {
             _dbContext = dbContext;
+            _authUser = authUser;
             _clientCurrency = clientCurrency;
             _clientTheme = clientTheme;
         }
 
-        [Route("/account/orders")]
-        public async Task<IActionResult> Orders()
-        {
-            User user = await this.GetUserByAuthInfo();
-            if (user == null)
-                return NotFound();
-
-
-
-            ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
-            return View();
-        }
-
-        [Route("/account/order/{id}")]
-        public async Task<IActionResult> Order(int id)
-        {
-            User user = await this.GetUserByAuthInfo();
-            if (user == null)
-                return NotFound();
-
-
-
-            ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
-            return View();
-        }
-
-        [Route("/account/wishlist")]
-        public async Task<IActionResult> Wishlist()
-        {
-            User user = await this.GetUserByAuthInfo();
-            if (user == null)
-                return NotFound();
-
-
-
-            ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
-            return View();
-        }
-
         [Route("/account/profile")]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Index()
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
@@ -102,12 +66,12 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(ProfileVM model)
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(nameof(Profile), model);
+                return View(nameof(Index), model);
 
             // Binds the view model:
             user.FirstName = model.EditProfileVM.FirstName;
@@ -118,21 +82,22 @@ namespace Jewellis.Areas.Account.Controllers
 
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
+            _authUser.Set(user);
             TempData["SuccessTitle"] = "Profile Updated";
             TempData["SuccessBody"] = "Your profile has been updated successfully.";
-            return RedirectToAction(nameof(Profile));
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPassword(ProfileVM model)
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(nameof(Profile), model);
+                return View(nameof(Index), model);
 
             // First, checks the current password is correct:
             string currentPasswordHash = EncryptionHelper.HashSHA256(model.EditPasswordVM.CurrentPassword + user.PasswordSalt);
@@ -142,18 +107,18 @@ namespace Jewellis.Areas.Account.Controllers
                 // Binds the view model:
                 user.PasswordSalt = EncryptionHelper.GenerateSalt();
                 user.PasswordHash = EncryptionHelper.HashSHA256(model.EditPasswordVM.NewPassword + user.PasswordSalt);
-                user.Address.DateLastModified = DateTime.Now;
+                user.DateLastModified = DateTime.Now;
 
                 _dbContext.Users.Update(user);
                 await _dbContext.SaveChangesAsync();
                 TempData["SuccessTitle"] = "Password Changed";
                 TempData["SuccessBody"] = "Your password has been changed successfully.";
-                return RedirectToAction(nameof(Profile));
+                return RedirectToAction(nameof(Index));
             }
             else
             {
                 TempData["EditPassword_ErrorMessage"] = "Current password is incorrect.";
-                return RedirectToAction(nameof(Profile));
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -161,26 +126,28 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPreferences(ProfileVM model)
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(nameof(Profile), model);
+                return View(nameof(Index), model);
 
             // Binds the view model:
             await _clientCurrency.SetAsync(model.EditPreferencesVM.Currency);
             await _clientTheme.SetAsync(model.EditPreferencesVM.Theme);
 
+            // NOTE: No need to cache the changes to the auth user, since the above methods handle it.
+
             TempData["SuccessTitle"] = "Preferences Updated";
             TempData["SuccessBody"] = "Your preferences has been updated successfully.";
-            return RedirectToAction(nameof(Profile));
+            return RedirectToAction(nameof(Index));
         }
 
         [Route("/account/address")]
         public async Task<IActionResult> Address()
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
             {
                 return NotFound();
@@ -204,7 +171,7 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddress(AddressVM model)
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
@@ -224,6 +191,7 @@ namespace Jewellis.Areas.Account.Controllers
 
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
+            _authUser.Set(user);
             TempData["SuccessTitle"] = "Address Updated";
             TempData["SuccessBody"] = "Your address has been updated successfully.";
             return RedirectToAction(nameof(Address));
@@ -233,16 +201,19 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAddress()
         {
-            User user = await this.GetUserByAuthInfo();
+            User user = await _authUser.GetAsync();
             if (user == null)
                 return NotFound();
 
             if (user.Address != null)
             {
-                user.AddressId = null;
-                _dbContext.Users.Update(user);
                 _dbContext.Addresses.Remove(user.Address);
                 await _dbContext.SaveChangesAsync();
+
+                user.AddressId = null;
+                user.Address = null;
+                _authUser.Set(user);
+
                 TempData["SuccessTitle"] = "Address Removed";
                 TempData["SuccessBody"] = "Your address has been removed successfully.";
             }
@@ -265,26 +236,6 @@ namespace Jewellis.Areas.Account.Controllers
                 bool isEmailAvailable = (await _dbContext.Users.AnyAsync(u => u.EmailAddress.Equals(emailAddress)) == false);
                 return Json(isEmailAvailable);
             }
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Gets the user from the database by the authentication information.
-        /// </summary>
-        /// <returns>Returns the user from the database by the authentication information if found, otherwise null.</returns>
-        private async Task<User> GetUserByAuthInfo()
-        {
-            int? userId = HttpContext.User.Identity.GetId();
-            if (userId != null)
-            {
-                User user = await _dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == userId.Value);
-                if (user != null)
-                    return user;
-            }
-            return null;
         }
 
         #endregion

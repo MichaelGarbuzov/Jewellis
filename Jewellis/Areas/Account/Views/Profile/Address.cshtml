@@ -1,6 +1,4 @@
-﻿@using Jewellis.Areas.Account.Controllers
-
-@model Jewellis.Areas.Account.ViewModels.Home.AddressVM
+﻿@model Jewellis.Areas.Account.ViewModels.Profile.AddressVM
 
 @{
     ViewData["Title"] = "Account Address";
@@ -12,12 +10,12 @@
             <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
             <div class="row">
                 <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
-                    <partial name="~/Areas/Account/Views/Home/_MenuPartial.cshtml" model="nameof(HomeController.Address)" />
+                    <partial name="~/Areas/Account/Views/Shared/_MenuPartial.cshtml" model="@("Address")" />
                 </div>
                 <div class="col-xl-9 mb-5">
                     <h3 class="block-title">Address</h3>
                     <div class="form-container bg-white maxw-md m-0">
-                        <form id="address-edit" asp-area="Account" asp-controller="Home" asp-action="EditAddress" method="post">
+                        <form id="address-edit" asp-area="Account" asp-controller="Profile" asp-action="EditAddress" method="post">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="single-form-item">
@@ -48,7 +46,7 @@
                         <div class="d-flex justify-content-end mt-2">
                             @if (Model.Street != null)
                             {
-                                <form asp-area="Account" asp-controller="Home" asp-action="DeleteAddress" method="post">
+                                <form asp-area="Account" asp-controller="Profile" asp-action="DeleteAddress" method="post">
                                     <button type="submit" class="btn outline-primary px-5" data-submit-loader>Remove</button>
                                 </form>
                             }

@@ -23,6 +23,7 @@
         {
             public const string ClientCurrency = "clientcurrency";
             public const string ClientCart = "clientcart";
+            public const string AuthUser = "authuser";
         }
 
     }

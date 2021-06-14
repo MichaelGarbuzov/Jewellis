@@ -1,0 +1,114 @@
+﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model List<UserWishlistProduct>
+
+@{
+    ViewData["Title"] = "Wishlist";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto py-5-desktop">
+            <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
+                    <partial name="~/Areas/Account/Views/Shared/_MenuPartial.cshtml" model="@("Wishlist")" />
+                </div>
+                <div class="col-xl-9 mb-5">
+                    <h3 class="block-title">Wishlist</h3>
+                    <div class="form-container bg-white txt-md">
+                        <div class="table-header text-center d-none d-md-block">
+                            <div class="row">
+                                <div class="col-md-5">Item</div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-md-3">Price</div>
+                                        <div class="col-md-7">Buy</div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-body">
+                            @if (Model.Count > 0)
+                            {
+                                foreach (var wishlistProduct in Model)
+                                {
+                                    var cartProductInfoJSON = Json.Serialize(new
+                                    {
+                                        id = wishlistProduct.Product.Id,
+                                        name = wishlistProduct.Product.Name,
+                                        imagePath = wishlistProduct.Product.ImagePath,
+                                        actualPrice = ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.ActualPrice()),
+                                        regularPrice = (wishlistProduct.Product.IsOnSaleNow() ? ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.Price) : null)
+                                    }).ToString();
+
+                                    <div class="table-row">
+                                        <div class="d-flex align-items-center text-left text-md-center row">
+                                            <div class="col-12 col-md-5">
+                                                <form asp-area="Account" asp-controller="Wishlist" asp-action="Remove" asp-route-productid="@wishlistProduct.Product.Id" method="post">
+                                                    <div class="d-flex justify-content-end pr-lg-4">
+                                                        <button type="submit" class="wishlist-heart d-flex align-items-center txt-lg float-right d-md-none mt-3 ml-3" data-submit-loader><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                                    </div>
+                                                </form>
+                                                <div class="d-flex align-items-center">
+                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@wishlistProduct.Product.Id">
+                                                        <img class="row-image" src="@wishlistProduct.Product.ImagePath" alt="@wishlistProduct.Product.Name" />
+                                                    </a>
+                                                    <div class="row-title text-left">
+                                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@wishlistProduct.Product.Id" class="primary-link text-uppercase">@wishlistProduct.Product.Name</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-3">
+                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                            <div class="d-md-none txt-secondary">Price</div>
+                                                            <div class="text-right text-md-center">
+                                                                @if (wishlistProduct.Product.IsOnSaleNow())
+                                                                {
+                                                                    <strike>@ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.Price)</strike>
+                                                                    <br class="d-none d-md-block" />
+                                                                }
+                                                                <span class="@(wishlistProduct.Product.IsOnSaleNow() ? "txt-accent" : "") ml-2 ml-md-0">@ClientCurrency.GetPriceAndDisplay(wishlistProduct.Product.ActualPrice())</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <div class="d-flex justify-content-md-center justify-content-between align-items-center mt-3 mt-md-0">
+                                                            <div class="d-md-none txt-secondary">Buy</div>
+                                                            <div class="d-flex flex-column flex-sm-row">
+                                                                <div data-in-num data-in-num-min="1" data-in-num-max="10" class="d-flex justify-content-center align-items-center">
+                                                                    <button type="button" class="primary-link p-3 mr-1" data-in-num-dec>-</button>
+                                                                    <input type="text" class="i-txt text-center maxw-6 p-0 py-md-3 m-0" value="1" data-add-to-cart-quantity>
+                                                                    <button type="button" class="primary-link py-3 pl-3 pr-md-3 ml-1" data-in-num-inc>+</button>
+                                                                </div>
+                                                                <button type="button" data-add-to-cart="@cartProductInfoJSON" class="btn btn-sm outline-primary ml-3">Add to Cart</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-none d-md-block text-center col-2">
+                                                        <form asp-area="Account" asp-controller="Wishlist" asp-action="Remove" asp-route-productid="@wishlistProduct.Product.Id" method="post">
+                                                            <div class="d-flex justify-content-end pr-lg-4">
+                                                                <button type="submit" class="wishlist-heart d-flex align-items-center" data-submit-loader><span class="icon icon-heart6" aria-hidden="true"></span></button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <h4 class="txt-lg text-center txt-secondary py-5 mt-md-5">Your wishlist is empty.</h4>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,5 +1,6 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
 using Jewellis.App_Custom.Helpers;
+using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientTheme;
 using Jewellis.Areas.Account.ViewModels.Authenticate;
@@ -22,12 +23,14 @@ namespace Jewellis.Areas.Account.Controllers
     public class AuthenticateController : Controller
     {
         private readonly JewellisDbContext _dbContext;
+        private readonly AuthUserService _authUser;
         private readonly ClientCurrencyService _clientCurrency;
         private readonly ClientThemeService _clientTheme;
 
-        public AuthenticateController(JewellisDbContext dbContext, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
+        public AuthenticateController(JewellisDbContext dbContext, AuthUserService authUser, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
         {
             _dbContext = dbContext;
+            _authUser = authUser;
             _clientCurrency = clientCurrency;
             _clientTheme = clientTheme;
         }
@@ -87,6 +90,7 @@ namespace Jewellis.Areas.Account.Controllers
             if (user != null)
             {
                 this.SetClientAuthentication(user, false);
+                _authUser.Set(user);
                 return this.RedirectToHomePage();
             }
             else
@@ -120,6 +124,7 @@ namespace Jewellis.Areas.Account.Controllers
                 if (user != null)
                 {
                     this.SetClientAuthentication(user, model.RememberMe);
+                    _authUser.Set(user);
                     return this.RedirectToHomePage();
                 }
             }
@@ -131,6 +136,11 @@ namespace Jewellis.Areas.Account.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
+            // Removes the user from cache:
+            int? userId = HttpContext.User.Identity.GetId();
+            if (userId.HasValue)
+                _authUser.Remove(userId.Value);
+
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return this.RedirectToHomePage();
         }

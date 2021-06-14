@@ -2,12 +2,14 @@
 using Jewellis.Areas.Admin.ViewModels.Products;
 using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.WebServices.TwitterApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,11 +26,13 @@ namespace Jewellis.Areas.Admin.Controllers
 
         private readonly JewellisDbContext _dbContext;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IConfiguration _configuration;
 
-        public ProductsController(JewellisDbContext dbContext, IWebHostEnvironment hostEnvironment)
+        public ProductsController(JewellisDbContext dbContext, IWebHostEnvironment hostEnvironment, IConfiguration configuration)
         {
             _dbContext = dbContext;
             _hostEnvironment = hostEnvironment;
+            _configuration = configuration;
         }
 
         // GET: /Admin/Products
@@ -69,7 +73,8 @@ namespace Jewellis.Areas.Admin.Controllers
             ViewData["Sales"] = new SelectList(_dbContext.Sales, nameof(Sale.Id), nameof(Sale.Name));
             return View(new CreateVM()
             {
-                IsAvailable = true
+                IsAvailable = true,
+                Tweet = false
             });
         }
 
@@ -102,6 +107,13 @@ namespace Jewellis.Areas.Admin.Controllers
             };
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
+
+            // Checks if to tweet about this:
+            if (model.Tweet && !string.IsNullOrEmpty(model.TweetText))
+            {
+                this.PostTweet(model.TweetText);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -269,6 +281,21 @@ namespace Jewellis.Areas.Admin.Controllers
             {
                 System.IO.File.Delete(absoluteImagePath);
             }
+        }
+
+        /// <summary>
+        /// Posts a tweet to Twitter with the specified text.
+        /// </summary>
+        /// <param name="text">The text to tweet.</param>
+        private void PostTweet(string text)
+        {
+            TwitterApiService twitterApi = new TwitterApiService(
+                _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials").GetSection("TwitterAPI")["ApiKey"],
+                _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials").GetSection("TwitterAPI")["ApiKeySecret"],
+                _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials").GetSection("TwitterAPI")["OAuthToken"],
+                _configuration.GetSection("UserSecrets").GetSection("WebServicesCredentials").GetSection("TwitterAPI")["OAuthTokenSecret"]
+            );
+            twitterApi.PostTweetAsync(text);
         }
 
         #endregion

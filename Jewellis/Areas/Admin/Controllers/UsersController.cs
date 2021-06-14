@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.Areas.Admin.ViewModels.Users;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -17,10 +18,12 @@ namespace Jewellis.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly JewellisDbContext _dbContext;
+        private readonly AuthUserService _authUser;
 
-        public UsersController(JewellisDbContext dbContext)
+        public UsersController(JewellisDbContext dbContext, AuthUserService authUser)
         {
             _dbContext = dbContext;
+            _authUser = authUser;
         }
 
         // GET: /Admin/Users
@@ -87,6 +90,7 @@ namespace Jewellis.Areas.Admin.Controllers
 
             _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
+            _authUser.Set(user);
             return RedirectToAction(nameof(Index));
         }
 
@@ -107,9 +111,15 @@ namespace Jewellis.Areas.Admin.Controllers
         public async Task<IActionResult> Delete_POST(int id)
         {
             User user = await _dbContext.Users.FindAsync(id);
+            if (user.ClientCartId.HasValue)
+            {
+                ClientCart cart = await _dbContext.ClientCarts.FindAsync(user.ClientCartId.Value);
+                _dbContext.ClientCarts.Remove(cart);
+            }
             _dbContext.Addresses.Remove(user.Address);
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
+            _authUser.Remove(user.Id);
             return RedirectToAction(nameof(Index));
         }
 

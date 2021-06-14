@@ -1,4 +1,5 @@
-﻿using Jewellis.Data;
+﻿using Jewellis.App_Custom.Services.AuthUser;
+using Jewellis.Data;
 using Jewellis.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly JewellisDbContext _dbContext;
+        private readonly AuthUserService _authUser;
 
         #endregion
 
@@ -45,7 +47,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// Represents a service (scoped) for getting the client's preferred theme.
         /// </summary>
         /// <param name="options">The options to configure the <see cref="ClientThemeService"/>.</param>
-        public ClientThemeService(IOptions<ClientThemeOptions> options, IHttpContextAccessor httpContextAccessor, JewellisDbContext dbContext)
+        public ClientThemeService(IOptions<ClientThemeOptions> options, IHttpContextAccessor httpContextAccessor, JewellisDbContext dbContext, AuthUserService authUser)
         {
             if (string.IsNullOrEmpty(options.Value.DefaultTheme))
                 throw new ArgumentNullException("{options.DefaultTheme} cannot be null or empty.");
@@ -57,6 +59,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
             this.Options = options.Value;
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+            _authUser = authUser;
 
             this.InitializeClientTheme();
         }
@@ -78,8 +81,8 @@ namespace Jewellis.App_Custom.Services.ClientTheme
                 theme = this.Options.SupportedThemes.FirstOrDefault(t => t.ID.Equals(this.Options.DefaultTheme));
 
             // Sets the theme:
-            // Checks if the user is registered, to assign the theme to the database:
-            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            // Checks if the user is authenticated, to assign the theme to the database:
+            if (_authUser.IsAuthenticated())
             {
                 await this.SetUserThemeToDatabase(theme);
             }
@@ -104,7 +107,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
             Theme userTheme = null;
 
             // (1) - Checks if the user is authenticated - then gets the theme from the DB:
-            if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (_authUser.IsAuthenticated())
                 userTheme = Task.Run(() => GetUserThemeByDatabase()).Result;
 
             // (2) - User is not authenticated - so gets the theme from the cookie:
@@ -145,14 +148,10 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// <returns>Returns the theme of the user by the database if found and supported, otherwise null.</returns>
         private async Task<Theme> GetUserThemeByDatabase()
         {
-            int? userId = _httpContextAccessor.HttpContext.User.Identity.GetId();
-            if (userId != null)
+            User user = await _authUser.GetAsync();
+            if (user != null)
             {
-                User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
-                if (user != null)
-                {
-                    return this.GetSupportedThemeOrNull(user.Theme);
-                }
+                return this.GetSupportedThemeOrNull(user.Theme);
             }
             return null;
         }
@@ -173,18 +172,15 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// <param name="theme">The theme to set to the current user.</param>
         private async Task SetUserThemeToDatabase(Theme theme)
         {
-            int? userId = _httpContextAccessor.HttpContext.User.Identity.GetId();
-            if (userId != null)
+            User user = await _authUser.GetAsync();
+            if (user != null)
             {
-                User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
-                if (user != null)
-                {
-                    user.Theme = theme.ID;
-                    user.DateLastModified = DateTime.Now;
+                user.Theme = theme.ID;
+                user.DateLastModified = DateTime.Now;
 
-                    _dbContext.Users.Update(user);
-                    await _dbContext.SaveChangesAsync();
-                }
+                _dbContext.Users.Update(user);
+                await _dbContext.SaveChangesAsync();
+                _authUser.Set(user);
             }
         }
 

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-13
+    Last Update: 2021-06-14
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -195,7 +195,7 @@ $(function () {
     // Input: Number functionality:
     // ---------------------------
     // Occurres when the input text is focused:
-    $('[data-in-num]').focusin(function (e) {
+    $(document).on('focusin', '[data-in-num]', function (e) {
         e.preventDefault();
         $(document).keydown(inputNumberKeyListener);
     });
@@ -218,7 +218,7 @@ $(function () {
             e.preventDefault();
         }
     };
-    $('[data-in-num]').focusout(function (e) {
+    $(document).on('focusout', '[data-in-num]', function (e) {
         e.preventDefault();
         var $input = $(this).children('input');
 
@@ -244,7 +244,7 @@ $(function () {
         $(document).unbind('keydown', inputNumberKeyListener);
     });
     // Occurres when the increase button is clicked:
-    $('[data-in-num-inc]').click(function (e) {
+    $(document).on('click', '[data-in-num-inc]', function (e) {
         e.preventDefault();
         var $container = $(this).parent('[data-in-num]');
         var $input = $container.children('input');
@@ -263,7 +263,7 @@ $(function () {
         }
     });
     // Occurres when the decrease button is clicked:
-    $('[data-in-num-dec]').click(function (e) {
+    $(document).on('click', '[data-in-num-dec]', function (e) {
         e.preventDefault();
         var $container = $(this).parent('[data-in-num]');
         var $input = $container.children('input');
@@ -819,7 +819,7 @@ $(function () {
         let $miniCartWrapper = $container.children('.mini-cart-wrapper');
         let $miniCartItems = $miniCartWrapper.children('.mini-cart-items');
         let $miniCartTotal = $miniCartWrapper.find('#mini-cart-total');
-        let miniCartItemtemplate = $container.children('#mini-cart-item-template').html();
+        let miniCartItemTemplate = $container.children('#mini-cart-item-template').html();
 
         $miniCartItems.empty();
         $miniCartTotal.empty();
@@ -830,7 +830,7 @@ $(function () {
 
             // Appends the product items:
             for (let i = 0; i < products.length; i++) {
-                let bindedTemplate = bindObjectToTemplate(products[i], miniCartItemtemplate);
+                let bindedTemplate = bindObjectToTemplate(products[i], miniCartItemTemplate);
 
                 // Checks if there's a sale on the product:
                 if (products[i].regularPrice) {
@@ -859,10 +859,6 @@ $(function () {
             $container.find('.mini-cart-empty').show();
         }
     };
-    $(window).ready(function () {
-        // Reloads the client's cart from server on load:
-        updateMiniCartHtml(clientCart);
-    });
     $('#mini-cart').on('click', '[data-remove-from-cart]', function () {
         if (!clientCart)
             alert("Failed to remove from cart, please try again later.");
@@ -882,6 +878,96 @@ $(function () {
             data: { productId: productId },
             error: function () {
                 alert("Failed to remove from cart, please try again later.");
+            }
+        });
+    });
+
+    // Add To Wishlist (Mini Wishlist):
+    // --------------------------------
+    $(document).on('click', '[data-add-to-wishlist]', function () {
+        if (!userWishlist)
+            alert("Failed to add to wishlist, please try again later.");
+
+        let product = JSON.parse($(this).attr('data-add-to-wishlist'));
+
+        // Checks if the product already exists in the wishlist:
+        let currentProductInWishlist = ArrayHelper.getObjectByKey(userWishlist, 'id', product.id);
+        if (!currentProductInWishlist) {
+            userWishlist.unshift(product);
+        }
+
+        // Updates the html of the wishlist:
+        updateMiniWishlistHtml(userWishlist);
+
+        // Updates the server using AJAX about adding this item:
+        let $miniWishlistContainer = $('#mini-wishlist');
+        $.ajax({
+            type: 'post',
+            url: $miniWishlistContainer.attr('data-wishlist-add-link'),
+            data: { productId: product.id },
+            error: function () {
+                // Reverts the change:
+                if (!currentProductInWishlist) {
+                    ArrayHelper.removeObjectByKey(userWishlist, 'id', product.id);
+                }
+                // Updates the html of the wishlist:
+                updateMiniWishlistHtml(userWishlist);
+            }
+        });
+    });
+    /**
+     * Updates the html of the mini wishlist, by the specified JSON array of products.
+     */
+    var updateMiniWishlistHtml = function (products) {
+        let $container = $('#mini-wishlist');
+        let $miniWishlistItems = $container.children('.mini-wishlist-items');
+        let miniWishlistItemTemplate = $container.children('#mini-wishlist-item-template').html();
+
+        $miniWishlistItems.empty();
+
+        // Updates the wishlist:
+        if (products && products.length > 0) {
+            // Appends the product items:
+            for (let i = 0; i < products.length; i++) {
+                let bindedTemplate = bindObjectToTemplate(products[i], miniWishlistItemTemplate);
+                $miniWishlistItems.append(bindedTemplate);
+                $miniWishlistItems.children().last().find('[data-add-to-cart]').attr('data-add-to-cart', JSON.stringify(products[i]));
+            }
+            // Updates the wishlist container:
+            $container.find('.mini-wishlist-empty').hide();
+            $miniWishlistItems.show();
+        } else {
+            // Updates the wishlist container:
+            $miniWishlistItems.hide();
+            $container.find('.mini-wishlist-empty').show();
+        }
+    };
+    $('#mini-wishlist').on('click', '[data-remove-from-wishlist]', function () {
+        if (!userWishlist)
+            alert("Failed to remove from wishlist, please try again later.");
+
+        // Removes the product from the wishlist:
+        let productId = parseInt($(this).attr('data-remove-from-wishlist'));
+        ArrayHelper.removeObjectByKey(userWishlist, 'id', productId);
+
+        // Updates the html of the wishlist:
+        $(this).parents('.single-mini-product').remove();
+
+        if (userWishlist.length < 1) {
+            // Updates the wishlist container:
+            let $container = $('#mini-wishlist');
+            $container.find('.mini-wishlist-items').hide();
+            $container.find('.mini-wishlist-empty').show();
+        }
+
+        // Updates the server using AJAX about adding this item:
+        let $miniWishlistContainer = $('#mini-wishlist');
+        $.ajax({
+            type: 'post',
+            url: $miniWishlistContainer.attr('data-wishlist-remove-link'),
+            data: { productId: productId },
+            error: function () {
+                alert("Failed to remove from wishlist, please try again later.");
             }
         });
     });

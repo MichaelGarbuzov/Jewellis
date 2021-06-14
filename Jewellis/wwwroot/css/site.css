@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-13
+    Last Update: 2021-06-14
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6133,7 +6133,7 @@ figure {
                 display: inline-block;
                 max-width: 100%;
                 font-size: 1.35rem;
-                text-transform: uppercase;
+                font-weight: 700;
                 color: var(--color-primary);
                 overflow: hidden;
                 white-space: nowrap;
@@ -7030,6 +7030,10 @@ figure {
     padding: 0 0.5rem;
 }
 
+    .wishlist-heart > .spinner-border {
+        color: var(--color-primary);
+    }
+
 .mob-icon > .icon {
     display: none;
 }
@@ -7521,6 +7525,15 @@ html[theme="light"] #main-logo {
         -moz-transform: translateY(-3px);
         -ms-transform: translateY(-3px);
         transform: translateY(-3px);
+    }
+
+        .single-search-product:hover .btn.outline-primary {
+            color: var(--color-primary-invert);
+            background: var(--color-primary);
+        }
+
+    .single-search-product > a {
+        color: var(--color-text-title);
     }
 
     .single-search-product .search-product-img {

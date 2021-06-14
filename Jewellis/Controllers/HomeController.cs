@@ -110,7 +110,7 @@ namespace Jewellis.Controllers
                 id = p.Id,
                 name = p.Name,
                 imagePath = p.ImagePath,
-                price = _clientCurrency.GetPriceAndDisplay(p.SaleId.HasValue ? (p.Price * (1 - p.Sale.DiscountRate)) : p.Price)
+                price = _clientCurrency.GetPriceAndDisplay(p.ActualPrice())
             }).ToList();
 
             return Json(bindProductsJSON);

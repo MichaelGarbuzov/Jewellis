@@ -1,4 +1,5 @@
-﻿using Jewellis.Models;
+﻿using Jewellis.App_Custom.Validations;
+using Jewellis.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -47,6 +48,13 @@ namespace Jewellis.Areas.Admin.ViewModels.Products
         [Display(Name = "Available")]
         [Required(ErrorMessage = "Availability is required.")]
         public bool IsAvailable { get; set; }
+
+        [Display(Name = "Tweet about this")]
+        public bool Tweet { get; set; }
+
+        [Display(Name = "Tweet Text *", Prompt = "Type here text to tweet...")]
+        [RequiredIfChecked(nameof(Tweet), ErrorMessage = "Tweet text is required.")]
+        public string TweetText { get; set; }
 
         #region Relationships
 

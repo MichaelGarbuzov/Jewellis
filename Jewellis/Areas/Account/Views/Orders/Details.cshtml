@@ -1,6 +1,4 @@
-﻿@using Jewellis.Areas.Account.Controllers
-
-@{
+﻿@{
     ViewData["Title"] = $"Order #{123}";
 }
 
@@ -10,10 +8,10 @@
             <h1 class="title-1 font-weight-bold mb-5">Your Account</h1>
             <div class="row flex-column-reverse flex-xl-row">
                 <div class="col-xl-3 col-lg-6 col-md-7 col-sm-8 pr-xl-5">
-                    <partial name="~/Areas/Account/Views/Home/_MenuPartial.cshtml" model="nameof(HomeController.Orders)" />
+                    <partial name="~/Areas/Account/Views/Shared/_MenuPartial.cshtml" model="@("Orders")" />
                 </div>
                 <div class="col-xl-9 mb-5">
-                    <h3 class="block-title"><a asp-area="Account" asp-controller="Home" asp-action="Orders" class="primary-link"><u>Orders</u></a> <span class="icon icon-arrow-right4 mx-2" aria-hidden="true"></span> Order #123</h3>
+                    <h3 class="block-title"><a asp-area="Account" asp-controller="Orders" asp-action="Index" class="primary-link"><u>Orders</u></a> <span class="icon icon-arrow-right4 mx-2" aria-hidden="true"></span> Order #123</h3>
                     <div class="form-container bg-white px-5 py-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">

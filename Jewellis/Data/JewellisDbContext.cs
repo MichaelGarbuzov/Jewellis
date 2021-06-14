@@ -35,6 +35,12 @@ namespace Jewellis.Data
                 .WithOne()
                 .OnDelete(DeleteBehavior.SetNull);
 
+            // On delete "AddressId" foreign key - set null:
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.Address)
+                .WithOne()
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Default value on system datetime columns:
             modelBuilder.Entity<User>()
                 .Property(e => e.DateRegistered)

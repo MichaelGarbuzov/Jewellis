@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.Helpers;
+using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.Data;
 using Jewellis.Models;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,7 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMemoryCache _cache;
         private readonly JewellisDbContext _dbContext;
+        private readonly AuthUserService _authUser;
 
         #endregion
 
@@ -44,11 +46,12 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
         /// <summary>
         /// Represents a service (scoped) for managing the client's shopping cart.
         /// </summary>
-        public ClientShoppingCartService(IHttpContextAccessor httpContextAccessor, IMemoryCache cache, JewellisDbContext dbContext)
+        public ClientShoppingCartService(IHttpContextAccessor httpContextAccessor, IMemoryCache cache, JewellisDbContext dbContext, AuthUserService authUser)
         {
             _httpContextAccessor = httpContextAccessor;
             _cache = cache;
             _dbContext = dbContext;
+            _authUser = authUser;
 
             this.InitializeClientCart();
         }
@@ -192,25 +195,23 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
             }
 
             // If the user is authenticated - connects the cart to him:
-            int? userId = _httpContextAccessor.HttpContext.User.Identity.GetId();
-            if (userId.HasValue)
+            User user = await _authUser.GetAsync();
+            if (user != null && user.ClientCartId == null)
             {
-                User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
-                if (user.ClientCartId == null)
-                {
-                    user.ClientCart = this.Cart;
-                    _dbContext.Users.Update(user);
-                }
+                user.ClientCart = this.Cart;
+                _dbContext.Users.Update(user);
             }
 
             await _dbContext.SaveChangesAsync();
 
             // Gets the cart back from the database:
             ClientCart clientCartBack = null;
-            if (userId.HasValue)
+            if (user != null)
             {
                 clientCartBack = Task.Run(() => GetAuthUserCartByDatabase()).Result;
-                this.CacheAuthUserCart(userId.Value, clientCartBack);
+                user.ClientCartId = clientCartBack.Id;
+                _authUser.Set(user);
+                this.CacheAuthUserCart(user.Id, clientCartBack);
             }
             else
             {
@@ -250,9 +251,13 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
             // If empty - deletes the cart id cookie and removes from the cache:
             if (this.IsEmpty())
             {
-                if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                if (_authUser.IsAuthenticated())
                 {
-                    this.RemoveCacheAuthUserCart(_httpContextAccessor.HttpContext.User.Identity.GetId().Value);
+                    User user = await _authUser.GetAsync();
+                    user.ClientCartId = null;
+                    user.ClientCart = null;
+                    _authUser.Set(user);
+                    this.RemoveCacheAuthUserCart(user.Id);
                 }
                 else
                 {

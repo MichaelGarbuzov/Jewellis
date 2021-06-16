@@ -49,6 +49,8 @@ namespace Jewellis.Areas.Account.ViewModels.Profile
             /// </summary>
             [Display(Name = "Phone Number")]
             [StringLength(20, ErrorMessage = "Maximum length is 20 characters.")]
+            [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$", ErrorMessage = "Invalid phone number.")]
+            [DataType(DataType.PhoneNumber, ErrorMessage = "Invalid phone number.")]
             public string PhoneNumber { get; set; }
         }
 

@@ -1,15 +1,12 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
-using Jewellis.App_Custom.Helpers;
-using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientTheme;
 using Jewellis.Areas.Account.ViewModels.Profile;
-using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -19,15 +16,15 @@ namespace Jewellis.Areas.Account.Controllers
     [Authorize]
     public class ProfileController : Controller
     {
-        private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
+        private readonly UsersService _users;
         private readonly ClientCurrencyService _clientCurrency;
         private readonly ClientThemeService _clientTheme;
 
-        public ProfileController(JewellisDbContext dbContext, AuthUserService authUser, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
+        public ProfileController(UserIdentityService userIdentity, UsersService users, ClientCurrencyService clientCurrency, ClientThemeService clientTheme)
         {
-            _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
+            _users = users;
             _clientCurrency = clientCurrency;
             _clientTheme = clientTheme;
         }
@@ -35,7 +32,7 @@ namespace Jewellis.Areas.Account.Controllers
         [Route("/account/profile")]
         public async Task<IActionResult> Index()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user == null)
                 return NotFound();
 
@@ -66,23 +63,15 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(ProfileVM model)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return View(nameof(Index), model);
 
-            // Binds the view model:
-            user.FirstName = model.EditProfileVM.FirstName;
-            user.LastName = model.EditProfileVM.LastName;
-            user.EmailAddress = model.EditProfileVM.EmailAddress;
-            user.PhoneNumber = model.EditProfileVM.PhoneNumber;
-            user.DateLastModified = DateTime.Now;
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
+                return NotFound();
 
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-            _authUser.Set(user);
+            await _users.UpdateUserProfile(userId.Value, model.EditProfileVM.FirstName, model.EditProfileVM.LastName, model.EditProfileVM.EmailAddress, model.EditProfileVM.PhoneNumber);
+
             TempData["SuccessTitle"] = "Profile Updated";
             TempData["SuccessBody"] = "Your profile has been updated successfully.";
             return RedirectToAction(nameof(Index));
@@ -92,52 +81,38 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPassword(ProfileVM model)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return View(nameof(Index), model);
 
-            // First, checks the current password is correct:
-            string currentPasswordHash = EncryptionHelper.HashSHA256(model.EditPasswordVM.CurrentPassword + user.PasswordSalt);
-            user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id && u.PasswordHash.Equals(currentPasswordHash));
-            if (user != null)
-            {
-                // Binds the view model:
-                user.PasswordSalt = EncryptionHelper.GenerateSalt();
-                user.PasswordHash = EncryptionHelper.HashSHA256(model.EditPasswordVM.NewPassword + user.PasswordSalt);
-                user.DateLastModified = DateTime.Now;
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
+                return NotFound();
 
-                _dbContext.Users.Update(user);
-                await _dbContext.SaveChangesAsync();
+            if (await _users.UpdateUserPassword(userId.Value, model.EditPasswordVM.CurrentPassword, model.EditPasswordVM.NewPassword))
+            {
                 TempData["SuccessTitle"] = "Password Changed";
                 TempData["SuccessBody"] = "Your password has been changed successfully.";
-                return RedirectToAction(nameof(Index));
             }
             else
             {
                 TempData["EditPassword_ErrorMessage"] = "Current password is incorrect.";
-                return RedirectToAction(nameof(Index));
+
             }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPreferences(ProfileVM model)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return View(nameof(Index), model);
 
-            // Binds the view model:
-            await _clientCurrency.SetAsync(model.EditPreferencesVM.Currency);
-            await _clientTheme.SetAsync(model.EditPreferencesVM.Theme);
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
+                return NotFound();
 
-            // NOTE: No need to cache the changes to the auth user, since the above methods handle it.
+            await _users.UpdateUserPreferences(userId.Value, model.EditPreferencesVM.Currency, model.EditPreferencesVM.Theme);
 
             TempData["SuccessTitle"] = "Preferences Updated";
             TempData["SuccessBody"] = "Your preferences has been updated successfully.";
@@ -147,7 +122,7 @@ namespace Jewellis.Areas.Account.Controllers
         [Route("/account/address")]
         public async Task<IActionResult> Address()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user == null)
             {
                 return NotFound();
@@ -171,27 +146,15 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddress(AddressVM model)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
-                return NotFound();
-
             if (!ModelState.IsValid)
                 return View(nameof(Address), model);
 
-            // Checks if the user has no address yet:
-            if (user.Address == null)
-                user.Address = new Address();
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
+                return NotFound();
 
-            // Binds the view model:
-            user.Address.Street = model.Street;
-            user.Address.PostalCode = model.PostalCode;
-            user.Address.City = model.City;
-            user.Address.Country = model.Country;
-            user.Address.DateLastModified = DateTime.Now;
+            await _users.UpdateUserAddress(userId.Value, model.Street, model.PostalCode, model.City, model.Country);
 
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-            _authUser.Set(user);
             TempData["SuccessTitle"] = "Address Updated";
             TempData["SuccessBody"] = "Your address has been updated successfully.";
             return RedirectToAction(nameof(Address));
@@ -201,19 +164,12 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAddress()
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
                 return NotFound();
 
-            if (user.Address != null)
+            if (await _users.RemoveUserAddress(userId.Value))
             {
-                _dbContext.Addresses.Remove(user.Address);
-                await _dbContext.SaveChangesAsync();
-
-                user.AddressId = null;
-                user.Address = null;
-                _authUser.Set(user);
-
                 TempData["SuccessTitle"] = "Address Removed";
                 TempData["SuccessBody"] = "Your address has been removed successfully.";
             }
@@ -233,7 +189,7 @@ namespace Jewellis.Areas.Account.Controllers
             // Otherwise, email was changed so checks availability:
             else
             {
-                bool isEmailAvailable = (await _dbContext.Users.AnyAsync(u => u.EmailAddress.Equals(emailAddress)) == false);
+                bool isEmailAvailable = await _users.IsEmailAddressAvailable(emailAddress);
                 return Json(isEmailAvailable);
             }
         }

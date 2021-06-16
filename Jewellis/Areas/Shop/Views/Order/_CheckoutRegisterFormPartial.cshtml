@@ -1,4 +1,4 @@
-﻿@model Jewellis.Areas.Account.ViewModels.Authenticate.RegisterVM
+﻿@model Jewellis.Areas.Shop.ViewModels.Order.CheckoutVM.ConditionalRegisterVM
 
 <div class="row">
     <div class="col-lg-6">
@@ -31,12 +31,5 @@
         <input type="checkbox" asp-for="SubscribeNewsletter" class="custom-control-input" />
         <label asp-for="SubscribeNewsletter" class="custom-control-label txt-primary"></label>
     </div>
-</div>
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="validation-summary-errors txt-md">@ViewData["ErrorMessage"]</div>
-}
-<div class="single-form-item text-center">
-    <button type="submit" class="btn outline-primary w-100">Sign up</button>
 </div>
 <p class="txt-sm text-center txt-secondary">By signing up, you agree to our <a asp-area="" asp-controller="Home" asp-action="Terms" target="_blank" class="txt-secondary"><u>Terms</u></a> and <a asp-area="" asp-controller="Home" asp-action="Privacy" target="_blank" class="txt-secondary"><u>Privacy Policy</u></a>.</p>

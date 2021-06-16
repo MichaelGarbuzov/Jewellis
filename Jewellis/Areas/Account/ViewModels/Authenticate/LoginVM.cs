@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Jewellis.Areas.Account.ViewModels.Authenticate.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace Jewellis.Areas.Account.ViewModels.Authenticate
 {
-    public class LoginVM
+    public class LoginVM : ILoginVM
     {
 
         /// <summary>

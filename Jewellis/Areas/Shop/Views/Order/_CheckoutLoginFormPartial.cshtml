@@ -1,4 +1,4 @@
-﻿@model Jewellis.Areas.Account.ViewModels.Authenticate.LoginVM
+﻿@model Jewellis.Areas.Shop.ViewModels.Order.CheckoutVM.ConditionalLoginVM
 
 <div class="single-form-item">
     <input asp-for="EmailAddress" class="i-txt bg-input-txt" />
@@ -17,10 +17,7 @@
         <button type="button" class="primary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="Sorry, we currently do not support this feature. Next time try to remember your password :-)">Forget Password?</button>
     </div>
 </div>
-@if (ViewData["ErrorMessage"] != null)
+@if (ViewData["Error_Login"] != null)
 {
-    <div class="validation-summary-errors txt-md">@ViewData["ErrorMessage"]</div>
+    <div class="validation-summary-errors">@ViewData["Error_Login"]</div>
 }
-<div class="single-form-item text-center">
-    <button type="submit" class="btn outline-primary w-100">Login</button>
-</div>

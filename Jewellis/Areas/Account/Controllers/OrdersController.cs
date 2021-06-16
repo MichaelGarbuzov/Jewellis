@@ -1,11 +1,8 @@
-﻿using Jewellis.App_Custom.Services.AuthUser;
-using Jewellis.Data;
+﻿using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jewellis.Areas.Account.Controllers
@@ -15,18 +12,18 @@ namespace Jewellis.Areas.Account.Controllers
     public class OrdersController : Controller
     {
         private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
 
-        public OrdersController(JewellisDbContext dbContext, AuthUserService authUser)
+        public OrdersController(JewellisDbContext dbContext, UserIdentityService userIdentity)
         {
             _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
         }
 
         [Route("/account/orders")]
         public async Task<IActionResult> Index()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user == null)
                 return NotFound();
 
@@ -39,7 +36,7 @@ namespace Jewellis.Areas.Account.Controllers
         [Route("/account/order/{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user == null)
                 return NotFound();
 

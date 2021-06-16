@@ -1,148 +1,180 @@
-﻿@{
+﻿@using Jewellis.Areas.Shop.ViewModels.Order.Helpers
+
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+@inject Jewellis.App_Custom.Services.ClientShoppingCart.ClientShoppingCartService ClientCart
+
+@model Jewellis.Areas.Shop.ViewModels.Order.CheckoutVM
+
+@{
     ViewData["Title"] = "Checkout";
+
+    List<DeliveryMethod> deliveryMethods = (ViewData["DeliveryMethods"] as List<DeliveryMethod>);
+    if (deliveryMethods == null)
+    {
+        throw new NullReferenceException($"{deliveryMethods} cannot be null. ViewData[\"DeliveryMethods\"] is required.");
+    }
+
+    int stepCounter = 0;
 }
 
 <section class="bg-light-2">
     <div class="sec-container">
         <div class="maxw-2xl m-auto py-5-desktop">
             <h1 class="title-1 font-weight-bold mb-5">Checkout</h1>
-            <form action="" method="post">
+            <form data-stepper-form asp-area="Shop" asp-controller="Order" asp-action="Checkout" method="post">
                 <div class="row">
                     <div class="col-xl-8 mb-5">
                         <div class="form-container bg-white">
                             <div class="stepper" data-stepper>
-                                <ul class="step-tabs count-5" role="tablist">
+                                <ul class="step-tabs @(Context.User.Identity.IsAuthenticated ? "count-4" : "count-5")" role="tablist">
+                                    @if (Context.User.Identity.IsAuthenticated == false)
+                                    {
+                                        <li role="presentation">
+                                            <button type="button" role="tab" class="step current" data-step-target="#step-account" aria-selected="true">
+                                                <span class="step-num">@(++stepCounter)</span>
+                                                <span class="step-num-dot">.</span>
+                                                <span class="step-label">Account</span>
+                                            </button>
+                                        </li>
+                                    }
                                     <li role="presentation">
-                                        <button type="button" role="tab" class="step current" data-step-target="#step-account" aria-selected="true">
-                                            <span class="step-num">1</span>
-                                            <span class="step-num-dot">.</span>
-                                            <span class="step-label">Account</span>
-                                        </button>
-                                    </li>
-                                    <li role="presentation">
-                                        <button type="button" role="tab" class="step" data-step-target="#step-address" aria-selected="false">
-                                            <span class="step-num">2</span>
+                                        <button type="button" role="tab" class="step @(Context.User.Identity.IsAuthenticated ? "current" : "")" data-step-target="#step-address" aria-selected="@(Context.User.Identity.IsAuthenticated ? "true" : "false")">
+                                            <span class="step-num">@(++stepCounter)</span>
                                             <span class="step-num-dot">.</span>
                                             <span class="step-label">Address</span>
                                         </button>
                                     </li>
                                     <li role="presentation">
                                         <button type="button" role="tab" class="step" data-step-target="#step-delivery" aria-selected="false">
-                                            <span class="step-num">3</span>
+                                            <span class="step-num">@(++stepCounter)</span>
                                             <span class="step-num-dot">.</span>
                                             <span class="step-label">Delivery</span>
                                         </button>
                                     </li>
                                     <li role="presentation">
                                         <button type="button" role="tab" class="step" data-step-target="#step-payment" aria-selected="false">
-                                            <span class="step-num">4</span>
+                                            <span class="step-num">@(++stepCounter)</span>
                                             <span class="step-num-dot">.</span>
                                             <span class="step-label">Payment</span>
                                         </button>
                                     </li>
                                     <li role="presentation">
                                         <button type="button" role="tab" class="step" data-step-target="#step-review" aria-selected="false">
-                                            <span class="step-num">5</span>
+                                            <span class="step-num">@(++stepCounter)</span>
                                             <span class="step-num-dot">.</span>
                                             <span class="step-label">Review</span>
                                         </button>
                                     </li>
                                 </ul>
                                 <div class="step-content">
-                                    <div class="step-panel active" role="tabpanel" id="step-account">
-                                        <div data-tab-switcher>
-                                            <p class="mb-5">We need to identify you in order to create your order. Please <a asp-area="Account" asp-controller="Authenticate" asp-action="Login" class="primary-link"><u>login</u></a> or <a asp-area="Account" asp-controller="Authenticate" asp-action="Register" class="primary-link"><u>sign up</u></a>.</p>
-                                            <div class="d-flex mb-5">
-                                                <div class="custom-control custom-radio mr-5 current" data-tab-target="#tab-login" aria-selected="true">
-                                                    <input type="radio" name="AccountMethod" id="AccountLogin" value="Login" class="custom-control-input" checked />
-                                                    <label for="AccountLogin" class="custom-control-label txt-primary">Login</label>
+                                    @if (Context.User.Identity.IsAuthenticated == false)
+                                    {
+                                        <div class="step-panel active" role="tabpanel" id="step-account">
+                                            <div data-tab-switcher>
+                                                <input type="hidden" asp-for="SignMethod" />
+                                                <p class="mb-5">We need to identify you in order to create your order. Please <a asp-area="Account" asp-controller="Authenticate" asp-action="Login" class="primary-link"><u>login</u></a> or <a asp-area="Account" asp-controller="Authenticate" asp-action="Register" class="primary-link"><u>sign up</u></a>.</p>
+                                                <div class="d-flex mb-5">
+                                                    <div class="custom-control custom-radio mr-5 current" data-tab-target="#tab-login" aria-selected="true">
+                                                        <input type="hidden" asp-for="LoginVM.SignMethod" />
+                                                        <input type="radio" name="SignMethodRadio" id="@Html.IdFor(m => m.LoginVM.SignMethod)Radio" value="@SignMethod.Login" data-update-val="#@Html.IdFor(m => m.SignMethod),#@Html.IdFor(m => m.LoginVM.SignMethod),#@Html.IdFor(m => m.RegisterVM.SignMethod)" class="custom-control-input" @(Model.SignMethod == SignMethod.Login ? "checked" : "") />
+                                                        <label for="@Html.IdFor(m => m.LoginVM.SignMethod)Radio" class="custom-control-label txt-primary">Login</label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio" data-tab-target="#tab-register" aria-selected="false">
+                                                        <input type="hidden" asp-for="RegisterVM.SignMethod" />
+                                                        <input type="radio" name="SignMethodRadio" id="@Html.IdFor(m => m.RegisterVM.SignMethod)Radio" value="@SignMethod.Register" data-update-val="#@Html.IdFor(m => m.SignMethod),#@Html.IdFor(m => m.LoginVM.SignMethod),#@Html.IdFor(m => m.RegisterVM.SignMethod)" class="custom-control-input" @(Model.SignMethod == SignMethod.Register ? "checked" : "") />
+                                                        <label for="@Html.IdFor(m => m.RegisterVM.SignMethod)Radio" class="custom-control-label txt-primary">Sign up</label>
+                                                    </div>
                                                 </div>
-                                                <div class="custom-control custom-radio" data-tab-target="#tab-register" aria-selected="false">
-                                                    <input type="radio" name="AccountMethod" id="AccountRegister" value="Register" class="custom-control-input" />
-                                                    <label for="AccountRegister" class="custom-control-label txt-primary">Sign up</label>
-                                                </div>
-                                            </div>
-                                            <div data-tab-panels class="maxw-sm px-md-5">
-                                                <div id="tab-login" class="active">
-                                                    <partial name="~/Areas/Account/Views/Authenticate/_LoginFormPartial.cshtml" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", false } }' />
-                                                </div>
-                                                <div id="tab-register">
-                                                    <partial name="~/Areas/Account/Views/Authenticate/_RegisterFormPartial.cshtml" view-data='@new ViewDataDictionary(ViewData) { { "IncludeSubmitAction", false } }' />
+                                                <div data-tab-panels class="maxw-sm px-md-5">
+                                                    <div id="tab-login" class="active">
+                                                        <partial name="~/Areas/Shop/Views/Order/_CheckoutLoginFormPartial.cshtml" for="LoginVM" />
+                                                    </div>
+                                                    <div id="tab-register">
+                                                        <partial name="~/Areas/Shop/Views/Order/_CheckoutRegisterFormPartial.cshtml" for="RegisterVM" />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="step-panel" role="tabpanel" id="step-address">
+                                    }
+                                    <div class="step-panel @(Context.User.Identity.IsAuthenticated ? "active" : "")" role="tabpanel" id="step-address">
                                         <div class="row">
                                             <div class="col-md-6 px-md-5 mb-4">
                                                 <h3 class="mb-4">Billing Details</h3>
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="single-form-item">
-                                                            <input type="text" id="BillingName" name="BillingName" placeholder="Name *" class="i-txt" />
+                                                            <input asp-for="BillingDetails.Name" class="i-txt" />
+                                                            <span asp-validation-for="BillingDetails.Name" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="single-form-item">
-                                                            <input type="text" id="BillingPhone" name="BillingPhone" placeholder="Phone *" class="i-txt" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-6">
-                                                        <div class="single-form-item">
-                                                            <input type="text" id="BillingAddressStreet" name="BillingAddressStreet" placeholder="Street *" class="i-txt" />
+                                                            <input asp-for="BillingDetails.Phone" class="i-txt" />
+                                                            <span asp-validation-for="BillingDetails.Phone" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="single-form-item">
-                                                            <input type="text" id="BillingAddressPostalCode" name="BillingAddressPostalCode" placeholder="Postal Code *" class="i-txt" />
+                                                            <input asp-for="BillingDetails.Street" class="i-txt" />
+                                                            <span asp-validation-for="BillingDetails.Street" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="single-form-item">
+                                                            <input asp-for="BillingDetails.PostalCode" class="i-txt" />
+                                                            <span asp-validation-for="BillingDetails.PostalCode" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="single-form-item">
-                                                    <input type="text" id="BillingAddressCity" name="BillingAddressCity" placeholder="City *" class="i-txt" />
+                                                    <input asp-for="BillingDetails.City" class="i-txt" />
+                                                    <span asp-validation-for="BillingDetails.City" class="text-danger"></span>
                                                 </div>
                                                 <div class="single-form-item">
-                                                    <input type="text" id="BillingAddressCountry" name="BillingAddressCountry" placeholder="Country *" class="i-txt" />
+                                                    <input asp-for="BillingDetails.Country" class="i-txt" />
+                                                    <span asp-validation-for="BillingDetails.Country" class="text-danger"></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 px-md-5 mb-4">
                                                 <h3 class="mb-4">Shipping Details</h3>
                                                 <div class="custom-control custom-checkbox mb-4">
-                                                    <input type="checkbox" id="ShippingSameAsBilling" class="custom-control-input" data-check-toggle-target="#shipping-details" checked />
-                                                    <label for="ShippingSameAsBilling" class="custom-control-label txt-primary">Same as Billing Details</label>
+                                                    <input type="checkbox" asp-for="ShippingDetails.ShippingSameAsBilling" id="ShippingSameAsBilling" class="custom-control-input" data-check-toggle-target="#shipping-details" />
+                                                    <label for="ShippingSameAsBilling" class="custom-control-label txt-primary">Shipping Same As Billing</label>
                                                 </div>
-                                                <div id="shipping-details" data-check-toggle-state="0">
+                                                <div id="shipping-details" data-check-toggle-state="@(Model.ShippingDetails.ShippingSameAsBilling ? "0" : "1")">
                                                     <div class="row">
                                                         <div class="col-sm-6">
                                                             <div class="single-form-item">
-                                                                <input type="text" id="ShippingName" name="ShippingName" placeholder="Name *" class="i-txt" />
+                                                                <input asp-for="ShippingDetails.Name" class="i-txt" />
+                                                                <span asp-validation-for="ShippingDetails.Name" class="text-danger"></span>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6">
                                                             <div class="single-form-item">
-                                                                <input type="text" id="ShippingPhone" name="ShippingPhone" placeholder="Phone *" class="i-txt" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-6">
-                                                            <div class="single-form-item">
-                                                                <input type="text" id="ShippingAddressStreet" name="ShippingAddressStreet" placeholder="Street *" class="i-txt" />
+                                                                <input asp-for="ShippingDetails.Phone" class="i-txt" />
+                                                                <span asp-validation-for="ShippingDetails.Phone" class="text-danger"></span>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6">
                                                             <div class="single-form-item">
-                                                                <input type="text" id="ShippingAddressPostalCode" name="ShippingAddressPostalCode" placeholder="Postal Code *" class="i-txt" />
+                                                                <input asp-for="ShippingDetails.Street" class="i-txt" />
+                                                                <span asp-validation-for="ShippingDetails.Street" class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="single-form-item">
+                                                                <input asp-for="ShippingDetails.PostalCode" class="i-txt" />
+                                                                <span asp-validation-for="ShippingDetails.PostalCode" class="text-danger"></span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="single-form-item">
-                                                        <input type="text" id="ShippingAddressCity" name="ShippingAddressCity" placeholder="City *" class="i-txt" />
+                                                        <input asp-for="ShippingDetails.City" class="i-txt" />
+                                                        <span asp-validation-for="ShippingDetails.City" class="text-danger"></span>
                                                     </div>
                                                     <div class="single-form-item">
-                                                        <input type="text" id="ShippingAddressCountry" name="ShippingAddressCountry" placeholder="Country *" class="i-txt" />
+                                                        <input asp-for="ShippingDetails.Country" class="i-txt" />
+                                                        <span asp-validation-for="ShippingDetails.Country" class="text-danger"></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -151,78 +183,28 @@
                                     <div class="step-panel" role="tabpanel" id="step-delivery">
                                         <h3 class="mb-4">Delivery Method</h3>
                                         <div class="mb-5">
-                                            <div class="radio-card mb-4">
-                                                <label for="option1"></label>
-                                                <input type="radio" name="DeliveryMethod" id="option1" />
-                                                <div class="card">
-                                                    <div class="row p-4">
-                                                        <div class="col-md-7 px-5 mb-4 mb-md-0">
-                                                            <h4>Pickup From Store</h4>
-                                                            <p class="txt-md m-0">Pickup your order from the nearest store.</p>
-                                                        </div>
-                                                        <div class="col-md-3 col-6 d-flex justify-content-center align-items-center">
-                                                            <div>$0.00</div>
-                                                        </div>
-                                                        <div class="col-md-2 col-6 px-5 d-flex justify-content-end align-items-center">
-                                                            <button type="button" class="btn outline-primary">Select</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="radio-card mb-4">
-                                                <label for="option2"></label>
-                                                <input type="radio" name="DeliveryMethod" id="option2" />
-                                                <div class="card">
-                                                    <div class="row p-4">
-                                                        <div class="col-md-7 px-5 mb-4 mb-md-0">
-                                                            <h4>Standard</h4>
-                                                            <p class="txt-md m-0">Estimated delivery: 25-43 days.</p>
-                                                        </div>
-                                                        <div class="col-md-3 col-6 d-flex justify-content-center align-items-center">
-                                                            <div>$10.00</div>
-                                                        </div>
-                                                        <div class="col-md-2 col-6 px-5 d-flex justify-content-end align-items-center">
-                                                            <button type="button" class="btn outline-primary">Select</button>
+                                            <span asp-validation-for="DeliveryMethodId" class="text-danger mb-4"></span>
+                                            @foreach (var deliveryMethod in deliveryMethods)
+                                            {
+                                                <div class="radio-card mb-4">
+                                                    <label for="delivery-method-@deliveryMethod.Id"></label>
+                                                    <input type="radio" asp-for="DeliveryMethodId" id="delivery-method-@deliveryMethod.Id" value="@deliveryMethod.Id" data-delivery-method />
+                                                    <div class="card">
+                                                        <div class="row p-4">
+                                                            <div class="col-md-7 px-5 mb-4 mb-md-0">
+                                                                <h4 class="delivery-method-name">@deliveryMethod.Name</h4>
+                                                                <p class="txt-md m-0">@deliveryMethod.Description</p>
+                                                            </div>
+                                                            <div class="col-md-3 col-6 d-flex justify-content-center align-items-center">
+                                                                <div class="delivery-method-price">@ClientCurrency.GetPriceAndDisplay(deliveryMethod.Price)</div>
+                                                            </div>
+                                                            <div class="col-md-2 col-6 px-5 d-flex justify-content-end align-items-center">
+                                                                <button type="button" class="btn outline-primary">Select</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="radio-card mb-4">
-                                                <label for="option3"></label>
-                                                <input type="radio" name="DeliveryMethod" id="option3" />
-                                                <div class="card">
-                                                    <div class="row p-4">
-                                                        <div class="col-md-7 px-5 mb-4 mb-md-0">
-                                                            <h4>Premium</h4>
-                                                            <p class="txt-md m-0">Estimated delivery: 10-21 days.</p>
-                                                        </div>
-                                                        <div class="col-md-3 col-6 d-flex justify-content-center align-items-center">
-                                                            <div>$25.00</div>
-                                                        </div>
-                                                        <div class="col-md-2 col-6 px-5 d-flex justify-content-end align-items-center">
-                                                            <button type="button" class="btn outline-primary">Select</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="radio-card mb-4">
-                                                <label for="option4"></label>
-                                                <input type="radio" name="DeliveryMethod" id="option4" />
-                                                <div class="card">
-                                                    <div class="row p-4">
-                                                        <div class="col-md-7 px-5 mb-4 mb-md-0">
-                                                            <h4>DHL</h4>
-                                                            <p class="txt-md m-0">Estimated delivery: 7-15 days.</p>
-                                                        </div>
-                                                        <div class="col-md-3 col-6 d-flex justify-content-center align-items-center">
-                                                            <div>$30.00</div>
-                                                        </div>
-                                                        <div class="col-md-2 col-6 px-5 d-flex justify-content-end align-items-center">
-                                                            <button type="button" class="btn outline-primary">Select</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            }
                                         </div>
                                     </div>
                                     <div class="step-panel" role="tabpanel" id="step-payment">
@@ -230,22 +212,26 @@
                                             <div class="col-lg-6 col-md-7 mb-4">
                                                 <h3 class="mb-4">Credit Card</h3>
                                                 <div class="single-form-item">
-                                                    <input type="text" id="CardNumber" name="CardNumber" placeholder="Card Number *" class="i-txt" />
+                                                    <input asp-for="CreditCard.CardNumber" class="i-txt" />
+                                                    <span asp-validation-for="CreditCard.CardNumber" class="text-danger"></span>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="single-form-item">
-                                                            <input type="text" id="ExpiryDate" name="ExpiryDate" placeholder="Expiry Date *" class="i-txt" />
+                                                            <input asp-for="CreditCard.CardExpiryDate" class="i-txt" />
+                                                            <span asp-validation-for="CreditCard.CardExpiryDate" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="single-form-item">
-                                                            <input type="text" id="SecurityCode" name="SecurityCode" placeholder="Security Code *" class="i-txt" />
+                                                            <input asp-for="CreditCard.CardSecurityCode" class="i-txt" />
+                                                            <span asp-validation-for="CreditCard.CardSecurityCode" class="text-danger"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="single-form-item">
-                                                    <input type="text" id="CardHolderName" name="CardHolderName" placeholder="Card Holder Name *" class="i-txt" />
+                                                    <input asp-for="CreditCard.CardHolderName" class="i-txt" />
+                                                    <span asp-validation-for="CreditCard.CardHolderName" class="text-danger"></span>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-5 d-none d-md-block">
@@ -268,129 +254,64 @@
                                                 </div>
                                             </div>
                                             <div class="table-body">
-                                                <div class="table-row">
-                                                    <div class="d-flex align-items-center text-left text-md-center row">
-                                                        <div class="col-12 col-md-5">
-                                                            <div class="d-flex align-items-center">
-                                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" target="_blank">
-                                                                    <img class="row-image" src="~/images/product-1.jpg" alt="Product 1" />
-                                                                </a>
-                                                                <div class="row-title text-left">
-                                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" target="_blank" class="primary-link text-uppercase">SPRITE YOGA COMPANION</a>
+                                                @foreach (var cartProduct in ClientCart.Cart.Products)
+                                                {
+                                                    <div class="table-row">
+                                                        <div class="d-flex align-items-center text-left text-md-center row">
+                                                            <div class="col-12 col-md-5">
+                                                                <div class="d-flex align-items-center">
+                                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id" target="_blank">
+                                                                        <img class="row-image" src="@cartProduct.Product.ImagePath" alt="@cartProduct.Product.Name" />
+                                                                    </a>
+                                                                    <div class="row-title text-left">
+                                                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@cartProduct.Product.Id" target="_blank" class="primary-link text-uppercase">@cartProduct.Product.Name</a>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Price</div>
-                                                                        <div class="text-right text-md-center">
-                                                                            <strike>$65.00</strike>
-                                                                            <br class="d-none d-md-block" />
-                                                                            <span class="txt-accent ml-2 ml-md-0">$35.00</span>
+                                                            <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                                                <div class="row align-items-center">
+                                                                    <div class="col-md-4">
+                                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                                            <div class="d-md-none txt-secondary">Price</div>
+                                                                            <div class="text-right text-md-center">
+                                                                                @if (cartProduct.Product.IsOnSaleNow())
+                                                                                {
+                                                                                    <strike>@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.Price)</strike>
+                                                                                    <br class="d-none d-md-block" />
+                                                                                }
+                                                                                <span class="@(cartProduct.Product.IsOnSaleNow() ? "txt-accent" : "") ml-2 ml-md-0">@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.ActualPrice())</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                                            <div class="d-md-none txt-secondary">Quantity</div>
+                                                                            <div class="text-right text-md-center">@cartProduct.Quantity</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="d-flex justify-content-md-center justify-content-between">
+                                                                            <div class="d-md-none txt-secondary">Total Price</div>
+                                                                            <div class="text-right text-md-center">@ClientCurrency.GetPriceAndDisplay(cartProduct.Product.ActualPrice() * cartProduct.Quantity)</div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Quantity</div>
-                                                                        <div class="text-right text-md-center">1</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Total Price</div>
-                                                                        <div class="text-right text-md-center">$130.00</div>
-                                                                    </div>
-                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="table-row">
-                                                    <div class="d-flex align-items-center text-left text-md-center row">
-                                                        <div class="col-12 col-md-5">
-                                                            <div class="d-flex align-items-center">
-                                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2" target="_blank">
-                                                                    <img class="row-image" src="~/images/product-2.jpg" alt="Product 2" />
-                                                                </a>
-                                                                <div class="row-title text-left">
-                                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2" target="_blank" class="primary-link text-uppercase">Yoga COMPANION KIT</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Price</div>
-                                                                        <div class="text-right text-md-center">$55.00</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Quantity</div>
-                                                                        <div class="text-right text-md-center">3</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Total Price</div>
-                                                                        <div class="text-right text-md-center">$55.00</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="table-row">
-                                                    <div class="d-flex align-items-center text-left text-md-center row">
-                                                        <div class="col-12 col-md-5">
-                                                            <div class="d-flex align-items-center">
-                                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3" target="_blank">
-                                                                    <img class="row-image" src="~/images/product-3.jpg" alt="Product 3" />
-                                                                </a>
-                                                                <div class="row-title text-left">
-                                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3" target="_blank" class="primary-link text-uppercase">SPRITE YOGA COMPANION KIT</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Price</div>
-                                                                        <div class="text-right text-md-center">$55.00</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Quantity</div>
-                                                                        <div class="text-right text-md-center">2</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <div class="d-flex justify-content-md-center justify-content-between">
-                                                                        <div class="d-md-none txt-secondary">Total Price</div>
-                                                                        <div class="text-right text-md-center">$55.00</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                         <div class="single-form-item mb-5">
-                                            <input type="text" id="Note" name="Note" placeholder="Note (Optional)" class="i-txt" />
+                                            <input asp-for="Note" class="i-txt" />
+                                            <span asp-validation-for="Note" class="text-danger"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="step-actions">
                                     <div class="d-flex justify-content-between flex-column-reverse flex-sm-row">
                                         <button type="button" data-step-prev class="btn btn-neutral" style="visibility:hidden;"><span class="icon icon-arrow-left3 icon-top-adjust mr-3"></span>Previous</button>
-                                        <button type="submit" data-step-finish class="btn btn-primary hover-push px-5 mb-3 mb-sm-0">Place Order<span class="icon icon-checkmark2 icon-top-adjust ml-3"></span></button>
+                                        <button type="submit" data-step-finish class="btn btn-primary hover-push px-5 mb-3 mb-sm-0" data-submit-loader>Place Order<span class="icon icon-checkmark2 icon-top-adjust ml-3"></span></button>
                                         <button type="button" data-step-next class="btn btn-primary hover-push px-6 mb-3 mb-sm-0">Next<span class="icon icon-arrow-right4 icon-top-adjust ml-3"></span></button>
                                     </div>
                                 </div>
@@ -401,10 +322,10 @@
                         <h3 class="block-title">Order Summary</h3>
                         <div class="form-container bg-white mb-5">
                             <ul class="list-unstyled mb-3">
-                                <li class="summary-item"><span>Order Subtotal </span><span>$300.00</span></li>
-                                <li class="summary-item"><span>Shipping<button type="button" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="Please select a delivery method."><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span id="summary-shipping"></span></li>
-                                <li class="summary-item"><span>Discount</span><span>-$50.00</span></li>
-                                <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">$260.00</strong></li>
+                                <li class="summary-item"><span>Order Subtotal </span><span>@ClientCurrency.GetPriceAndDisplay(ClientCart.GetSubtotal())</span></li>
+                                <li class="summary-item"><span>Shipping<button type="button" id="summary-shipping" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="Please select a delivery method."><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span id="summary-shipping-price"></span></li>
+                                <li class="summary-item"><span>Discount</span><span>-@ClientCurrency.GetPriceAndDisplay(ClientCart.GetTotalDiscount())</span></li>
+                                <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">@ClientCurrency.GetPriceAndDisplay(ClientCart.GetTotalPrice())</strong></li>
                             </ul>
                         </div>
                     </div>
@@ -413,3 +334,22 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        $(function () {
+            var totalPrice = @ClientCart.GetTotalPrice();
+
+            $('[data-delivery-method]').change(function () {
+                let deliveryPrice = $(this).parent().find('.delivery-method-price').text();
+
+                // Updates the delivery method name and price in the summary:
+                $('#summary-shipping').attr('data-content', $(this).parent().find('.delivery-method-name').text());
+                $('#summary-shipping-price').text(deliveryPrice);
+                let $orderTotal = $('.order-summary-total');
+                let totalPriceWithShipping = (parseFloat(deliveryPrice.substring(1)) + totalPrice);
+                $orderTotal.text($orderTotal.text().charAt(0) + totalPriceWithShipping.toFixed(2));
+            });
+        });
+    </script>
+}

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-14
+    Last Update: 2021-06-16
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -296,6 +296,15 @@ $(function () {
         var $newPanel = $stepper.find($newTab.attr('data-step-target'));
         var $currentPanel = $stepper.find($currentTab.attr('data-step-target'));
 
+        if ($currentPanel.attr('data-step-edited')) {
+            validatePanel($currentPanel);
+        }
+        if (isValidPanel($currentPanel)) {
+            $currentTab.addClass('done');
+        } else {
+            $currentTab.removeClass('done');
+        }
+
         // Changes the tabs:
         $currentTab.removeClass('current');
         $currentTab.attr('aria-selected', 'false');
@@ -336,19 +345,74 @@ $(function () {
         }
     });
     $('[data-step-next]').click(function () {
-        var $stepper = $(this).parents('[data-stepper]');
-        var $currentTab = $stepper.find('[data-step-target].current');
+        let $stepper = $(this).parents('[data-stepper]');
+        let $currentTab = $stepper.find('[data-step-target].current');
+        let $currentPanel = $stepper.find($currentTab.attr('data-step-target'));
 
-        // Gets the next tab:
-        var $nextTab = $currentTab.parent().next().children();
-        if ($nextTab) {
-            $nextTab.click();
+        // Validates the current panel:
+        if (validatePanel($currentPanel)) {
+            $currentTab.addClass('done');
+            $currentPanel.attr('data-step-validated', 'true');
+
+            // Goes to the next tab:
+            let $nextTab = $currentTab.parent().next().children();
+            if ($nextTab) {
+                $nextTab.click();
+            }
         }
     });
-    $('[data-step-finish]').click(function () {
-        var $stepper = $(this).parents('[data-stepper]');
-
+    var isValidPanel = function ($panel) {
+        if ($panel.attr('data-step-edited') || $panel.attr('data-step-validated')) {
+            return ($panel.find('.field-validation-error').length < 1);
+        } else {
+            return false;
+        }
+    };
+    var validatePanel = function ($panel) {
+        let errorCounter = 0;
+        $panel.find('input,textarea').each(function () {
+            if (!$(this).valid()) {
+                errorCounter++;
+            }
+        });
+        return (errorCounter == 0);
+    };
+    $('[data-stepper-form]').submit(function () {
+        // On form submit, checks to find errors in the form, and then navigates to the related panel.
+        let $thisForm = $(this);
+        let $errorFields = $thisForm.find('.field-validation-error');
+        if ($errorFields.length > 0) {
+            let $panelContainer = $errorFields.first().parents('.step-panel');
+            let $stepTarget = $thisForm.find('[data-step-target="#' + $panelContainer.attr('id') + '"]');
+            $stepTarget.click();
+        }
     });
+    $(document).ready(function () {
+        // If stepper form exists in the page:
+        let $stepper = $('[data-stepper-form]');
+        if ($stepper.length) {
+            // Adds a listener to enter keypress (to go next):
+            $(document).keydown(stepperFormKeyPressListener);
+            // Adds a listener to change event of fields, in order to indicate when a panel has edited:
+            $stepper.find('input,textarea').each(function () {
+                $(this).change(function () {
+                    $(this).parents('.step-panel').attr('data-step-edited', 'true');
+                });
+            });
+        }
+    });
+    var stepperFormKeyPressListener = function (e) {
+        // "Enter" keypress:
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            let $nextBtn = $('[data-step-next]');
+            if ($nextBtn.is(':visible')) {
+                $nextBtn.click();
+            } else {
+                $('[data-stepper-form]').submit();
+            }
+        }
+    };
 
     // Tab Switcher:
     // -------------
@@ -595,6 +659,12 @@ $(function () {
         var $toChange = $($this.attr('data-change-val'));
         $toChange.val($this.val());
         $toChange.trigger('change');
+    });
+    $('[data-update-val]').click(function () {
+        var $this = $(this);
+        var $toUpdate = $($this.attr('data-update-val'));
+        $toUpdate.val($this.val());
+        $toUpdate.trigger('change');
     });
 
     // Submits the parent form, on value change of this element:

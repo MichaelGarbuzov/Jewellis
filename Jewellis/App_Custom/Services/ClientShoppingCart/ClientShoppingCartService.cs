@@ -1,7 +1,8 @@
 ﻿using Jewellis.App_Custom.Helpers;
-using Jewellis.App_Custom.Services.AuthUser;
+using Jewellis.App_Custom.Services.UserCache;
 using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -30,7 +31,8 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMemoryCache _cache;
         private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
+        private readonly UserCacheService _userCache;
 
         #endregion
 
@@ -46,12 +48,13 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
         /// <summary>
         /// Represents a service (scoped) for managing the client's shopping cart.
         /// </summary>
-        public ClientShoppingCartService(IHttpContextAccessor httpContextAccessor, IMemoryCache cache, JewellisDbContext dbContext, AuthUserService authUser)
+        public ClientShoppingCartService(IHttpContextAccessor httpContextAccessor, IMemoryCache cache, JewellisDbContext dbContext, UserIdentityService userIdentity, UserCacheService userCache)
         {
             _httpContextAccessor = httpContextAccessor;
             _cache = cache;
             _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
+            _userCache = userCache;
 
             this.InitializeClientCart();
         }
@@ -195,7 +198,7 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
             }
 
             // If the user is authenticated - connects the cart to him:
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user != null && user.ClientCartId == null)
             {
                 user.ClientCart = this.Cart;
@@ -210,7 +213,7 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
             {
                 clientCartBack = Task.Run(() => GetAuthUserCartByDatabase()).Result;
                 user.ClientCartId = clientCartBack.Id;
-                _authUser.Set(user);
+                _userCache.Set(user);
                 this.CacheAuthUserCart(user.Id, clientCartBack);
             }
             else
@@ -251,12 +254,12 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
             // If empty - deletes the cart id cookie and removes from the cache:
             if (this.IsEmpty())
             {
-                if (_authUser.IsAuthenticated())
+                if (_userIdentity.IsAuthenticated())
                 {
-                    User user = await _authUser.GetAsync();
+                    User user = await _userIdentity.GetCurrentAsync();
                     user.ClientCartId = null;
                     user.ClientCart = null;
-                    _authUser.Set(user);
+                    _userCache.Set(user);
                     this.RemoveCacheAuthUserCart(user.Id);
                 }
                 else
@@ -264,6 +267,39 @@ namespace Jewellis.App_Custom.Services.ClientShoppingCart
                     _httpContextAccessor.HttpContext.Response.Cookies.Delete(CART_COOKIE);
                     this.RemoveCacheClientCart(this.Cart.Id);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Clears the shopping cart from all products.
+        /// </summary>
+        public async Task Clear()
+        {
+            if (this.IsEmpty())
+                return;
+
+            foreach (var cartProduct in this.Cart.Products)
+            {
+                _dbContext.ClientCartProducts.Remove(cartProduct);
+            }
+            _dbContext.ClientCarts.Remove(this.Cart);
+            await _dbContext.SaveChangesAsync();
+
+            this.Cart.Products.Clear();
+
+            // If empty - deletes the cart id cookie and removes from the cache:
+            if (_userIdentity.IsAuthenticated())
+            {
+                User user = await _userIdentity.GetCurrentAsync();
+                user.ClientCartId = null;
+                user.ClientCart = null;
+                _userCache.Set(user);
+                this.RemoveCacheAuthUserCart(user.Id);
+            }
+            else
+            {
+                _httpContextAccessor.HttpContext.Response.Cookies.Delete(CART_COOKIE);
+                this.RemoveCacheClientCart(this.Cart.Id);
             }
         }
 

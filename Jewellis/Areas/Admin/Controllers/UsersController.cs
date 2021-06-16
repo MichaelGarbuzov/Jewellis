@@ -1,8 +1,8 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
-using Jewellis.App_Custom.Services.AuthUser;
 using Jewellis.Areas.Admin.ViewModels.Users;
 using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +18,12 @@ namespace Jewellis.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UsersService _users;
 
-        public UsersController(JewellisDbContext dbContext, AuthUserService authUser)
+        public UsersController(JewellisDbContext dbContext, UsersService users)
         {
             _dbContext = dbContext;
-            _authUser = authUser;
+            _users = users;
         }
 
         // GET: /Admin/Users
@@ -41,7 +41,7 @@ namespace Jewellis.Areas.Admin.Controllers
         // GET: /Admin/Users/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            User user = await _dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == id);
+            User user = await _users.GetByIdAsync(id);
             if (user == null)
                 return NotFound();
             else
@@ -51,7 +51,7 @@ namespace Jewellis.Areas.Admin.Controllers
         // GET: /Admin/Users/Edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
-            User user = await _dbContext.Users.FindAsync(id);
+            User user = await _users.GetByIdAsync(id);
             if (user == null)
                 return NotFound();
             else
@@ -77,27 +77,14 @@ namespace Jewellis.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null)
-                return NotFound();
-
-            // Binds the view model:
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.EmailAddress = model.EmailAddress;
-            user.Role = model.Role;
-            user.DateLastModified = DateTime.Now;
-
-            _dbContext.Users.Update(user);
-            await _dbContext.SaveChangesAsync();
-            _authUser.Set(user);
+            await _users.EditUser(id, model.FirstName, model.LastName, model.EmailAddress, model.Role);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: /Admin/Users/Delete/{id}
         public async Task<IActionResult> Delete(int id)
         {
-            User user = await _dbContext.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Id == id);
+            User user = await _users.GetByIdAsync(id);
             if (user == null)
                 return NotFound();
             else
@@ -110,16 +97,7 @@ namespace Jewellis.Areas.Admin.Controllers
         [ActionName("Delete")]
         public async Task<IActionResult> Delete_POST(int id)
         {
-            User user = await _dbContext.Users.FindAsync(id);
-            if (user.ClientCartId.HasValue)
-            {
-                ClientCart cart = await _dbContext.ClientCarts.FindAsync(user.ClientCartId.Value);
-                _dbContext.ClientCarts.Remove(cart);
-            }
-            _dbContext.Addresses.Remove(user.Address);
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
-            _authUser.Remove(user.Id);
+            await _users.DeleteUser(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -136,7 +114,7 @@ namespace Jewellis.Areas.Admin.Controllers
             // Otherwise, email was changed so checks availability:
             else
             {
-                bool isEmailAvailable = (await _dbContext.Users.AnyAsync(u => u.EmailAddress.Equals(emailAddress)) == false);
+                bool isEmailAvailable = await _users.IsEmailAddressAvailable(emailAddress);
                 return Json(isEmailAvailable);
             }
         }

@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-14
+    Last Update: 2021-06-16
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -6276,8 +6276,8 @@ figure {
             }
 
             .stepper > .step-tabs > li > .step.current {
-                background: var(--color-white);
-                color: var(--color-text-title);
+                background: var(--color-white) !important;
+                color: var(--color-text-title) !important;
                 box-shadow: 0 0.5rem 1rem rgb(0,0,0,0.25);
                 -webkit-transform: translateY(-2px);
                 -moz-transform: translateY(-2px);
@@ -6288,6 +6288,11 @@ figure {
             .stepper > .step-tabs > li > .step.done {
                 background: var(--color-background-light-1);
                 color: var(--color-text-title);
+            }
+
+            .stepper > .step-tabs > li > .step.error {
+                background: var(--color-error-background);
+                color: var(--danger);
             }
 
             .stepper > .step-tabs > li > .step > .step-num-dot {

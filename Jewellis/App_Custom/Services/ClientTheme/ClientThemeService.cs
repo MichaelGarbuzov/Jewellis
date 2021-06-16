@@ -1,8 +1,7 @@
-﻿using Jewellis.App_Custom.Services.AuthUser;
-using Jewellis.Data;
+﻿using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
@@ -25,7 +24,8 @@ namespace Jewellis.App_Custom.Services.ClientTheme
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
+        private readonly UsersService _users;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// Represents a service (scoped) for getting the client's preferred theme.
         /// </summary>
         /// <param name="options">The options to configure the <see cref="ClientThemeService"/>.</param>
-        public ClientThemeService(IOptions<ClientThemeOptions> options, IHttpContextAccessor httpContextAccessor, JewellisDbContext dbContext, AuthUserService authUser)
+        public ClientThemeService(IOptions<ClientThemeOptions> options, IHttpContextAccessor httpContextAccessor, JewellisDbContext dbContext, UserIdentityService userIdentity, UsersService users)
         {
             if (string.IsNullOrEmpty(options.Value.DefaultTheme))
                 throw new ArgumentNullException("{options.DefaultTheme} cannot be null or empty.");
@@ -59,7 +59,8 @@ namespace Jewellis.App_Custom.Services.ClientTheme
             this.Options = options.Value;
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
+            _users = users;
 
             this.InitializeClientTheme();
         }
@@ -82,7 +83,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
 
             // Sets the theme:
             // Checks if the user is authenticated, to assign the theme to the database:
-            if (_authUser.IsAuthenticated())
+            if (_userIdentity.IsAuthenticated())
             {
                 await this.SetUserThemeToDatabase(theme);
             }
@@ -107,7 +108,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
             Theme userTheme = null;
 
             // (1) - Checks if the user is authenticated - then gets the theme from the DB:
-            if (_authUser.IsAuthenticated())
+            if (_userIdentity.IsAuthenticated())
                 userTheme = Task.Run(() => GetUserThemeByDatabase()).Result;
 
             // (2) - User is not authenticated - so gets the theme from the cookie:
@@ -148,7 +149,7 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// <returns>Returns the theme of the user by the database if found and supported, otherwise null.</returns>
         private async Task<Theme> GetUserThemeByDatabase()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user != null)
             {
                 return this.GetSupportedThemeOrNull(user.Theme);
@@ -172,15 +173,10 @@ namespace Jewellis.App_Custom.Services.ClientTheme
         /// <param name="theme">The theme to set to the current user.</param>
         private async Task SetUserThemeToDatabase(Theme theme)
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user != null)
             {
-                user.Theme = theme.ID;
-                user.DateLastModified = DateTime.Now;
-
-                _dbContext.Users.Update(user);
-                await _dbContext.SaveChangesAsync();
-                _authUser.Set(user);
+                await _users.UpdateUserPreferences(user.Id, user.Currency, theme.ID);
             }
         }
 

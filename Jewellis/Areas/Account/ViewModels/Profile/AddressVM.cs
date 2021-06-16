@@ -18,8 +18,9 @@ namespace Jewellis.Areas.Account.ViewModels.Profile
         /// </summary>
         [Display(Name = "Postal Code *")]
         [Required(ErrorMessage = "Postal code is required.")]
-        [DataType(DataType.PostalCode, ErrorMessage = "Invalid postal code.")]
         [StringLength(30, ErrorMessage = "Maximum length allowed is 30 characters.")]
+        [RegularExpression(@"^\d{5}(-\d{4})?$", ErrorMessage = "Invalid postal code.")]
+        [DataType(DataType.PostalCode, ErrorMessage = "Invalid postal code.")]
         public string PostalCode { get; set; }
 
         /// <summary>

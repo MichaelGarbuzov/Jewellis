@@ -1,12 +1,9 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
-using Jewellis.App_Custom.Services.AuthUser;
-using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jewellis.Areas.Account.Controllers
@@ -15,27 +12,23 @@ namespace Jewellis.Areas.Account.Controllers
     [Authorize]
     public class WishlistController : Controller
     {
-        private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
+        private readonly UsersService _users;
 
-        public WishlistController(JewellisDbContext dbContext, AuthUserService authUser)
+        public WishlistController(UserIdentityService userIdentity, UsersService users)
         {
-            _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
+            _users = users;
         }
 
         [Route("/account/wishlist")]
         public async Task<IActionResult> Index()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user == null)
                 return NotFound();
 
-            List<UserWishlistProduct> wishlist = await _dbContext.UserWishlistProducts
-                .Where(uwp => uwp.UserId == user.Id)
-                .Include(uwp => uwp.Product).Include(uwp => uwp.Product.Sale)
-                .OrderByDescending(uwp => uwp.DateAdded)
-                .ToListAsync();
+            List<UserWishlistProduct> wishlist = await _users.GetWishlistAsync(user.Id);
 
             ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
             return View(wishlist);
@@ -45,11 +38,11 @@ namespace Jewellis.Areas.Account.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int productId)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
                 return BadRequest();
 
-            await this.RemoveProductFromUserWishlist(user, productId);
+            await _users.RemoveFromWishlistAsync(userId.Value, productId);
             return RedirectToAction(nameof(Index));
         }
 
@@ -59,30 +52,11 @@ namespace Jewellis.Areas.Account.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(int productId)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
                 return BadRequest();
 
-            // Checks the product is not in the user's wishlist already:
-            if (await _dbContext.UserWishlistProducts.AnyAsync(uwp => uwp.UserId == user.Id && uwp.ProductId == productId) == false)
-            {
-                // Adds to the database:
-                UserWishlistProduct wishlistProduct = new UserWishlistProduct()
-                {
-                    UserId = user.Id,
-                    ProductId = productId
-                };
-                _dbContext.UserWishlistProducts.Add(wishlistProduct);
-                await _dbContext.SaveChangesAsync();
-
-                // Adds to the cache:
-                wishlistProduct = await _dbContext.UserWishlistProducts
-                    .Include(uwp => uwp.Product).Include(uwp => uwp.Product.Sale)
-                    .FirstOrDefaultAsync(uwp => uwp.UserId == user.Id && uwp.ProductId == productId);
-                user.Wishlist.Add(wishlistProduct);
-                _authUser.Set(user);
-            }
-
+            await _users.AddToWishlistAsync(userId.Value, productId);
             return Json(true);
         }
 
@@ -90,31 +64,12 @@ namespace Jewellis.Areas.Account.Controllers
         [HttpPost]
         public async Task<IActionResult> MiniWishlistRemove(int productId)
         {
-            User user = await _authUser.GetAsync();
-            if (user == null)
+            int? userId = _userIdentity.GetCurrentId();
+            if (userId == null)
                 return BadRequest();
 
-            await this.RemoveProductFromUserWishlist(user, productId);
+            await _users.RemoveFromWishlistAsync(userId.Value, productId);
             return Json(true);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private async Task RemoveProductFromUserWishlist(User user, int productId)
-        {
-            // Checks the product is in the user's wishlist:
-            UserWishlistProduct wishlistProduct = user.Wishlist.FirstOrDefault(uwp => uwp.ProductId == productId);
-            if (wishlistProduct != null)
-            {
-                // Updates the database:
-                _dbContext.UserWishlistProducts.Remove(wishlistProduct);
-                await _dbContext.SaveChangesAsync();
-                // Updates the cache:
-                user.Wishlist.Remove(wishlistProduct);
-                _authUser.Set(user);
-            }
         }
 
         #endregion

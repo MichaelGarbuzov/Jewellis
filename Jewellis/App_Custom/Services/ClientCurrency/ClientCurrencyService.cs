@@ -1,10 +1,9 @@
-﻿using Jewellis.App_Custom.Services.AuthUser;
-using Jewellis.Data;
+﻿using Jewellis.Data;
 using Jewellis.Models;
+using Jewellis.Services;
 using Jewellis.WebServices.CurrencyFreaksApi;
 using Jewellis.WebServices.IpApi;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -38,7 +37,8 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
         private readonly JewellisDbContext _dbContext;
-        private readonly AuthUserService _authUser;
+        private readonly UserIdentityService _userIdentity;
+        private readonly UsersService _users;
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// Represents a service (scoped) for managing the client's preferred currency.
         /// </summary>
         /// <param name="options">The options to configure the <see cref="ClientCurrencyService"/>.</param>
-        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IMemoryCache cache, JewellisDbContext dbContext, AuthUserService authUser)
+        public ClientCurrencyService(IOptions<ClientCurrencyOptions> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IMemoryCache cache, JewellisDbContext dbContext, UserIdentityService userIdentity, UsersService users)
         {
             if (string.IsNullOrEmpty(options.Value.DefaultCurrency))
                 throw new ArgumentNullException("{options.DefaultCurrency} cannot be null or empty.");
@@ -82,7 +82,8 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
             _configuration = configuration;
             _cache = cache;
             _dbContext = dbContext;
-            _authUser = authUser;
+            _userIdentity = userIdentity;
+            _users = users;
 
             this.InitializeClientCurrency();
         }
@@ -105,7 +106,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
 
             // Sets the currency:
             // Checks if the user is registered, to assign the currency to the database:
-            if (_authUser.IsAuthenticated())
+            if (_userIdentity.IsAuthenticated())
             {
                 await this.SetUserCurrencyToDatabase(currency);
             }
@@ -161,7 +162,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
             Currency userCurrency = null;
 
             // (1) - Checks if the user is authenticated - then gets the currency from the DB:
-            if (_authUser.IsAuthenticated())
+            if (_userIdentity.IsAuthenticated())
                 userCurrency = Task.Run(() => GetUserCurrencyByDatabase()).Result;
 
             // (2) - User is not authenticated - so gets the currency from the cookie:
@@ -209,7 +210,7 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// <returns>Returns the currency of the user by the database if found and supported, otherwise null.</returns>
         private async Task<Currency> GetUserCurrencyByDatabase()
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user != null)
             {
                 return this.GetSupportedCurrencyOrNull(user.Currency);
@@ -233,15 +234,10 @@ namespace Jewellis.App_Custom.Services.ClientCurrency
         /// <param name="currency">The currency to set to the current user.</param>
         private async Task SetUserCurrencyToDatabase(Currency currency)
         {
-            User user = await _authUser.GetAsync();
+            User user = await _userIdentity.GetCurrentAsync();
             if (user != null)
             {
-                user.Currency = currency.Code;
-                user.DateLastModified = DateTime.Now;
-
-                _dbContext.Users.Update(user);
-                await _dbContext.SaveChangesAsync();
-                _authUser.Set(user);
+                await _users.UpdateUserPreferences(user.Id, currency.Code, user.Theme);
             }
         }
 

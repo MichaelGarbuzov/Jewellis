@@ -1,8 +1,9 @@
-﻿using Jewellis.App_Custom.Services.AuthUser;
-using Jewellis.App_Custom.Services.ClientCurrency;
+﻿using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.App_Custom.Services.ClientShoppingCart;
 using Jewellis.App_Custom.Services.ClientTheme;
+using Jewellis.App_Custom.Services.UserCache;
 using Jewellis.Data;
+using Jewellis.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,22 @@ namespace Jewellis
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
 
+            services.AddDbContext<JewellisDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetSection("UserSecrets").GetSection("ConnectionStrings")["JewellisDbContext"]);
+            });
+
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.LoginPath = "/login";
+                options.AccessDeniedPath = "/error/access-denied";
+            });
+
             // Scoped services:
             services.AddClientTheme(options =>
             {
@@ -50,23 +67,12 @@ namespace Jewellis
                 };
             });
             services.AddClientShoppingCart();
-            services.AddAuthUser();
 
-            services.AddDbContext<JewellisDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetSection("UserSecrets").GetSection("ConnectionStrings")["JewellisDbContext"]);
-            });
-
-            services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-            });
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-            {
-                options.LoginPath = "/login";
-                options.AccessDeniedPath = "/error/access-denied";
-            });
+            // Transient services:
+            services.AddUserCache();
+            services.AddTransient<UserIdentityService>();
+            services.AddTransient<AuthenticateService>();
+            services.AddTransient<UsersService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,8 +1,8 @@
-﻿@inject Jewellis.App_Custom.Services.AuthUser.AuthUserService AuthUser
+﻿@inject Jewellis.Services.UserIdentityService UserIdentity
 @inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
 
 @{
-    User user = await AuthUser.GetAsync();
+    User user = await UserIdentity.GetCurrentAsync();
 }
 
 <div class="modal right fade" id="wishlist-modal" tabindex="-1" role="dialog" aria-hidden="true">

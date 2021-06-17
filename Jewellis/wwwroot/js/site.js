@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-16
+    Last Update: 2021-06-17
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -807,9 +807,12 @@ $(function () {
         e.preventDefault();
         var $currencyMenu = $(this).parents('#main-currency-menu');
 
-        // Updates the html:
-        $currencyMenu.find('[data-dd-check]').appendTo($(this));
-        $currencyMenu.parent('[data-dd-mega]').find('#main-currency-btn').find('[data-updatable]').text($(this).attr('data-currency-set'));
+        if ($(this).find('[data-dd-check]').length > 0 || $(this).find('.spinner-border').length > 0) {
+            return false;
+        }
+
+        // Updates the html - shows a loader:
+        $(this).append('<span class="spinner-border txt-accent icon-top-adjust mr-2" role="status" aria-hidden="true"></span><span class= "sr-only">Loading...</span>');
         // Updates the cookie:
         setCookie(AppKeys.Cookies.ClientCurrency, $(this).attr('data-currency-set'), 365 * 100);
         // Sends an AJAX request, to update the server side if needed (when user is authenticated):
@@ -818,10 +821,12 @@ $(function () {
             url: $currencyMenu.attr('data-currency-set-link'),
             data: JSON.stringify($(this).attr('data-currency-set')),
             contentType: 'application/json',
-            dataType: 'json'
+            dataType: 'json',
+            complete: function () {
+                // Reloads the page:
+                location.reload();
+            }
         });
-        // Reloads the page:
-        location.reload();
         return false;
     });
 

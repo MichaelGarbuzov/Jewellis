@@ -3,7 +3,7 @@
     ---------------------
     Description: Main stylesheet for the site.
     Version: 1.0.0
-    Last Update: 2021-06-16
+    Last Update: 2021-06-17
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -460,11 +460,15 @@ figure {
         border-color: var(--color-separator);
     }
 
-.page-item.active .page-link {
-    color: var(--color-primary-invert);
-    background-color: var(--color-primary);
-    border-color: var(--color-separator-darker);
+.page-item.active {
+    cursor: default;
 }
+
+    .page-item.active .page-link {
+        color: var(--color-primary-invert);
+        background-color: var(--color-primary);
+        border-color: var(--color-separator-darker);
+    }
 
 .page-arrow {
     color: var(--color-secondary);

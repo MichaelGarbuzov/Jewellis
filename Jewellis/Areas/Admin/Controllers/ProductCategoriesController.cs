@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Helpers.ViewModelHelpers;
 using Jewellis.Areas.Admin.ViewModels.ProductCategories;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -24,11 +25,32 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/ProductCategories
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            List<ProductCategory> categories = await _dbContext.ProductCategories.Where(c => (query == null) || c.Name.Contains(query)).OrderBy(c => c.Name).ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(categories);
+            List<ProductCategory> categories = await _dbContext.ProductCategories
+                .Where(c => (model.Query == null) || c.Name.Contains(model.Query))
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(categories.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    categories = categories
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
+            ViewData["ProductCategoriesModel"] = categories;
+            return View(model);
         }
 
         // GET: /Admin/ProductCategories/Details/{id}

@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Helpers.ViewModelHelpers;
 using Jewellis.Areas.Admin.ViewModels.Products;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -46,6 +47,24 @@ namespace Jewellis.Areas.Admin.Controllers
                 .OrderByDescending(p => p.DateLastModified)
                 .Include(p => p.Category).Include(p => p.Type).Include(p => p.Sale)
                 .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(products.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    products = products
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
             ViewData["ProductsModel"] = products;
             ViewData["ProductCategories"] = new SelectList(_dbContext.ProductCategories, nameof(ProductCategory.Id), nameof(ProductCategory.Name));
             ViewData["ProductTypes"] = new SelectList(_dbContext.ProductTypes, nameof(ProductType.Id), nameof(ProductType.Name));

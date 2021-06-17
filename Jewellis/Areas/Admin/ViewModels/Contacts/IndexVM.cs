@@ -12,5 +12,15 @@ namespace Jewellis.Areas.Admin.ViewModels.Contacts
         [Display(Name = "Status")]
         public ContactStatus? Status { get; set; }
 
+        public int? PageSize { get; set; }
+        public int Page { get; set; }
+
+        public IndexVM()
+        {
+            // Pagination defaults:
+            PageSize = 10;
+            Page = 1;
+        }
+
     }
 }

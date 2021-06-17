@@ -338,7 +338,7 @@
 @section Scripts {
     <script>
         $(function () {
-            var totalPrice = @ClientCart.GetTotalPrice();
+            var totalPrice = @ClientCurrency.GetPrice(ClientCart.GetTotalPrice());
 
             $('[data-delivery-method]').change(function () {
                 let deliveryPrice = $(this).parent().find('.delivery-method-price').text();

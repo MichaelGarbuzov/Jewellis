@@ -1,4 +1,6 @@
-﻿using Jewellis.Data;
+﻿using Jewellis.App_Custom.Helpers.ViewModelHelpers;
+using Jewellis.Areas.Admin.ViewModels.Newsletter;
+using Jewellis.Data;
 using Jewellis.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +23,32 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Newsletter
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            List<NewsletterSubscriber> subscribers = await _dbContext.NewsletterSubscribers.Where(s => (query == null) || s.EmailAddress.Contains(query)).OrderByDescending(s => s.DateJoined).ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(subscribers);
+            List<NewsletterSubscriber> subscribers = await _dbContext.NewsletterSubscribers
+                .Where(s => (model.Query == null) || s.EmailAddress.Contains(model.Query))
+                .OrderByDescending(s => s.DateJoined)
+                .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(subscribers.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    subscribers = subscribers
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
+            ViewData["SubscribersModel"] = subscribers;
+            return View(model);
         }
 
         // GET: /Admin/Newsletter/Remove/{id}

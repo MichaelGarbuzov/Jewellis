@@ -4,6 +4,7 @@
     ViewData["Title"] = "Sales";
 
     List<Sale> sales = (ViewData["SalesModel"] as List<Sale>);
+    Pagination pagination = (ViewData["Pagination"] as Pagination);
 }
 
 <section class="bg-light-2">
@@ -15,9 +16,9 @@
             </ul>
             <h1 class="title-1 font-weight-bold mb-5">Sales</h1>
             <div class="form-container bg-white mb-5">
-                <div class="d-flex flex-column flex-xl-row flex-wrap align-items-end">
-                    <div class="flex-fill w-100 w-xl-auto mb-5 mr-xl-5">
-                        <form asp-area="Admin" asp-controller="Sales" asp-action="Index" method="get">
+                <form asp-area="Admin" asp-controller="Sales" asp-action="Index" method="get">
+                    <div class="d-flex flex-column flex-xl-row flex-wrap align-items-end">
+                        <div class="flex-fill w-100 w-xl-auto mb-5 mr-xl-5">
                             <div class="d-flex flex-column flex-lg-row align-items-end">
                                 <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0 mb-4 mb-lg-0">
                                     <div class="col-md-8 p-0 mb-4 mb-md-0">
@@ -41,11 +42,24 @@
                                 </div>
                                 <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
                             </div>
-                        </form>
+
+                        </div>
+                        <a asp-area="Admin" asp-controller="Sales" asp-action="Create" class="btn btn-primary mb-5">Create New<span class="icon icon-plus icon-top-adjust ml-3" aria-hidden="true"></span></a>
                     </div>
-                    <a asp-area="Admin" asp-controller="Sales" asp-action="Create" class="btn btn-primary mb-5">Create New<span class="icon icon-plus icon-top-adjust ml-3" aria-hidden="true"></span></a>
-                </div>
-                <div class="border">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <div class="py-3 mr-5">Showing <strong>@pagination.GetFirstRecordIndexInPage()-@pagination.GetLastRecordIndexInPage()</strong> of <strong>@pagination.TotalRecords</strong> records</div>
+                        <div class="py-3">
+                            <span>Show:</span>
+                            <select asp-for="PageSize" data-on-change-submit class="form-select txt-title bg-input-txt rounded" aria-label="Select number of records to show in a page.">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="border mb-4">
                     <div class="table-header text-center">
                         <div class="d-flex">
                             <div class="row flex-fill">
@@ -99,6 +113,40 @@
                         }
                     </div>
                 </div>
+                @if (pagination.HasPagination())
+                {
+                    <nav class="d-flex justify-content-center mt-5 mb-4" aria-label="Page Navigation">
+                        <ul class="pagination">
+                            @if (pagination.HasPrevious())
+                            {
+                                <li class="page-item">
+                                    <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetPreviousPage()" class="page-arrow" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
+                                </li>
+                            }
+                            @foreach (int page in pagination.GetPageList())
+                            {
+                                if (page == pagination.CurrentPage)
+                                {
+                                    <li class="page-item active">
+                                        <div class="page-link">@(page)</div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@(page)" class="page-link">@(page)</a>
+                                    </li>
+                                }
+                            }
+                            @if (pagination.HasNext())
+                            {
+                                <li class="page-item">
+                                    <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetNextPage()" class="page-arrow" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
             </div>
         </div>
     </div>

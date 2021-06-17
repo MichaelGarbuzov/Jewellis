@@ -36,9 +36,9 @@
             </div>
             <div class="form-container bg-white px-5 py-4">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="d-flex flex-wrap align-items-center p-2">
+                    <div class="d-flex flex-wrap align-items-center text-ellipsis p-2">
                         <div class="txt-secondary p-2">Created By User:</div>
-                        <div class="p-2"><a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@Model.User.Id" class="primary-link">@Model.User.FirstName @Model.User.LastName</a> (<a href="mailto:@Model.User.EmailAddress" target="_blank">@Model.User.EmailAddress</a>)</div>
+                        <div class="text-ellipsis p-2"><a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@Model.User.Id" class="primary-link">@Model.User.FirstName @Model.User.LastName</a> (<a href="mailto:@Model.User.EmailAddress" target="_blank">@Model.User.EmailAddress</a>)</div>
                     </div>
                     <div class="d-flex flex-wrap align-items-center p-2">
                         <div class="txt-secondary p-2">Status:</div>

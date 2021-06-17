@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Helpers.ViewModelHelpers;
 using Jewellis.Areas.Admin.ViewModels.Sales;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -32,6 +33,24 @@ namespace Jewellis.Areas.Admin.Controllers
                             ((model.DuringStart == null) || (s.DateEnd == null) || model.DuringEnd <= s.DateEnd))
                 .OrderByDescending(s => s.DateLastModified)
                 .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(sales.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    sales = sales
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
             ViewData["SalesModel"] = sales;
             return View(model);
         }

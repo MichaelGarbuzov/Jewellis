@@ -24,15 +24,25 @@ namespace Jewellis.Areas.Shop.Controllers
         [Route("/shop")]
         public async Task<IActionResult> Index(IndexVM model)
         {
-            // Gets the category id by the name (if searched):
-            ProductCategory category = await _dbContext.ProductCategories.FirstOrDefaultAsync(c => c.Name.Equals(model.Category));
-            if (category != null)
-                model.CategoryId = category.Id;
+            #region If requested search by product category/type name...
 
-            // Gets the type id by the name (if searched):
-            ProductType type = await _dbContext.ProductTypes.FirstOrDefaultAsync(t => t.Name.Equals(model.Type));
-            if (type != null)
-                model.TypeId = type.Id;
+            if (model.Category != null)
+            {
+                // Gets the category id by the name (if searched):
+                ProductCategory category = await _dbContext.ProductCategories.FirstOrDefaultAsync(c => c.Name.Equals(model.Category));
+                if (category != null)
+                    model.CategoryId = category.Id;
+            }
+
+            if (model.Type != null)
+            {
+                // Gets the type id by the name (if searched):
+                ProductType type = await _dbContext.ProductTypes.FirstOrDefaultAsync(t => t.Name.Equals(model.Type));
+                if (type != null)
+                    model.TypeId = type.Id;
+            }
+
+            #endregion
 
             // Searches the products:
             var productsQuery = _dbContext.Products
@@ -60,6 +70,7 @@ namespace Jewellis.Areas.Shop.Controllers
                     productsQuery = productsQuery.OrderByDescending(p => p.DateAdded);
                     break;
             }
+
             List<Product> products = await productsQuery.Include(p => p.Sale).ToListAsync();
 
             #region Filter by Price...
@@ -72,6 +83,23 @@ namespace Jewellis.Areas.Shop.Controllers
             // Filters the price range:
             products = products.Where(p => (model.MinPrice == null || (p.SaleId.HasValue ? (p.Price * (1 - p.Sale.DiscountRate) >= model.MinPrice.Value) : (p.Price >= model.MinPrice.Value))) &&
                                            (model.MaxPrice == null || (p.SaleId.HasValue ? (p.Price * (1 - p.Sale.DiscountRate) <= model.MaxPrice.Value) : (p.Price <= model.MaxPrice.Value)))).ToList();
+
+            #endregion
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(products.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    products = products
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
 
             #endregion
 

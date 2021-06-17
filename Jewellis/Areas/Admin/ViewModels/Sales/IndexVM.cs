@@ -17,5 +17,15 @@ namespace Jewellis.Areas.Admin.ViewModels.Sales
         [DateTimeGreaterThan(nameof(DuringStart), ErrorMessage = "Date and time must be greater.")]
         public DateTime? DuringEnd { get; set; }
 
+        public int? PageSize { get; set; }
+        public int Page { get; set; }
+
+        public IndexVM()
+        {
+            // Pagination defaults:
+            PageSize = 10;
+            Page = 1;
+        }
+
     }
 }

@@ -1,10 +1,12 @@
-﻿using Jewellis.Areas.Admin.ViewModels.Orders;
+﻿using Jewellis.App_Custom.Helpers.ViewModelHelpers;
+using Jewellis.Areas.Admin.ViewModels.Orders;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
 using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jewellis.Areas.Admin.Controllers
@@ -24,6 +26,24 @@ namespace Jewellis.Areas.Admin.Controllers
         public async Task<IActionResult> Index(IndexVM model)
         {
             List<Order> orders = await _orders.Search(model.Status, model.DateCreated, model.OrderId);
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(orders.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    orders = orders
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
             ViewData["OrdersModel"] = orders;
             return View(model);
         }

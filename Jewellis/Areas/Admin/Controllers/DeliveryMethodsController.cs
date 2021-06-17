@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Helpers.ViewModelHelpers;
 using Jewellis.Areas.Admin.ViewModels.DeliveryMethods;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -24,11 +25,32 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/DeliveryMethods
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            List<DeliveryMethod> deliveryMethods = await _dbContext.DeliveryMethods.Where(d => (query == null) || d.Name.Contains(query) || d.Description.Contains(query)).OrderBy(d => d.Price).ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(deliveryMethods);
+            List<DeliveryMethod> deliveryMethods = await _dbContext.DeliveryMethods
+                .Where(d => (model.Query == null) || d.Name.Contains(model.Query) || d.Description.Contains(model.Query))
+                .OrderBy(d => d.Price)
+                .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(deliveryMethods.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    deliveryMethods = deliveryMethods
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
+            ViewData["DeliveryMethodsModel"] = deliveryMethods;
+            return View(model);
         }
 
         // GET: /Admin/DeliveryMethods/Details/{id}

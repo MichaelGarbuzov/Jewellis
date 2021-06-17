@@ -1,6 +1,4 @@
-﻿@using Jewellis.App_Custom.Helpers.ViewModelHelpers
-
-@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+﻿@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
 
 @model Jewellis.Areas.Shop.ViewModels.Home.IndexVM
 
@@ -10,6 +8,8 @@
     List<Product> products = (ViewData["Products"] as List<Product>);
     List<ProductCategory> productCategories = (ViewData["ProductCategories"] as List<ProductCategory>);
     List<ProductType> productTypes = (ViewData["ProductTypes"] as List<ProductType>);
+
+    Pagination pagination = (ViewData["Pagination"] as Pagination);
 
     // Gets the minimum and maximum price values in all products:
     double minPrice = (double)ViewData["ProductsMinPrice"];
@@ -104,25 +104,25 @@
                                 <li class="breadcrumb-item">@productTypes.FirstOrDefault(t => t.Id == Model.TypeId).Name</li>
                             }
                         </ul>
-                        <header class="shop-header bg-light-1">
+                        <header class="shop-header bg-light-1 mb-5">
                             <div class="d-block d-lg-none w-100">
                                 <button id="shop-menu-btn" type="button" class="btn btn-sm txt-md outline-primary"><span class="icon icon-menu5 icon-top-adjust mr-3"></span>Shop Menu</button>
                             </div>
-                            <div class="mr-5">Showing <strong>1-12</strong> of <strong>150</strong> products</div>
+                            <div class="mr-5">Showing <strong>@pagination.GetFirstRecordIndexInPage()-@pagination.GetLastRecordIndexInPage()</strong> of <strong>@pagination.TotalRecords</strong> products</div>
                             <div class="mr-5">
                                 <span>Show:</span>
-                                <select class="form-select txt-title bg-input-txt rounded" aria-label="Select number of products to show in a page.">
+                                <select asp-for="PageSize" data-on-change-submit class="form-select txt-title bg-input-txt rounded" aria-label="Select number of products to show in a page.">
                                     <option value="12" selected>12</option>
                                     <option value="24">24</option>
-                                    <option value="0">All</option>
+                                    <option value="">All</option>
                                 </select>
                             </div>
                             <div>
                                 <span>Sort By:</span>
-                                <select asp-for="Sort" asp-items="Html.GetEnumSelectList<SortOptions>()" class="form-select txt-title bg-input-txt rounded" aria-label="Select how to sort the products." data-on-change-submit></select>
+                                <select asp-for="Sort" asp-items="Html.GetEnumSelectList<SortOptions>()" data-on-change-submit class="form-select txt-title bg-input-txt rounded" aria-label="Select how to sort the products."></select>
                             </div>
                         </header>
-                        <section class="py-5">
+                        <section>
                             @if (products.Count > 0)
                             {
                                 <div class="row">
@@ -134,24 +134,43 @@
                             }
                             else
                             {
-                                <p class="text-center txt-secondary p-5">No Results.</p>
+                                <p class="text-center txt-secondary p-5 m-0">No Results.</p>
                             }
                         </section>
-                        <nav class="d-flex justify-content-center mb-3" aria-label="Page Navigation">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-arrow" href="#" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                <li class="page-item"><a class="page-link" href="#">5 </a></li>
-                                <li class="page-item">
-                                    <a class="page-arrow" href="#" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
-                                </li>
-                            </ul>
-                        </nav>
+                        @if (pagination.HasPagination())
+                        {
+                            <nav class="d-flex justify-content-center mt-5 mb-3" aria-label="Page Navigation">
+                                <ul class="pagination">
+                                    @if (pagination.HasPrevious())
+                                    {
+                                        <li class="page-item">
+                                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetPreviousPage()" class="page-arrow" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
+                                        </li>
+                                    }
+                                    @foreach (int page in pagination.GetPageList())
+                                    {
+                                        if (page == pagination.CurrentPage)
+                                        {
+                                            <li class="page-item active">
+                                                <div class="page-link">@(page)</div>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="page-item">
+                                                <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@(page)" class="page-link">@(page)</a>
+                                            </li>
+                                        }
+                                    }
+                                    @if (pagination.HasNext())
+                                    {
+                                        <li class="page-item">
+                                            <a asp-area="Shop" asp-controller="Home" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetNextPage()" class="page-arrow" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        }
                     </div>
                 </div>
             </div>

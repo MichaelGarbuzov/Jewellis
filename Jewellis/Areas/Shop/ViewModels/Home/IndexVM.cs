@@ -37,5 +37,16 @@ namespace Jewellis.Areas.Shop.ViewModels.Home
 
         public SortOptions Sort { get; set; }
 
+        public int? PageSize { get; set; }
+
+        public int Page { get; set; }
+
+        public IndexVM()
+        {
+            // Pagination defaults:
+            PageSize = 12;
+            Page = 1;
+        }
+
     }
 }

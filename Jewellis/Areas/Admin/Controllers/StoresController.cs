@@ -1,4 +1,5 @@
 ﻿using Jewellis.App_Custom.ActionFilters;
+using Jewellis.App_Custom.Helpers.ViewModelHelpers;
 using Jewellis.Areas.Admin.ViewModels.Stores;
 using Jewellis.Data;
 using Jewellis.Models;
@@ -24,11 +25,32 @@ namespace Jewellis.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Stores
-        public async Task<IActionResult> Index(string query)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            List<Branch> branches = await _dbContext.Branches.Where(b => (query == null) || b.Name.Contains(query)).OrderBy(b => b.Name).ToListAsync();
-            ViewData["SearchQuery"] = query;
-            return View(branches);
+            List<Branch> branches = await _dbContext.Branches
+                .Where(b => (model.Query == null) || b.Name.Contains(model.Query))
+                .OrderBy(b => b.Name)
+                .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(branches.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    branches = branches
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
+            ViewData["BranchesModel"] = branches;
+            return View(model);
         }
 
         // GET: /Admin/Stores/Details/{id}

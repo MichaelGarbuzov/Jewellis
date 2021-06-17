@@ -17,5 +17,15 @@ namespace Jewellis.Areas.Admin.ViewModels.Orders
         [Display(Name = "Order #", Prompt = "Type order id here...")]
         public string OrderId { get; set; }
 
+        public int? PageSize { get; set; }
+        public int Page { get; set; }
+
+        public IndexVM()
+        {
+            // Pagination defaults:
+            PageSize = 10;
+            Page = 1;
+        }
+
     }
 }

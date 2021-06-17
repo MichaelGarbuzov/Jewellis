@@ -1,4 +1,5 @@
-﻿using Jewellis.Areas.Admin.ViewModels.Contacts;
+﻿using Jewellis.App_Custom.Helpers.ViewModelHelpers;
+using Jewellis.Areas.Admin.ViewModels.Contacts;
 using Jewellis.Data;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
@@ -31,6 +32,24 @@ namespace Jewellis.Areas.Admin.Controllers
                             (model.Status == null || c.Status == model.Status.Value))
                 .OrderByDescending(c => c.DateCreated)
                 .ToListAsync();
+
+            #region Pagination...
+
+            Pagination pagination = new Pagination(contacts.Count, model.PageSize, model.Page);
+            if (pagination.HasPagination())
+            {
+                if (pagination.PageSize.HasValue)
+                {
+                    contacts = contacts
+                        .Skip(pagination.GetRecordsSkipped())
+                        .Take(pagination.PageSize.Value)
+                        .ToList();
+                }
+            }
+            ViewData["Pagination"] = pagination;
+
+            #endregion
+
             ViewData["ContactsModel"] = contacts;
             return View(model);
         }

@@ -1,8 +1,8 @@
-﻿using Jewellis.Data;
-using Jewellis.Models;
+﻿using Jewellis.Models;
 using Jewellis.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Jewellis.Areas.Account.Controllers
@@ -11,13 +11,15 @@ namespace Jewellis.Areas.Account.Controllers
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly JewellisDbContext _dbContext;
         private readonly UserIdentityService _userIdentity;
+        private readonly UsersService _users;
+        private readonly OrdersService _orders;
 
-        public OrdersController(JewellisDbContext dbContext, UserIdentityService userIdentity)
+        public OrdersController(UserIdentityService userIdentity, UsersService users, OrdersService orders)
         {
-            _dbContext = dbContext;
             _userIdentity = userIdentity;
+            _users = users;
+            _orders = orders;
         }
 
         [Route("/account/orders")]
@@ -27,10 +29,10 @@ namespace Jewellis.Areas.Account.Controllers
             if (user == null)
                 return NotFound();
 
-
+            List<Order> orders = await _users.GetOrdersAsync(user.Id);
 
             ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
-            return View();
+            return View(orders);
         }
 
         [Route("/account/order/{id}")]
@@ -40,10 +42,10 @@ namespace Jewellis.Areas.Account.Controllers
             if (user == null)
                 return NotFound();
 
-
+            Order order = await _orders.GetByIdAsync(id);
 
             ViewData["UserFullName"] = $"{user.FirstName} {user.LastName}";
-            return View();
+            return View(order);
         }
 
     }

@@ -73,6 +73,7 @@ namespace Jewellis
             services.AddTransient<UserIdentityService>();
             services.AddTransient<AuthenticateService>();
             services.AddTransient<UsersService>();
+            services.AddTransient<OrdersService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

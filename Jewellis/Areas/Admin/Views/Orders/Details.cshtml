@@ -1,0 +1,176 @@
+﻿@using Jewellis.Models.Helpers
+
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Models.Order
+
+@{
+    ViewData["Title"] = $"Order #{Model.Id} Details";
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="primary-link"><u>Orders</u></a></li>
+                <li class="breadcrumb-item">Order #@Model.Id</li>
+            </ul>
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <h1 class="title-1 font-weight-bold mb-5">Order #@Model.Id</h1>
+                <div class="mb-4">
+                    <div class="dropdown d-inline-block">
+                        <button type="button" id="ChangeStatus" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn title-1-btn outline-warning px-sm-5 mb-4 ml-3">Change Status</button>
+                        <div class="dropdown-menu" aria-labelledby="ChangeStatus">
+                            <form asp-area="Admin" asp-controller="Orders" asp-action="DetailsUpdateStatus" method="post">
+                                <input type="hidden" asp-for="Id" />
+                                <button type="submit" name="status" value="@OrderStatus.PaymentProcessing" class="dropdown-item">@OrderStatus.PaymentProcessing.GetDisplayName()</button>
+                                <button type="submit" name="status" value="@OrderStatus.Packing" class="dropdown-item">@OrderStatus.Packing.GetDisplayName()</button>
+                                <button type="submit" name="status" value="@OrderStatus.Shipping" class="dropdown-item">@OrderStatus.Shipping.GetDisplayName()</button>
+                                <button type="submit" name="status" value="@OrderStatus.Closed" class="dropdown-item">@OrderStatus.Closed.GetDisplayName()</button>
+                            </form>
+                        </div>
+                    </div>
+                    <a asp-area="Admin" asp-controller="Orders" asp-action="Delete" asp-route-id="@Model.Id" class="btn title-1-btn outline-danger px-sm-5 mb-4 ml-3">Delete</a>
+                </div>
+            </div>
+            <div class="form-container bg-white px-5 py-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="d-flex flex-wrap align-items-center p-2">
+                        <div class="txt-secondary p-2">Created By User:</div>
+                        <div class="p-2"><a asp-area="Admin" asp-controller="Users" asp-action="Details" asp-route-id="@Model.User.Id" class="primary-link">@Model.User.FirstName @Model.User.LastName</a> (<a href="mailto:@Model.User.EmailAddress" target="_blank">@Model.User.EmailAddress</a>)</div>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center p-2">
+                        <div class="txt-secondary p-2">Status:</div>
+                        <div class="p-2">
+                            @if (Model.Status == OrderStatus.PaymentProcessing)
+                            {
+                                <div class="tag tag-warning">Payment Processing</div>
+                            }
+                            else if (Model.Status == OrderStatus.Packing)
+                            {
+                                <div class="tag tag-info">Packing</div>
+                            }
+                            else if (Model.Status == OrderStatus.Shipping)
+                            {
+                                <div class="tag tag-info">Shipping</div>
+                            }
+                            else if (Model.Status == OrderStatus.Closed)
+                            {
+                                <div class="tag tag-success">Received</div>
+                            }
+                            else
+                            {
+                                throw new ArgumentOutOfRangeException(nameof(Model.Status), $"{nameof(Model.Status)} is not defined.");
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3 class="block-title mt-5">Items (@Model.OrderProducts.Count)</h3>
+            <div class="form-container bg-white txt-md">
+                <div class="table-header text-center d-none d-md-block">
+                    <div class="row">
+                        <div class="col-md-5">Item</div>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-md-4">Price</div>
+                                <div class="col-md-4">Quantity</div>
+                                <div class="col-md-4">Total</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-body">
+                    @foreach (var orderProduct in Model.OrderProducts)
+                    {
+                        <div class="table-row">
+                            <div class="d-flex align-items-center text-left text-md-center row">
+                                <div class="col-12 col-md-5">
+                                    <div class="d-flex align-items-center">
+                                        <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@orderProduct.Product.Id">
+                                            <img class="row-image" src="@orderProduct.Product.ImagePath" alt="@orderProduct.Product.Name" />
+                                        </a>
+                                        <div class="row-title text-left">
+                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@orderProduct.Product.Id" class="primary-link text-uppercase">@orderProduct.Product.Name</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <div class="d-flex justify-content-md-center justify-content-between">
+                                                <div class="d-md-none txt-secondary">Price</div>
+                                                <div class="text-right text-md-center">
+                                                    @if (orderProduct.DiscountRate.HasValue)
+                                                    {
+                                                        <strike>@ClientCurrency.GetPriceAndDisplay(orderProduct.UnitPrice)</strike>
+                                                        <br class="d-none d-md-block" />
+                                                    }
+                                                    <span class="@(orderProduct.DiscountRate.HasValue ? "txt-accent" : "") ml-2 ml-md-0">@ClientCurrency.GetPriceAndDisplay(orderProduct.ActualPricePerUnit())</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex justify-content-md-center justify-content-between">
+                                                <div class="d-md-none txt-secondary">Quantity</div>
+                                                <div class="text-right text-md-center">@orderProduct.Quantity</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex justify-content-md-center justify-content-between">
+                                                <div class="d-md-none txt-secondary">Total Price</div>
+                                                <div class="text-right text-md-center">@ClientCurrency.GetPriceAndDisplay(orderProduct.ActualPricePerUnit() * orderProduct.Quantity)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="block-title mt-5">Billing Address</h3>
+                            <div class="form-container bg-white py-5 letter-space-1">
+                                <p>@Model.BillingName<br />@Model.BillingPhone</p>
+                                <p class="m-0">@Model.BillingAddress.Street<br />@Model.BillingAddress.PostalCode<br />@Model.BillingAddress.City<br />@Model.BillingAddress.Country</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="block-title mt-5">Shipping Address</h3>
+                            <div class="form-container bg-white py-5 letter-space-1">
+                                <p>@Model.ShippingName<br />@Model.ShippingPhone</p>
+                                <p class="m-0">@Model.ShippingAddress.Street<br />@Model.ShippingAddress.PostalCode<br />@Model.ShippingAddress.City<br />@Model.ShippingAddress.Country</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 px-4 pl-md-5">
+                    <h3 class="block-title mt-5">Order Summary</h3>
+                    <div class="form-container bg-white py-5">
+                        <ul class="list-unstyled">
+                            <li class="summary-item"><span>Date</span><span>@Model.DateCreated.ToString("MMM dd, yyyy")</span></li>
+                            <li class="summary-item-separator-bold"></li>
+                            <li class="summary-item"><span>Order Subtotal</span><span>@ClientCurrency.GetPriceAndDisplay(Model.GetSubtotal())</span></li>
+                            <li class="summary-item"><span>Shipping<button type="button" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="@Model.DeliveryMethod.Name"><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span>@ClientCurrency.GetPriceAndDisplay(Model.DeliveryMethod.Price)</span></li>
+                            <li class="summary-item"><span>Discount</span><span>-@ClientCurrency.GetPriceAndDisplay(Model.GetDiscount())</span></li>
+                            <li class="summary-item-separator-bold"></li>
+                            <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">@ClientCurrency.GetPriceAndDisplay(Model.GetTotalPrice())</strong></li>
+                        </ul>
+                        @if (Model.Note != null)
+                        {
+                            <div class="border-cut p-4 mt-4">
+                                <h3><u>Note:</u></h3>
+                                <p class="m-0">@Model.Note</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

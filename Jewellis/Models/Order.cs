@@ -130,5 +130,51 @@ namespace Jewellis.Models
 
         #endregion
 
+        #region Public API
+
+        /// <summary>
+        /// Gets the subtotal price (regular price before discounts) the customer paid for the order.
+        /// </summary>
+        /// <returns>Returns the subtotal price (regular price before discounts) the customer paid for the order.</returns>
+        public double GetSubtotal()
+        {
+            double subtotal = 0;
+            foreach (var orderProduct in this.OrderProducts)
+            {
+                subtotal += (orderProduct.UnitPrice * orderProduct.Quantity);
+            }
+            return subtotal;
+        }
+
+        /// <summary>
+        /// Gets the total discount the customer received on the order.
+        /// </summary>
+        /// <returns>Returns the total discount the customer received on the order.</returns>
+        public double GetDiscount()
+        {
+            double discount = 0;
+            foreach (var orderProduct in this.OrderProducts)
+            {
+                discount += ((orderProduct.UnitPrice - orderProduct.ActualPricePerUnit()) * orderProduct.Quantity);
+            }
+            return discount;
+        }
+
+        /// <summary>
+        /// Gets the total price (actual price after discounts) the customer paid for the order.
+        /// </summary>
+        /// <returns>Returns the total price (actual price after discounts) the customer paid for the order.</returns>
+        public double GetTotalPrice()
+        {
+            double total = 0;
+            foreach (var orderProduct in this.OrderProducts)
+            {
+                total += (orderProduct.ActualPricePerUnit() * orderProduct.Quantity);
+            }
+            return (total + this.DeliveryMethod.Price);
+        }
+
+        #endregion
+
     }
 }

@@ -61,5 +61,18 @@ namespace Jewellis.Models
 
         #endregion
 
+        #region Public API
+
+        /// <summary>
+        /// Gets the actual price per unit the customer paid for the product, after calculation of discount (if exists).
+        /// </summary>
+        /// <returns>Returns the actual price per unit the customer paid for the product, after calculation of discount (if exists).</returns>
+        public double ActualPricePerUnit()
+        {
+            return (this.DiscountRate.HasValue ? (this.UnitPrice * (1 - this.DiscountRate.Value)) : this.UnitPrice);
+        }
+
+        #endregion
+
     }
 }

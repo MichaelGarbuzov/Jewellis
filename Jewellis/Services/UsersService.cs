@@ -30,6 +30,7 @@ namespace Jewellis.Services
         /// <summary>
         /// Gets the user by the id, either from the cache or the database.
         /// </summary>
+        /// <param name="userId">The id of the user to get.</param>
         /// <returns>Returns the user info, either from the cache or the database if found, otherwise null.</returns>
         public async Task<User> GetByIdAsync(int userId)
         {
@@ -369,6 +370,22 @@ namespace Jewellis.Services
                 user.Wishlist.Remove(wishlistProduct);
                 _userCache.Set(user);
             }
+        }
+
+        /// <summary>
+        /// Gets the orders of the specified user.
+        /// </summary>
+        /// <param name="userId">The id of the user to get the orders.</param>
+        /// <returns>Returns the orders of the specified user.</returns>
+        public async Task<List<Order>> GetOrdersAsync(int userId)
+        {
+            List<Order> orders = await _dbContext.Orders
+                .Where(o => o.UserId == userId)
+                .Include(o => o.DeliveryMethod).Include(o => o.OrderProducts)
+                .OrderByDescending(o => o.DateCreated)
+                .ToListAsync();
+
+            return orders;
         }
 
         #endregion

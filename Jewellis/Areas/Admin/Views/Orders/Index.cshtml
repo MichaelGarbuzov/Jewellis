@@ -1,0 +1,136 @@
+﻿@using Jewellis.Models.Helpers
+
+@model Jewellis.Areas.Admin.ViewModels.Orders.IndexVM
+
+@{
+    ViewData["Title"] = "Orders";
+
+    List<Order> orders = (ViewData["OrdersModel"] as List<Order>);
+}
+
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <ul class="breadcrumb p-0 mb-5">
+                <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index" class="primary-link"><u>Admin</u></a></li>
+                <li class="breadcrumb-item">Orders</li>
+            </ul>
+            <h1 class="title-1 font-weight-bold mb-5">Orders</h1>
+            <div class="form-container bg-white mb-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="flex-fill w-100 maxw-xl mb-3">
+                        <form asp-area="Admin" asp-controller="Orders" asp-action="Index" method="get">
+                            <div class="d-flex flex-column flex-md-row align-items-end">
+                                <div class="row flex-fill w-100 w-lg-auto align-items-end p-0 m-0">
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="row">
+                                            <div class="col-sm-6 p-0 pr-sm-5">
+                                                <div class="single-form-item">
+                                                    <label asp-for="Status"></label>
+                                                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()" class="i-txt bg-input-txt">
+                                                        <option selected></option>
+                                                    </select>
+                                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 p-0 pr-md-5">
+                                                <div class="single-form-item">
+                                                    <label asp-for="DateCreated"></label>
+                                                    <input asp-for="DateCreated" class="i-txt bg-input-txt" />
+                                                    <span asp-validation-for="DateCreated" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 p-0 pr-md-5">
+                                        <div class="single-form-item">
+                                            <label asp-for="OrderId"></label>
+                                            <input asp-for="OrderId" class="i-txt bg-input-txt" autocomplete="off" />
+                                            <span asp-validation-for="OrderId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-form-item">
+                                    <button type="submit" class="btn outline-primary mob-icon px-5"><span class="mob-icon-text">Search</span><span class="icon icon-search2 icon-top-adjust" aria-hidden="true"></span></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="border">
+                    <div class="table-header text-center">
+                        <div class="d-flex">
+                            <div class="row flex-fill">
+                                <div class="col-md-2">Order</div>
+                                <div class="col-md-5 d-none d-md-block">Date Created</div>
+                                <div class="col-md-5 d-none d-md-block">Status</div>
+                            </div>
+                            <div class="d-none d-lg-block" style="width: 41rem;">Actions</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        @foreach (Order order in orders)
+                        {
+                            <div class="table-row hover-bg px-4 py-5">
+                                <div class="d-flex flex-column flex-lg-row justify-content-end align-items-center">
+                                    <div class="row flex-fill d-flex align-items-center w-100 w-lg-auto px-lg-5 mb-4 mb-lg-0">
+                                        <div class="col-md-2 text-center text-md-left">
+                                            <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="primary-link font-weight-bold text-ellipsis d-inline-block">#@order.Id</a>
+                                        </div>
+                                        <div class="col-md-5 text-center">
+                                            <div class="py-3">@order.DateCreated.ToShortDateString()</div>
+                                        </div>
+                                        <div class="col-md-5 text-center">
+                                            <div class="py-3">
+                                                @if (order.Status == OrderStatus.PaymentProcessing)
+                                                {
+                                                    <span class="tag tag-warning">Payment Processing</span>
+                                                }
+                                                else if (order.Status == OrderStatus.Packing)
+                                                {
+                                                    <span class="tag tag-info">Packing</span>
+                                                }
+                                                else if (order.Status == OrderStatus.Shipping)
+                                                {
+                                                    <span class="tag tag-info">Shipping</span>
+                                                }
+                                                else if (order.Status == OrderStatus.Closed)
+                                                {
+                                                    <span class="tag tag-success">Received</span>
+                                                }
+                                                else
+                                                {
+                                                    throw new ArgumentOutOfRangeException(nameof(order.Status), $"{nameof(order.Status)} is not defined.");
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 w-md-auto text-center text-lg-right px-3">
+                                        <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm txt-md outline-info m-1">Details</a>
+                                        <div class="dropdown d-inline-block">
+                                            <button type="button" id="@($"ChangeStatus{order.Id}")" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-sm txt-md outline-warning m-1">Change Status</button>
+                                            <div class="dropdown-menu" aria-labelledby="@($"ChangeStatus{order.Id}")">
+                                                <form asp-area="Admin" asp-controller="Orders" asp-action="IndexUpdateStatus" method="post">
+                                                    <input type="hidden" name="id" value="@Html.ValueFor(m => order.Id)" />
+                                                    <button type="submit" name="status" value="@OrderStatus.PaymentProcessing" class="dropdown-item">@OrderStatus.PaymentProcessing.GetDisplayName()</button>
+                                                    <button type="submit" name="status" value="@OrderStatus.Packing" class="dropdown-item">@OrderStatus.Packing.GetDisplayName()</button>
+                                                    <button type="submit" name="status" value="@OrderStatus.Shipping" class="dropdown-item">@OrderStatus.Shipping.GetDisplayName()</button>
+                                                    <button type="submit" name="status" value="@OrderStatus.Closed" class="dropdown-item">@OrderStatus.Closed.GetDisplayName()</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <a asp-area="Admin" asp-controller="Orders" asp-action="Delete" asp-route-id="@order.Id" class="btn btn-sm txt-md outline-danger m-1">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (orders.Count < 1)
+                        {
+                            <p class="text-center txt-secondary p-5">No Results.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

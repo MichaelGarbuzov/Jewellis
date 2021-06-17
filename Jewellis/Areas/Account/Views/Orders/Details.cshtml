@@ -1,5 +1,11 @@
-﻿@{
-    ViewData["Title"] = $"Order #{123}";
+﻿@using Jewellis.Models.Helpers
+
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Models.Order
+
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
 }
 
 <section class="bg-light-2">
@@ -11,20 +17,39 @@
                     <partial name="~/Areas/Account/Views/Shared/_MenuPartial.cshtml" model="@("Orders")" />
                 </div>
                 <div class="col-xl-9 mb-5">
-                    <h3 class="block-title"><a asp-area="Account" asp-controller="Orders" asp-action="Index" class="primary-link"><u>Orders</u></a> <span class="icon icon-arrow-right4 mx-2" aria-hidden="true"></span> Order #123</h3>
+                    <h3 class="block-title"><a asp-area="Account" asp-controller="Orders" asp-action="Index" class="primary-link"><u>Orders</u></a> <span class="icon icon-arrow-right4 mx-2" aria-hidden="true"></span> Order #@Model.Id</h3>
                     <div class="form-container bg-white px-5 py-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <div class="txt-secondary mr-4">Status:</div>
-                                <div class="tag tag-warning">Payment Processing</div>
+                                @if (Model.Status == OrderStatus.PaymentProcessing)
+                                {
+                                    <div class="tag tag-warning">Payment Processing</div>
+                                }
+                                else if (Model.Status == OrderStatus.Packing)
+                                {
+                                    <div class="tag tag-info">Packing</div>
+                                }
+                                else if (Model.Status == OrderStatus.Shipping)
+                                {
+                                    <div class="tag tag-info">Shipping</div>
+                                }
+                                else if (Model.Status == OrderStatus.Closed)
+                                {
+                                    <div class="tag tag-success">Received</div>
+                                }
+                                else
+                                {
+                                    throw new ArgumentOutOfRangeException(nameof(Model.Status), $"{nameof(Model.Status)} is not defined.");
+                                }
                             </div>
                             <button type="button" class="btn btn-circle txt-xl d-flex align-items-center justify-content-center p-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="icon icon-menu1" aria-hidden="true"></span></button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Contact" asp-route-subject="@($"Order #{1234}")">Contact Us About This</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Contact" asp-route-subject="@($"About Order #{Model.Id}")">Contact Us About This</a>
                             </div>
                         </div>
                     </div>
-                    <h3 class="block-title mt-5">Items (3)</h3>
+                    <h3 class="block-title mt-5">Items (@Model.OrderProducts.Count)</h3>
                     <div class="form-container bg-white txt-md">
                         <div class="table-header text-center d-none d-md-block">
                             <div class="row">
@@ -39,118 +64,52 @@
                             </div>
                         </div>
                         <div class="table-body">
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1">
-                                                <img class="row-image" src="~/images/product-1.jpg" alt="Product 1" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="1" class="primary-link text-uppercase">SPRITE YOGA COMPANION</a>
+                            @foreach (var orderProduct in Model.OrderProducts)
+                            {
+                                <div class="table-row">
+                                    <div class="d-flex align-items-center text-left text-md-center row">
+                                        <div class="col-12 col-md-5">
+                                            <div class="d-flex align-items-center">
+                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@orderProduct.Product.Id">
+                                                    <img class="row-image" src="@orderProduct.Product.ImagePath" alt="@orderProduct.Product.Name" />
+                                                </a>
+                                                <div class="row-title text-left">
+                                                    <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="@orderProduct.Product.Id" class="primary-link text-uppercase">@orderProduct.Product.Name</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">
-                                                        <strike>$65.00</strike>
-                                                        <br class="d-none d-md-block" />
-                                                        <span class="txt-accent ml-2 ml-md-0">$35.00</span>
+                                        <div class="mt-4 mt-md-0 col-12 col-md-7">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-4">
+                                                    <div class="d-flex justify-content-md-center justify-content-between">
+                                                        <div class="d-md-none txt-secondary">Price</div>
+                                                        <div class="text-right text-md-center">
+                                                            @if (orderProduct.DiscountRate.HasValue)
+                                                            {
+                                                                <strike>@ClientCurrency.GetPriceAndDisplay(orderProduct.UnitPrice)</strike>
+                                                                <br class="d-none d-md-block" />
+                                                            }
+                                                            <span class="@(orderProduct.DiscountRate.HasValue ? "txt-accent" : "") ml-2 ml-md-0">@ClientCurrency.GetPriceAndDisplay(orderProduct.ActualPricePerUnit())</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="d-flex justify-content-md-center justify-content-between">
+                                                        <div class="d-md-none txt-secondary">Quantity</div>
+                                                        <div class="text-right text-md-center">@orderProduct.Quantity</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="d-flex justify-content-md-center justify-content-between">
+                                                        <div class="d-md-none txt-secondary">Total Price</div>
+                                                        <div class="text-right text-md-center">@ClientCurrency.GetPriceAndDisplay(orderProduct.ActualPricePerUnit() * orderProduct.Quantity)</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div class="text-right text-md-center">1</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$130.00</div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2">
-                                                <img class="row-image" src="~/images/product-2.jpg" alt="Product 2" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="2" class="primary-link text-uppercase">Yoga COMPANION KIT</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div class="text-right text-md-center">3</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="table-row">
-                                <div class="d-flex align-items-center text-left text-md-center row">
-                                    <div class="col-12 col-md-5">
-                                        <div class="d-flex align-items-center">
-                                            <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3">
-                                                <img class="row-image" src="~/images/product-3.jpg" alt="Product 3" />
-                                            </a>
-                                            <div class="row-title text-left">
-                                                <a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-id="3" class="primary-link text-uppercase">SPRITE YOGA COMPANION KIT</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-0 col-12 col-md-7">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Quantity</div>
-                                                    <div class="text-right text-md-center">2</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="d-flex justify-content-md-center justify-content-between">
-                                                    <div class="d-md-none txt-secondary">Total Price</div>
-                                                    <div class="text-right text-md-center">$55.00</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                     <div class="row">
@@ -159,35 +118,15 @@
                                 <div class="col-md-6">
                                     <h3 class="block-title mt-5">Billing Address</h3>
                                     <div class="form-container bg-white py-5 letter-space-1">
-                                        <p>
-                                            Israel Israeli
-                                            <br />
-                                            +972-123456789
-                                        </p>
-                                        <p class="m-0">
-                                            12345 HaYarkon Street
-                                            <br />
-                                            Tel Aviv
-                                            <br />
-                                            Israel
-                                        </p>
+                                        <p>@Model.BillingName<br />@Model.BillingPhone</p>
+                                        <p class="m-0">@Model.BillingAddress.Street<br />@Model.BillingAddress.PostalCode<br />@Model.BillingAddress.City<br />@Model.BillingAddress.Country</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <h3 class="block-title mt-5">Shipping Address</h3>
                                     <div class="form-container bg-white py-5 letter-space-1">
-                                        <p>
-                                            Israel Israeli
-                                            <br />
-                                            +972-123456789
-                                        </p>
-                                        <p class="m-0">
-                                            12345 HaYarkon Street
-                                            <br />
-                                            Tel Aviv
-                                            <br />
-                                            Israel
-                                        </p>
+                                        <p>@Model.ShippingName<br />@Model.ShippingPhone</p>
+                                        <p class="m-0">@Model.ShippingAddress.Street<br />@Model.ShippingAddress.PostalCode<br />@Model.ShippingAddress.City<br />@Model.ShippingAddress.Country</p>
                                     </div>
                                 </div>
                             </div>
@@ -196,18 +135,21 @@
                             <h3 class="block-title mt-5">Order Summary</h3>
                             <div class="form-container bg-white py-5">
                                 <ul class="list-unstyled">
-                                    <li class="summary-item"><span>Date</span><span>@DateTime.Now.ToString("MMM dd, yyyy")</span></li>
+                                    <li class="summary-item"><span>Date</span><span>@Model.DateCreated.ToString("MMM dd, yyyy")</span></li>
                                     <li class="summary-item-separator-bold"></li>
-                                    <li class="summary-item"><span>Order Subtotal</span><span>$300.00</span></li>
-                                    <li class="summary-item"><span>Shipping<button type="button" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="EMS Fast Shipping"><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span>$10.00</span></li>
-                                    <li class="summary-item"><span>Discount</span><span>-$50.00</span></li>
+                                    <li class="summary-item"><span>Order Subtotal</span><span>@ClientCurrency.GetPriceAndDisplay(Model.GetSubtotal())</span></li>
+                                    <li class="summary-item"><span>Shipping<button type="button" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="@Model.DeliveryMethod.Name"><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span>@ClientCurrency.GetPriceAndDisplay(Model.DeliveryMethod.Price)</span></li>
+                                    <li class="summary-item"><span>Discount</span><span>-@ClientCurrency.GetPriceAndDisplay(Model.GetDiscount())</span></li>
                                     <li class="summary-item-separator-bold"></li>
-                                    <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">$250.00</strong></li>
+                                    <li class="summary-item border-0"><span>Total</span><strong class="order-summary-total">@ClientCurrency.GetPriceAndDisplay(Model.GetTotalPrice())</strong></li>
                                 </ul>
-                                <div class="border-cut p-4 mt-4">
-                                    <h3><u>Note:</u></h3>
-                                    <p class="m-0">Please ship the package as soon as possible.</p>
-                                </div>
+                                @if (Model.Note != null)
+                                {
+                                    <div class="border-cut p-4 mt-4">
+                                        <h3><u>Note:</u></h3>
+                                        <p class="m-0">@Model.Note</p>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

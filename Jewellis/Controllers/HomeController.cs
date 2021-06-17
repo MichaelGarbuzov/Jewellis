@@ -3,6 +3,7 @@ using Jewellis.App_Custom.Services.ClientCurrency;
 using Jewellis.Data;
 using Jewellis.Models;
 using Jewellis.Models.Helpers;
+using Jewellis.Services;
 using Jewellis.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ namespace Jewellis.Controllers
     public class HomeController : Controller
     {
         private readonly JewellisDbContext _dbContext;
+        private readonly UserIdentityService _userIdentity;
         private readonly ClientCurrencyService _clientCurrency;
 
-        public HomeController(JewellisDbContext dbContext, ClientCurrencyService clientCurrency)
+        public HomeController(JewellisDbContext dbContext, UserIdentityService userIdentity, ClientCurrencyService clientCurrency)
         {
             _dbContext = dbContext;
+            _userIdentity = userIdentity;
             _clientCurrency = clientCurrency;
         }
 
@@ -55,10 +58,20 @@ namespace Jewellis.Controllers
 
         [Route("/contact")]
         [HttpGet]
-        public IActionResult Contact(string subject)
+        public async Task<IActionResult> Contact(string subject)
         {
-            ViewData["Subject"] = subject;
-            return View();
+            ContactVM model = new ContactVM()
+            {
+                Subject = subject
+            };
+            User user = await _userIdentity.GetCurrentAsync();
+            if (user != null)
+            {
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+                model.EmailAddress = user.EmailAddress;
+            }
+            return View(model);
         }
 
         [Route("/contact")]

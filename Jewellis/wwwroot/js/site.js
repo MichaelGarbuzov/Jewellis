@@ -783,21 +783,25 @@ $(function () {
     // -------------
     $('[data-theme-set]').click(function (e) {
         e.preventDefault();
-        var $themeMenu = $(this).parents('#main-theme-menu');
+        var $this = $(this);
+        let $themeMenu = $this.parents('#main-theme-menu');
 
         // Updates the html:
-        $('html[theme]').attr('theme', $(this).attr('data-theme-set'));
-        $themeMenu.find('[data-dd-check]').appendTo($(this));
-        $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-updatable]').text($(this).attr('data-theme-set-display'));
+        $('html[theme]').attr('theme', $this.attr('data-theme-set'));
+        $themeMenu.find('[data-dd-check]').appendTo($this);
+        $themeMenu.parent('[data-dd-mega]').find('#main-theme-btn').find('[data-updatable]').text($this.attr('data-theme-set-display'));
         // Updates the cookie:
-        setCookie(AppKeys.Cookies.ClientTheme, $(this).attr('data-theme-set'), 365 * 100);
+        setCookie(AppKeys.Cookies.ClientTheme, $this.attr('data-theme-set'), 365 * 100);
         // Sends an AJAX request, to update the server side if needed (when user is authenticated):
         $.ajax({
             type: 'post',
             url: $themeMenu.attr('data-theme-set-link'),
-            data: JSON.stringify($(this).attr('data-theme-set')),
+            data: JSON.stringify($this.attr('data-theme-set')),
             contentType: 'application/json',
-            dataType: 'json'
+            dataType: 'json',
+            success: function () {
+                $this.trigger('change');
+            }
         });
     });
 

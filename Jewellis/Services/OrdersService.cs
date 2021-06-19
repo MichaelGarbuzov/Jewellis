@@ -37,6 +37,21 @@ namespace Jewellis.Services
         }
 
         /// <summary>
+        /// Gets all the orders created from the specified date and time.
+        /// </summary>
+        /// <param name="fromDateTime">The date and time to select the orders created after.</param>
+        /// <returns>Returns the list of orders created from the specified date and time.</returns>
+        public async Task<List<Order>> GetAllFromDateTime(DateTime fromDateTime)
+        {
+            return await _dbContext.Orders
+                .Where(o => o.DateCreated >= fromDateTime)
+                .Include(o => o.DeliveryMethod)
+                .OrderByDescending(o => o.DateCreated)
+                .Include(o => o.OrderProducts)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Searches for orders by the specified parameters.
         /// </summary>
         /// <param name="status">The status of orders to search.</param>
@@ -54,7 +69,8 @@ namespace Jewellis.Services
                 .Where(o => ((orderId == null) || o.Id.ToString().Equals(orderId)) &&
                             ((status == null) || o.Status == status.Value) &&
                             ((dateCreated == null) || o.DateCreated.Date == dateCreated.Value.Date))
-                .Include(o => o.DeliveryMethod).OrderByDescending(o => o.DateCreated)
+                .Include(o => o.DeliveryMethod)
+                .OrderByDescending(o => o.DateCreated)
                 .Include(o => o.OrderProducts)
                 .ToListAsync();
         }

@@ -161,7 +161,7 @@ namespace Jewellis.Models
         }
 
         /// <summary>
-        /// Gets the total price (actual price after discounts) the customer paid for the order.
+        /// Gets the total price (actual price after discounts) the customer paid for the order, including shipping payment.
         /// </summary>
         /// <returns>Returns the total price (actual price after discounts) the customer paid for the order.</returns>
         public double GetTotalPrice()

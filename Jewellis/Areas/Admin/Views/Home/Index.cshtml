@@ -1,5 +1,328 @@
-﻿@{
+﻿@using Jewellis.Models.Helpers
+@using Jewellis.App_Custom.Helpers
+@using Jewellis.App_Custom.Helpers.Objects
+
+@inject Jewellis.App_Custom.Services.ClientTheme.ClientThemeService ClientTheme
+@inject Jewellis.App_Custom.Services.ClientCurrency.ClientCurrencyService ClientCurrency
+
+@model Jewellis.Areas.Admin.ViewModels.Home.IndexVM
+
+@{
     ViewData["Title"] = "Admin Dashboard";
+
+    // Getting some chart data:
+    TimeSeriesChartData earningsData = (ViewData["Results_EarningsTimeSeries"] as TimeSeriesChartData);
+    Dictionary<string, string> bestSellingData = (ViewData["Results_BestSelling"] as Dictionary<string, string>);
+    string[] bestSellingTop3Data = (ViewData["Results_BestSelling_Top3"] as string[]);
+    TimeSeriesChartData avgCustomerSpendingData = (ViewData["Results_AvgCustomerSpendingTS"] as TimeSeriesChartData);
+    TimeSeriesChartData avgCustomerActivityTimesData = (ViewData["Results_AvgCustomerActivityTimesTS"] as TimeSeriesChartData);
 }
 
-<h1>Admin Dashboard</h1>
+<section class="bg-light-2">
+    <div class="sec-container">
+        <div class="maxw-2xl m-auto">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <h1 class="title-1 font-weight-bold mb-5">Dashboard</h1>
+                <div class="flex-fill text-right mt-md-4 mb-5">
+                    <div class="btn-group ml-sm-5" role="group" aria-label="Dashboard Period Selector">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Periods.Today" class="btn btn-sm @(Model.Period == Periods.Today ? "btn-primary" : "outline-primary") d-flex align-items-center">Today</a>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Periods.ThisMonth" class="btn btn-sm @(Model.Period == Periods.ThisMonth ? "btn-primary" : "outline-primary") d-flex align-items-center">This Month</a>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Periods.ThisYear" class="btn btn-sm @(Model.Period == Periods.ThisYear ? "btn-primary" : "outline-primary") d-flex align-items-center">This Year</a>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Periods.Lifetime" class="btn btn-sm @(Model.Period == Periods.Lifetime ? "btn-primary" : "outline-primary") d-flex align-items-center">Lifetime</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="form-container bg-white border-left-bold border-success hover-push p-4">
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Model.Period">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col text-ellipsis mr-2">
+                                    <div class="txt-md font-weight-bold text-success text-uppercase text-ellipsis px-3 py-1 mb-1">Earnings</div>
+                                    <div class="txt-xl font-weight-bold txt-title px-3 py-1">@string.Format("{0}{1:0}", ClientCurrency.Currency.Symbol, (double)ViewData["Results_TotalEarnings"])</div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="icon icon-briefcase2 txt-faded display-3 px-3" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="form-container bg-white border-left-bold border-sky hover-push p-4">
+                        <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-route-role="@((int)UserRole.Customer)">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col text-ellipsis mr-2">
+                                    <div class="txt-md font-weight-bold txt-sky text-uppercase text-ellipsis px-3 py-1 mb-1">New Customers</div>
+                                    <div class="txt-xl font-weight-bold txt-title px-3 py-1">@ViewData["Results_NewCustomers"]</div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="icon icon-users3 txt-faded display-3 px-3" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="form-container bg-white border-left-bold border-pink hover-push p-4">
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@((int)OrderStatus.Packing)">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col text-ellipsis mr-2">
+                                    <div class="txt-md font-weight-bold txt-pink text-uppercase text-ellipsis px-3 py-1 mb-1">Orders Awaiting</div>
+                                    <div class="txt-xl font-weight-bold txt-title px-3 py-1">@ViewData["Results_OrdersAwaiting"]</div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="icon icon-clipboard3 txt-faded display-3 px-3" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="form-container bg-white border-left-bold border-warning hover-push p-4">
+                        <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" asp-route-status="@((int)ContactStatus.Pending)">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col text-ellipsis mr-2">
+                                    <div class="txt-md font-weight-bold text-warning text-uppercase text-ellipsis px-3 py-1 mb-1">Pending Contacts</div>
+                                    <div class="txt-xl font-weight-bold txt-title px-3 py-1">@ViewData["Results_PendingContacts"]</div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="icon icon-envelope1 txt-faded display-3 px-3" aria-hidden="true"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-lg-4">
+                <div class="col-xl-8 col-lg-7 pr-lg-5 mb-4">
+                    <div class="form-container bg-white overflow-hidden p-0 mb-4">
+                        <div class="form-header">
+                            <h3 class="txt-title m-0">Earnings Overview</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-earnings"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-5 pb-4 mb-4">
+                    <div class="form-container bg-white overflow-hidden d-flex flex-column h-100 p-0 mb-4">
+                        <div class="form-header">
+                            <h3 class="txt-title m-0">Best Selling</h3>
+                        </div>
+                        @if (bestSellingData.Count > 1)
+                        {
+                            <ul class="text-center pt-5 d-xl-block d-lg-none">
+                                @foreach (string productName in bestSellingTop3Data)
+                                {
+                                    <li><a asp-area="Shop" asp-controller="Product" asp-action="Index" asp-route-name="@productName" class="secondary-link">@productName</a></li>
+                                }
+                            </ul>
+                            <div class="chart-container pie-chart-padding flex-fill d-flex align-items-center">
+                                <canvas id="chart-best-selling"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                                <div class="txt-secondary mb-2"><span class="icon icon-stats2 display-1" aria-hidden="true"></span></div>
+                                <p class="txt-secondary p-4">No Data.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-lg-4">
+                <div class="col-lg-6 pr-lg-5 mb-4">
+                    <div class="form-container bg-white overflow-hidden p-0 mb-4">
+                        <div class="form-header">
+                            <h3 class="txt-title m-0">Average Customer Spending</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-avg-customer-spending"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="form-container bg-white overflow-hidden p-0 mb-4">
+                        <div class="form-header">
+                            <h3 class="txt-title m-0">Average Customer Activity Times</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-avg-customer-activity-times"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+    <script>
+        Chart.defaults.font.size = 16;
+        Chart.defaults.color = '#929292';
+
+        var chartEarnings = new Chart(document.getElementById('chart-earnings'), {
+            type: 'line',
+            data: {
+                labels: @Json.Serialize(earningsData.Keys),
+                datasets: [{
+                    data: @Json.Serialize(earningsData.Values),
+                    backgroundColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "rgba(222,222,222,0.2)" : "rgba(222,222,222,0.5)")',
+                    fill: true,
+                    borderColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "#ffffff" : "#151515")',
+                    borderWidth: 4,
+                    pointBorderWidth: 5
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'nearest',
+                        intersect: false,
+                        caretSize: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var chartBestSelling = new Chart(document.getElementById('chart-best-selling'), {
+            type: 'pie',
+            data: {
+                labels: @Json.Serialize(bestSellingData.Keys),
+                datasets: [{
+                    data: @Json.Serialize(bestSellingData.Values),
+                    backgroundColor: @Json.Serialize(ChartHelper.GenerateColorShades(bestSellingData.Keys.Count, "#151515")),
+                    borderColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "#333333" : "#ffffff")'
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'nearest',
+                        intersect: false,
+                        caretSize: 8
+                    }
+                }
+            }
+        });
+
+        var chartAvgCustomerSpending = new Chart(document.getElementById('chart-avg-customer-spending'), {
+            type: 'line',
+            data: {
+                labels: @Json.Serialize(avgCustomerSpendingData.Keys),
+                datasets: [{
+                    data: @Json.Serialize(avgCustomerSpendingData.GetAverageValues()),
+                    backgroundColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "rgba(222,222,222,0.2)" : "rgba(222,222,222,0.5)")',
+                    fill: true,
+                    borderColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "#ffffff" : "#151515")',
+                    borderWidth: 4,
+                    pointBorderWidth: 5
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'nearest',
+                        intersect: false,
+                        caretSize: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        var hoursYAxis = @(Json.Serialize(ChartHelper.GetHoursYAxis()));
+        var chartAvgCustomerActivityTimes = new Chart(document.getElementById('chart-avg-customer-activity-times'), {
+            type: 'bar',
+            data: {
+                labels: @Json.Serialize(avgCustomerActivityTimesData.Keys),
+                datasets: [{
+                    data: @Json.Serialize(avgCustomerActivityTimesData.GetAverageValues()),
+                    backgroundColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "rgba(222,222,222,0.2)" : "rgba(222,222,222,0.5)")',
+                    fill: true,
+                    borderColor: '@(ClientTheme.Theme.ID.Equals("dark") ? "#ffffff" : "#151515")',
+                    borderWidth: 4,
+                    pointBorderWidth: 5
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'nearest',
+                        intersect: false,
+                        caretSize: 8
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (label, index, labels) {
+                                return hoursYAxis[label];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // On theme change - updates the colors of charts:
+        $('[data-theme-set]').change(function () {
+            if ($(this).attr('data-theme-set') === 'dark') {
+                chartEarnings.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartEarnings.data.datasets[0].borderColor = "#ffffff";
+                chartEarnings.update();
+
+                chartBestSelling.data.datasets[0].borderColor = "#333333";
+                chartBestSelling.update();
+
+                chartAvgCustomerSpending.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartAvgCustomerSpending.data.datasets[0].borderColor = "#ffffff";
+                chartAvgCustomerSpending.update();
+
+                chartAvgCustomerActivityTimes.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartAvgCustomerActivityTimes.data.datasets[0].borderColor = "#ffffff";
+                chartAvgCustomerActivityTimes.update();
+            } else {
+                chartEarnings.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartEarnings.data.datasets[0].borderColor = "#151515";
+                chartEarnings.update();
+
+                chartBestSelling.data.datasets[0].borderColor = "#ffffff";
+                chartBestSelling.update();
+
+                chartAvgCustomerSpending.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartAvgCustomerSpending.data.datasets[0].borderColor = "#151515";
+                chartAvgCustomerSpending.update();
+
+                chartAvgCustomerActivityTimes.data.datasets[0].backgroundColor = "rgba(222,222,222,0.5)";
+                chartAvgCustomerActivityTimes.data.datasets[0].borderColor = "#151515";
+                chartAvgCustomerActivityTimes.update();
+            }
+        });
+    </script>
+}

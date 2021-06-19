@@ -154,7 +154,7 @@
                     <h3 class="block-title mt-5">Order Summary</h3>
                     <div class="form-container bg-white py-5">
                         <ul class="list-unstyled">
-                            <li class="summary-item"><span>Date</span><span>@Model.DateCreated.ToString("MMM dd, yyyy")</span></li>
+                            <li class="summary-item"><span>Date</span><span data-toggle="popover" data-placement="top" data-content="@Model.DateCreated.ToString()">@Model.DateCreated.ToString("MMM dd, yyyy")</span></li>
                             <li class="summary-item-separator-bold"></li>
                             <li class="summary-item"><span>Order Subtotal</span><span>@ClientCurrency.GetPriceAndDisplay(Model.GetSubtotal())</span></li>
                             <li class="summary-item"><span>Shipping<button type="button" class="secondary-link" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="@Model.DeliveryMethod.Name"><span class="icon icon-question ml-3 icon-top-adjust" aria-hidden="true"></span></button></span><span>@ClientCurrency.GetPriceAndDisplay(Model.DeliveryMethod.Price)</span></li>

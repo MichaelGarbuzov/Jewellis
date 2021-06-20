@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jewellis.Migrations
 {
     [DbContext(typeof(JewellisDbContext))]
-    [Migration("20210613160610_FirstInit")]
+    [Migration("20210620091551_FirstInit")]
     partial class FirstInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -550,7 +550,9 @@ namespace Jewellis.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("ClientCartId")
                         .IsUnique()
@@ -664,7 +666,8 @@ namespace Jewellis.Migrations
 
                     b.HasOne("Jewellis.Models.Sale", "Sale")
                         .WithMany()
-                        .HasForeignKey("SaleId");
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Jewellis.Models.ProductType", "Type")
                         .WithMany()
@@ -682,8 +685,9 @@ namespace Jewellis.Migrations
             modelBuilder.Entity("Jewellis.Models.User", b =>
                 {
                     b.HasOne("Jewellis.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
+                        .WithOne()
+                        .HasForeignKey("Jewellis.Models.User", "AddressId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Jewellis.Models.ClientCart", "ClientCart")
                         .WithOne()

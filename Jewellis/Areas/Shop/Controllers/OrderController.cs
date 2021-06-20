@@ -47,17 +47,17 @@ namespace Jewellis.Areas.Shop.Controllers
             {
                 // Checks to set already known information about the user in the checkout:
                 User user = await _userIdentity.GetCurrentAsync();
+                model.BillingDetails = new CheckoutVM.BillingDetailsModel()
+                {
+                    Name = $"{user.FirstName} {user.LastName}",
+                    Phone = user.PhoneNumber
+                };
                 if (user.Address != null)
                 {
-                    model.BillingDetails = new CheckoutVM.BillingDetailsModel()
-                    {
-                        Name = $"{user.FirstName} {user.LastName}",
-                        Phone = user.PhoneNumber,
-                        Street = user.Address.Street,
-                        PostalCode = user.Address.PostalCode,
-                        City = user.Address.City,
-                        Country = user.Address.Country
-                    };
+                    model.BillingDetails.Street = user.Address.Street;
+                    model.BillingDetails.PostalCode = user.Address.PostalCode;
+                    model.BillingDetails.City = user.Address.City;
+                    model.BillingDetails.Country = user.Address.Country;
                 }
             }
             else

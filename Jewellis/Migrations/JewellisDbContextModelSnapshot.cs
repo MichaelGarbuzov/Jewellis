@@ -664,7 +664,8 @@ namespace Jewellis.Migrations
 
                     b.HasOne("Jewellis.Models.Sale", "Sale")
                         .WithMany()
-                        .HasForeignKey("SaleId");
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Jewellis.Models.ProductType", "Type")
                         .WithMany()

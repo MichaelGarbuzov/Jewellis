@@ -179,7 +179,7 @@ namespace Jewellis.Migrations
                         column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Users_ClientCarts_ClientCartId",
                         column: x => x.ClientCartId,
@@ -225,7 +225,7 @@ namespace Jewellis.Migrations
                         column: x => x.SaleId,
                         principalTable: "Sales",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -443,7 +443,9 @@ namespace Jewellis.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
                 table: "Users",
-                column: "AddressId");
+                column: "AddressId",
+                unique: true,
+                filter: "[AddressId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ClientCartId",

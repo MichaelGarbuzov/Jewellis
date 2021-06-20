@@ -297,7 +297,10 @@ namespace Jewellis.Services
                 ClientCart cart = await _dbContext.ClientCarts.FindAsync(user.ClientCartId.Value);
                 _dbContext.ClientCarts.Remove(cart);
             }
-            _dbContext.Addresses.Remove(user.Address);
+            if (user.Address != null)
+            {
+                _dbContext.Addresses.Remove(user.Address);
+            }
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
             _userCache.Remove(user.Id);

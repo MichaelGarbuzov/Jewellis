@@ -34,8 +34,8 @@
             </div>
             <div class="row mb-5">
                 <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="form-container bg-white border-left-bold border-success hover-push p-4">
-                        <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Model.Period">
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Index" asp-route-period="@Model.Period">
+                        <div class="form-container bg-white border-left-bold border-success hover-push p-4">
                             <div class="row no-gutters align-items-center">
                                 <div class="col text-ellipsis mr-2">
                                     <div class="txt-md font-weight-bold text-success text-uppercase text-ellipsis px-3 py-1 mb-1">Earnings</div>
@@ -45,12 +45,12 @@
                                     <span class="icon icon-briefcase2 txt-faded display-3 px-3" aria-hidden="true"></span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="form-container bg-white border-left-bold border-sky hover-push p-4">
-                        <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-route-role="@((int)UserRole.Customer)">
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-route-role="@((int)UserRole.Customer)">
+                        <div class="form-container bg-white border-left-bold border-sky hover-push p-4">
                             <div class="row no-gutters align-items-center">
                                 <div class="col text-ellipsis mr-2">
                                     <div class="txt-md font-weight-bold txt-sky text-uppercase text-ellipsis px-3 py-1 mb-1">New Customers</div>
@@ -60,12 +60,12 @@
                                     <span class="icon icon-users3 txt-faded display-3 px-3" aria-hidden="true"></span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="form-container bg-white border-left-bold border-pink hover-push p-4">
-                        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@((int)OrderStatus.Packing)">
+                    <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@((int)OrderStatus.Packing)">
+                        <div class="form-container bg-white border-left-bold border-pink hover-push p-4">
                             <div class="row no-gutters align-items-center">
                                 <div class="col text-ellipsis mr-2">
                                     <div class="txt-md font-weight-bold txt-pink text-uppercase text-ellipsis px-3 py-1 mb-1">Orders Awaiting</div>
@@ -75,12 +75,12 @@
                                     <span class="icon icon-clipboard3 txt-faded display-3 px-3" aria-hidden="true"></span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="form-container bg-white border-left-bold border-warning hover-push p-4">
-                        <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" asp-route-status="@((int)ContactStatus.Pending)">
+                    <a asp-area="Admin" asp-controller="Contacts" asp-action="Index" asp-route-status="@((int)ContactStatus.Pending)">
+                        <div class="form-container bg-white border-left-bold border-warning hover-push p-4">
                             <div class="row no-gutters align-items-center">
                                 <div class="col text-ellipsis mr-2">
                                     <div class="txt-md font-weight-bold text-warning text-uppercase text-ellipsis px-3 py-1 mb-1">Pending Contacts</div>
@@ -90,8 +90,8 @@
                                     <span class="icon icon-envelope1 txt-faded display-3 px-3" aria-hidden="true"></span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
             </div>
             <div class="row mb-lg-4">

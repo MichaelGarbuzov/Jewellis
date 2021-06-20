@@ -101,6 +101,12 @@ namespace Jewellis.Data
 
             #region [Products] table
 
+            // On delete "SaleId" foreign key - set null:
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.Sale)
+                .WithMany()
+                .OnDelete(DeleteBehavior.SetNull);
+
             // Default value on system datetime columns:
             modelBuilder.Entity<Product>()
                 .Property(e => e.DateAdded)

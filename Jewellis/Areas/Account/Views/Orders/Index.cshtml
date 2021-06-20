@@ -84,6 +84,10 @@
                                     </div>
                                 </div>
                             }
+                            @if (Model.Count < 1)
+                            {
+                                <h4 class="txt-lg text-center txt-secondary py-5 mt-md-5">You have no orders yet.</h4>
+                            }
                         </div>
                     </div>
                 </div>

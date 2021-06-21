@@ -17,6 +17,15 @@ Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/oha
 ### Home Page Categories:
 ![Home Page 2](https://user-images.githubusercontent.com/72609649/120552018-609e5c80-c3ff-11eb-8d52-6c96eba0a5ed.png)
 
+### Shop:
+![shop](https://user-images.githubusercontent.com/72609649/122750510-45549d80-d297-11eb-86e8-b17b82d06731.png)
+
+### Admin Interface - Dashboard:
+![admin](https://user-images.githubusercontent.com/72609649/122750642-72a14b80-d297-11eb-869d-ceecc7c33710.png)
+
+### Admin Interface - Products Management:
+![admin 3](https://user-images.githubusercontent.com/72609649/122750684-80ef6780-d297-11eb-91d0-4251ce8b32f0.png)
+
 ## License
 - No commercial use.
 

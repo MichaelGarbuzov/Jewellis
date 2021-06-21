@@ -3,7 +3,7 @@
     ---------------------
     Description: Main script for the site.
     Version: 1.0.0
-    Last Update: 2021-06-17
+    Last Update: 2021-06-21
 ==============================================*/
 /*==============================================
 Table of Contents:
@@ -964,8 +964,8 @@ $(function () {
     // Add To Wishlist (Mini Wishlist):
     // --------------------------------
     $(document).on('click', '[data-add-to-wishlist]', function () {
-        if (!userWishlist)
-            alert("Failed to add to wishlist, please try again later.");
+        if (typeof userWishlist === 'undefined' || !userWishlist)
+            return false;
 
         let product = JSON.parse($(this).attr('data-add-to-wishlist'));
 

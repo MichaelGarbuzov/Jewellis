@@ -104,7 +104,7 @@
                             @if (pagination.HasPrevious())
                             {
                                 <li class="page-item">
-                                    <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetPreviousPage()" class="page-arrow" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
+                                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetPreviousPage()" class="page-arrow" aria-label="Previous"><span class="icon icon-arrow-left15" aria-hidden="true"></span><span class="sr-only">Previous</span></a>
                                 </li>
                             }
                             @foreach (int page in pagination.GetPageList())
@@ -118,14 +118,14 @@
                                 else
                                 {
                                     <li class="page-item">
-                                        <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@(page)" class="page-link">@(page)</a>
+                                        <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@(page)" class="page-link">@(page)</a>
                                     </li>
                                 }
                             }
                             @if (pagination.HasNext())
                             {
                                 <li class="page-item">
-                                    <a asp-area="Admin" asp-controller="Products" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetNextPage()" class="page-arrow" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
+                                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" asp-all-route-data="Context.Request.Query.ToDictionary()" asp-route-page="@pagination.GetNextPage()" class="page-arrow" aria-label="Next"><span class="icon icon-arrow-right16" aria-hidden="true"></span><span class="sr-only">Next</span></a>
                                 </li>
                             }
                         </ul>

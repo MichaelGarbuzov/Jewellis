@@ -4,11 +4,11 @@
 @{
     ViewData["Title"] = "View Cart";
 
-    string cartJSON = Json.Serialize(ClientCart.Cart.Products.Select(p => new
+    string cartJSON = (ClientCart.IsEmpty() ? "[]" : Json.Serialize(ClientCart.Cart.Products.Select(p => new
     {
         ProductId = p.ProductId,
         Quantity = p.Quantity
-    })).ToString();
+    })).ToString());
 }
 
 <section class="bg-light-2">

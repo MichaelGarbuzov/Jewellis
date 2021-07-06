@@ -7,7 +7,7 @@ Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/oha
 ### View demo: [jewellis.com](https://www.jewellis.com/)
 
 ## Technologies
-- Server Side: ASP.NET Core (MVC)
+- Server Side: ASP.NET Core (MVC) with Entity Framework
 - Client Side: HTML, CSS, JavaScript, jQuery, Bootstrap
 
 ## Images

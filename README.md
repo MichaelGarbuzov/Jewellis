@@ -6,6 +6,15 @@ Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/oha
 
 ### View demo: [jewellis.com](https://www.jewellis.com/)
 
+## Users For Test:
+### Admin
+- Email: admin@jewellis.com
+- Password: 123456
+
+### Customer
+- Email: customer@jewellis.com
+- Password: 123456
+
 ## Technologies
 - Server Side: ASP.NET Core (MVC) with Entity Framework
 - Client Side: HTML, CSS, JavaScript, jQuery, Bootstrap

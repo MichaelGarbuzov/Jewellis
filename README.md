@@ -1,10 +1,3 @@
-# Jewellis (E-Commerce For Jewelry).
-
-Jewellis is an e-commerce with orientation to jewelry, the project was developed for Web Application Development course studied in [The College of Management](https://english.colman.ac.il/), as part of undergraduate studies in computer science.
-
-Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/ohad-shai/), [Michael Garbuzov](https://www.linkedin.com/in/michaelgarbuzov/), and [Daniel Baranes](https://www.linkedin.com/in/daniel-baranes-a4190b10a/).
-
-### View demo: [jewellis.com](https://www.jewellis.com/)
 
 ## Users For Test:
 ### Admin
@@ -14,6 +7,14 @@ Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/oha
 ### Customer
 - Email: customer@jewellis.com
 - Password: 123456
+
+# Jewellis (E-Commerce For Jewelry).
+
+Jewellis is an e-commerce with orientation to jewelry, the project was developed for Web Application Development course studied in [The College of Management](https://english.colman.ac.il/), as part of undergraduate studies in computer science.
+
+Jewellis is a teamwork, developed by [Ohad Shai](https://www.linkedin.com/in/ohad-shai/), [Michael Garbuzov](https://www.linkedin.com/in/michaelgarbuzov/), and [Daniel Baranes](https://www.linkedin.com/in/daniel-baranes-a4190b10a/).
+
+### View demo: [jewellis.com](https://www.jewellis.com/)
 
 ## Technologies
 - Server Side: ASP.NET Core (MVC) with Entity Framework

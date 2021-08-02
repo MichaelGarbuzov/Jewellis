@@ -1,13 +1,3 @@
-
-## Users For Test:
-### Admin
-- Email: admin@jewellis.com
-- Password: 123456
-
-### Customer
-- Email: customer@jewellis.com
-- Password: 123456
-
 # Jewellis (E-Commerce For Jewelry).
 
 Jewellis is an e-commerce with orientation to jewelry, the project was developed for Web Application Development course studied in [The College of Management](https://english.colman.ac.il/), as part of undergraduate studies in computer science.
